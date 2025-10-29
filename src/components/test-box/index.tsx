@@ -23,10 +23,9 @@ export const TestBox = (props: any) => {
             scale={active ? 1.5 : 1}
             onClick={() => setActive(!active)}
             onPointerOver={() => setHover(true)}
-            onPointerOut={() => setHover(false)}
-        >
+            onPointerOut={() => setHover(false)}>
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
         </mesh>
     );
-}
+};

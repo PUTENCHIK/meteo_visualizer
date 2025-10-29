@@ -5,7 +5,7 @@ import './app.css';
 
 export const App: React.FC = () => {
     return (
-        <div className={clsx("app")}>
+        <div className={clsx('app')}>
             <Scene />
         </div>
     );

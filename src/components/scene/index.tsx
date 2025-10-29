@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { TestBox } from '@components/test-box';
-import './scene.css'
+import './scene.css';
 
 export const Scene = () => {
     return (
@@ -15,4 +15,4 @@ export const Scene = () => {
             <OrbitControls />
         </Canvas>
     );
-}
+};
