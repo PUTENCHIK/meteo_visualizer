@@ -19,9 +19,11 @@
         "baseUrl": "./src",
         "sourceMap": true,
         "paths": {
-            "@components/*": ["components/*"]
-        }
+            "@components/*": ["components/*"],
+            "@types_/*": ["shared/*"],
+            "@utils/*": ["utils/*"],
+        },
     },
-    "include": ["src"],
+    "include": ["src/**/*"],
     "exclude": ["node_modules", "build"]
 }

@@ -7,6 +7,7 @@ export const App: React.FC = () => {
     return (
         <div className={clsx('app')}>
             <Scene />
+            <div className={clsx('window')}></div>
         </div>
     );
 };

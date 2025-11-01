@@ -1,7 +1,7 @@
-// config/webpack.common.js
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 
 const production = process.env.NODE_ENV === 'production';
@@ -19,7 +19,8 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
         alias: {
             '@components': path.resolve(__dirname, '../src/components/'),
-            '@styles': path.resolve(__dirname, '../src/styles/'),
+            '@types_': path.resolve(__dirname, '../src/shared/'),
+            '@utils': path.resolve(__dirname, '../src/utils/'),
         },
     },
     module: {
@@ -34,35 +35,30 @@ module.exports = {
                     transpileOnly: true
                 },
             },
-            // CSS
+            // CSS, SASS, CSS
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
-            },
-            // SCSS not modules
-            {
-                // test: /\.(sa|sc|c)ss$/,
-                // use: [
-                //     production ? MiniCssExtractPlugin.loader : 'style-loader',
-                //     {
-                //         loader: 'css-loader',
-                //         options: {
-                //             modules: {
-                //                 mode: 'local',
-                //                 localIdentName: '[name]__[local]__[hash:base64:5]',
-                //                 auto: /\.module\.\w+$/i,
-                //             },
-                //             importLoaders: 2,
-                //         },
-                //     },
-                //     'postcss-loader',
-                //     {
-                //         loader: 'sass-loader',
-                //         options: {
-                //             sourceMap: true,
-                //         },
-                //     },
-                // ],
+                test: /\.(sa|sc|c)ss$/,
+                use: [
+                    production ? MiniCssExtractPlugin.loader : 'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: {
+                                mode: 'local',
+                                localIdentName: '[name]__[local]__[hash:base64:5]',
+                                auto: /\.module\.\w+$/i,
+                            },
+                            importLoaders: 2,
+                        },
+                    },
+                    'postcss-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true,
+                        },
+                    },
+                ],
             },
             // Files
             {
@@ -85,11 +81,11 @@ module.exports = {
             filename: 'index.html',
             favicon: path.resolve(__dirname, '../public/favicon.ico',),
         }),
-        // new MiniCssExtractPlugin({
-        //     filename: production
-        //         ? 'static/styles/[name].[contenthash].css'
-        //         : 'static/styles/[name].css',
-        // }),
+        new MiniCssExtractPlugin({
+            filename: production
+                ? 'static/styles/[name].[contenthash].css'
+                : 'static/styles/[name].css',
+        }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
         }),

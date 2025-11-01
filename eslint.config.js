@@ -85,7 +85,7 @@ module.exports = defineConfig([{
             aspects: ["invalidHref", "preferButton"],
         }],
         "react/no-unknown-property": ["error", {
-            ignore: ["intensity", "position", "args"]
+            ignore: ["intensity", "position", "args", "rotation", "scale"]
         }],
         "@typescript-eslint/no-explicit-any": ["warn"],
     },
