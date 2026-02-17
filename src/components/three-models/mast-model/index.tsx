@@ -1,16 +1,17 @@
-import { MeshGroup } from '@components/mesh-group';
-import { YardModel } from '@components/yard-model';
+import { MeshGroup } from '@models_/mesh-group';
+import { YardModel } from '@models_/yard-model';
 import { mastModelColor } from '@types_/colors';
 import { EMastHeight, YardDataItem } from '@types_/masts-yards';
+import { Vector2, Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils';
 
-export type YardDataList = YardDataItem[];
+// export type YardDataList = YardDataItem[];
 
 interface MastModelProps {
     height: EMastHeight;
-    position: [number, number];
+    position: Vector2;
     rotation?: number;
-    yards: YardDataList;
+    yards: YardDataItem[];
 }
 
 export const MastModel = (props: MastModelProps) => {
@@ -20,8 +21,8 @@ export const MastModel = (props: MastModelProps) => {
 
     return (
         <MeshGroup
-            position={[props.position[0], 0, props.position[1]]}
-            rotation={[0, degToRad(props.rotation ?? 0), 0]}>
+            position={new Vector3(props.position.x, 0, props.position.y)}
+            rotation={new Vector3(0, degToRad(props.rotation ?? 0), 0)}>
             {/* Платформа для мачты */}
             <mesh position={[0, plateHeight / 2, 0]}>
                 <boxGeometry args={[plateSize, plateHeight, plateSize]} />

@@ -1,7 +1,8 @@
 import { weatherStationModelColor } from '@types_/colors';
+import { Vector3 } from 'three';
 
 interface WeatherStationModelProps {
-    position: [number, number, number];
+    position: Vector3;
 }
 
 export const WeatherStationModel = (props: WeatherStationModelProps) => {

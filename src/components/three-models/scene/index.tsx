@@ -1,19 +1,19 @@
 import { Vector3 } from 'three';
 import { Canvas } from '@react-three/fiber';
-import { Environment, OrbitControls, Select } from '@react-three/drei';
-import { BasePlateModel } from '@components/base-plate-model';
-import { TelescopeModel } from '@components/telescope-model';
-import { MastModel } from '@components/mast-model';
+import { Environment, OrbitControls, PositionMesh, Select } from '@react-three/drei';
+import { BasePlateModel } from '@models_/base-plate-model';
+import { TelescopeModel } from '@models_/telescope-model';
+import { MastModel } from '@models_/mast-model';
 import { masts } from '@utils/consts';
-import { OutlineEffect } from '@components/outline-effect';
+import { OutlineEffect } from '@models_/outline-effect';
+import { AtmosphereModel } from '@models_/atmosphere-model';
 
 export const Scene = () => {
-    const basePlateSize: [number, number, number] = [200, 10, 160];
+    const basePlateSize: Vector3 = new Vector3(200, 10, 160);
     const cameraProps = {
         position: new Vector3(-90, 90, 130),
         fov: 60,
     };
-
     return (
         <Canvas camera={cameraProps}>
             <ambientLight intensity={0.5} />
@@ -40,6 +40,11 @@ export const Scene = () => {
                     ))}
                 </Select>
             </OutlineEffect>
+
+            <AtmosphereModel
+                basePlateSize={basePlateSize}
+                height={60}
+            />
 
             <OrbitControls />
         </Canvas>

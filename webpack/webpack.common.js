@@ -18,7 +18,7 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
         alias: {
-            '@components': path.resolve(__dirname, '../src/components/'),
+            '@models_': path.resolve(__dirname, '../src/components/three-models/'),
             '@types_': path.resolve(__dirname, '../src/shared/'),
             '@utils': path.resolve(__dirname, '../src/utils/'),
         },

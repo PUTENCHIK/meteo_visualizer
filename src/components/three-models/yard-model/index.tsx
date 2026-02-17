@@ -1,7 +1,8 @@
 import { YardDataItem } from '@types_/masts-yards';
 import { yardModelColor } from '@types_/colors';
-import { WeatherStationModel } from '@components/weather-station-model';
-import { MeshGroup } from '@components/mesh-group';
+import { WeatherStationModel } from '@models_/weather-station-model';
+import { MeshGroup } from '@models_/mesh-group';
+import { Vector3 } from 'three';
 
 export const YardModel = (props: YardDataItem) => {
     const yardSize = 0.3;
@@ -12,34 +13,32 @@ export const YardModel = (props: YardDataItem) => {
     const longYardExtraLength = 2;
     const supportLength = 1.5;
 
-    function getYardPartPosition(
-        isShortPart: boolean
-    ): [number, number, number] {
-        return [(isShortPart ? -shortYardLength : longYardLength) / 2, 0, 0];
+    function getYardPartPosition(isShortPart: boolean): Vector3 {
+        return new Vector3(
+            (isShortPart ? -shortYardLength : longYardLength) / 2,
+            0,
+            0
+        );
     }
 
-    function getSupportPosition(
-        isShortPart: boolean
-    ): [number, number, number] {
+    function getSupportPosition(isShortPart: boolean): Vector3 {
         const a = Math.sqrt((supportLength * supportLength) / 2);
 
-        return [(a / 2) * (isShortPart ? -1 : 1), -a / 2, 0];
+        return new Vector3((a / 2) * (isShortPart ? -1 : 1), -a / 2, 0);
     }
 
-    function getWeatherStationPosition(
-        isUpper: boolean
-    ): [number, number, number] {
+    function getWeatherStationPosition(isUpper: boolean): Vector3 {
         const a = Math.sqrt((longYardExtraLength * longYardExtraLength) / 2);
 
-        return [
+        return new Vector3(
             longYardLength + (a / 2) * (isUpper ? -1 : 1),
             (a / 2) * (isUpper ? 1 : -1),
-            0,
-        ];
+            0
+        );
     }
 
     return (
-        <MeshGroup position={[0, props.height, 0]}>
+        <MeshGroup position={new Vector3(0, props.height, 0)}>
             {/* Короткая часть реи с одной метеостанцией */}
             <mesh position={getYardPartPosition(true)}>
                 <boxGeometry args={[shortYardLength, yardSize, yardSize]} />
@@ -55,7 +54,9 @@ export const YardModel = (props: YardDataItem) => {
             </mesh>
 
             {/* Метеостанция на короткой части */}
-            <WeatherStationModel position={[-shortYardLength, 0, 0]} />
+            <WeatherStationModel
+                position={new Vector3(-shortYardLength, 0, 0)}
+            />
 
             {/* Если метеостанции на рее три */}
             {props.amount == 3 && (

@@ -19,7 +19,7 @@
         "baseUrl": "./src",
         "sourceMap": true,
         "paths": {
-            "@components/*": ["components/*"],
+            "@models_/*": ["components/three-models/*"],
             "@types_/*": ["shared/*"],
             "@utils/*": ["utils/*"],
         },

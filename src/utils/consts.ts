@@ -1,11 +1,12 @@
 import { MastsDataItem } from '@types_/masts-yards';
+import { Vector2 } from 'three';
 
 type MastsList = MastsDataItem[];
 
 export const masts: MastsList = [
     {
         height: 35,
-        position: [-50, -50],
+        position: new Vector2(-50, -50),
         rotation: 45,
         yards: [
             {
@@ -28,7 +29,7 @@ export const masts: MastsList = [
     },
     {
         height: 35,
-        position: [50, 50],
+        position: new Vector2(50, 50),
         yards: [
             {
                 amount: 1,
@@ -50,7 +51,7 @@ export const masts: MastsList = [
     },
     {
         height: 50,
-        position: [-50, 50],
+        position: new Vector2(-50, 50),
         rotation: 90,
         yards: [
             {

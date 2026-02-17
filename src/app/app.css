@@ -4,14 +4,39 @@
     background-color: #272727;
 }
 
-.window {
+.settings-section {
+    width: 250px;
+
     position: absolute;
     top: 20px;
-    left: 20px;
+    right: 20px;
+    bottom: 20px;
 
     display: flex;
-    padding: 20px;
+    flex-direction: column;
+    row-gap: 20px;
+    padding: 8px 20px;
 
+    color: white;
     border-radius: 20px;
     background-color: #3b3b3b;
+}
+
+.fields {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+label.field {
+    display: inline-flex;
+    gap: 8px;
+}
+
+label.field.row {
+    flex-direction: row;
+}
+
+label.field.column {
+    flex-direction: column;
 }

@@ -1,3 +1,5 @@
+import { Vector2 } from "three";
+
 export enum EMastHeight {
     H35 = 35,
     H50 = 50,
@@ -15,7 +17,7 @@ export interface YardDataItem {
 
 export interface MastsDataItem {
     height: number;
-    position: [number, number];
+    position: Vector2;
     rotation?: number;
     yards: YardDataItem[];
 }
