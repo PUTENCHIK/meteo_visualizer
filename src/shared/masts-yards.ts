@@ -1,6 +1,6 @@
 import { Vector2 } from 'three';
 
-export type MastHeight = 35 | 50
+export type MastHeight = 35 | 50;
 
 export type WeatherStationsAmount = 1 | 3;
 

@@ -1,7 +1,9 @@
 import { MeshGroup } from '@models_/mesh-group';
 import { YardModel } from '@models_/yard-model';
-import { mastModelColor } from '@shared/colors';
+import { Edges } from '@react-three/drei';
+import { mastModelColor, edgesColor } from '@shared/colors';
 import { type MastHeight, type YardDataItem } from '@shared/masts-yards';
+import { edgesEnable, edgesScale, edgesThreshold } from '@utils/consts';
 import { Vector2, Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 
@@ -12,29 +14,35 @@ interface MastModelProps {
     yards: YardDataItem[];
 }
 
-export const MastModel = (props: MastModelProps) => {
+export const MastModel = ({ height, position, rotation = 0, yards }: MastModelProps) => {
     const plateHeight = 0.5;
     const plateSize = 15;
     const mastRadius = 0.3;
 
     return (
         <MeshGroup
-            position={new Vector3(props.position.x, 0, props.position.y)}
-            rotation={new Vector3(0, degToRad(props.rotation ?? 0), 0)}>
+            position={new Vector3(position.x, 0, position.y)}
+            rotation={new Vector3(0, degToRad(rotation), 0)}>
             {/* Платформа для мачты */}
             <mesh position={[0, plateHeight / 2, 0]}>
                 <boxGeometry args={[plateSize, plateHeight, plateSize]} />
                 <meshStandardMaterial color={mastModelColor} />
+                {edgesEnable && (
+                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
+                )}
             </mesh>
 
             {/* Мачта */}
-            <mesh position={[0, props.height / 2, 0]}>
-                <cylinderGeometry args={[mastRadius, mastRadius, props.height, 32]} />
+            <mesh position={[0, height / 2, 0]}>
+                <cylinderGeometry args={[mastRadius, mastRadius, height, 32]} />
                 <meshStandardMaterial color={mastModelColor} />
+                {edgesEnable && (
+                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
+                )}
             </mesh>
 
             {/* Реи с метеостанциями */}
-            {props.yards.map((yard, index) => (
+            {yards.map((yard, index) => (
                 <YardModel key={index} height={yard.height} amount={yard.amount} />
             ))}
         </MeshGroup>

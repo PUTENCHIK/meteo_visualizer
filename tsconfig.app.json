@@ -18,6 +18,7 @@
             "@managers/*": ["src/managers/*"],
             "@pages/*": ["src/pages/*"],
             "@styles/*": ["src/styles/*"],
+            "@components/*": ["src/components/ui-components/*"],
         },
 
         /* Bundler mode */

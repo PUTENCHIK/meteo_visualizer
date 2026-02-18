@@ -77,3 +77,7 @@ export const masts: MastsList = [
         ],
     },
 ];
+
+export const edgesEnable = true;
+export const edgesThreshold = 15;
+export const edgesScale = 1;

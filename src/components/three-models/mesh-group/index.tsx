@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Vector3 } from 'three';
 
 interface MeshGroupProps {
     children: React.ReactNode;
@@ -7,13 +7,15 @@ interface MeshGroupProps {
     scale?: Vector3 | number;
 }
 
-export const MeshGroup = (props: MeshGroupProps) => {
+export const MeshGroup = ({
+    children,
+    position,
+    rotation = new Vector3(0, 0, 0),
+    scale = 1,
+}: MeshGroupProps) => {
     return (
-        <group
-            position={props.position}
-            rotation={props.rotation?.toArray()}
-            scale={props.scale}>
-            {props.children}
+        <group position={position} rotation={rotation?.toArray()} scale={scale}>
+            {children}
         </group>
     );
 };

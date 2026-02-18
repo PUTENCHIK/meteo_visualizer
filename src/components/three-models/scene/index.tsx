@@ -1,11 +1,12 @@
 import { Vector3 } from 'three';
 import { Canvas } from '@react-three/fiber';
-import { Environment, OrbitControls, Select } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import { BasePlateModel } from '@models_/base-plate-model';
 import { TelescopeModel } from '@models_/telescope-model';
 import { MastModel } from '@models_/mast-model';
 import { masts } from '@utils/consts';
-import { OutlineEffect } from '@models_/outline-effect';
+import { Suspense } from 'react';
+import { Loader } from '@components/loader';
 import { AtmosphereModel } from '@models_/atmosphere-model';
 
 export const Scene = () => {
@@ -16,35 +17,30 @@ export const Scene = () => {
     };
     return (
         <Canvas camera={cameraProps}>
-            <ambientLight intensity={0.5} />
-            <pointLight position={[0, 100, 0]} />
-            <Environment
-                preset='city'
-                background={undefined}
-                ground={undefined}
-            />
+            <Suspense fallback={<Loader type='circle' />}>
+                <ambientLight intensity={2} />
+                <directionalLight
+                    position={[200, 200, 200]}
+                    intensity={2}
+                    castShadow
+                    shadow-mapSize={[64, 64]}
+                />
 
-            <OutlineEffect>
-                <Select>
-                    <BasePlateModel size={basePlateSize} />
-                    <TelescopeModel height={12} radius={10} length={35} />
+                <BasePlateModel size={basePlateSize} />
+                <TelescopeModel height={12} radius={10} length={35} />
 
-                    {masts.map((item, index) => (
-                        <MastModel
-                            key={index}
-                            height={item.height}
-                            position={item.position}
-                            rotation={item.rotation}
-                            yards={item.yards}
-                        />
-                    ))}
-                </Select>
-            </OutlineEffect>
+                {masts.map((item, index) => (
+                    <MastModel
+                        key={index}
+                        height={item.height}
+                        position={item.position}
+                        rotation={item.rotation}
+                        yards={item.yards}
+                    />
+                ))}
 
-            <AtmosphereModel
-                basePlateSize={basePlateSize}
-                height={60}
-            />
+                <AtmosphereModel basePlateSize={basePlateSize} height={60} />
+            </Suspense>
 
             <OrbitControls />
         </Canvas>
