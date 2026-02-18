@@ -1,22 +1,16 @@
-import { Vector2 } from "three";
+import { Vector2 } from 'three';
 
-export enum EMastHeight {
-    H35 = 35,
-    H50 = 50,
-}
+export type MastHeight = 35 | 50
 
-export enum EWeatherStationsAmount {
-    ONE = 1,
-    THREE = 3,
-}
+export type WeatherStationsAmount = 1 | 3;
 
 export interface YardDataItem {
     height: number;
-    amount: EWeatherStationsAmount;
+    amount: WeatherStationsAmount;
 }
 
 export interface MastsDataItem {
-    height: number;
+    height: MastHeight;
     position: Vector2;
     rotation?: number;
     yards: YardDataItem[];

@@ -1,5 +1,5 @@
-import { YardDataItem } from '@types_/masts-yards';
-import { yardModelColor } from '@types_/colors';
+import { type YardDataItem } from '@shared/masts-yards';
+import { yardModelColor } from '@shared/colors';
 import { WeatherStationModel } from '@models_/weather-station-model';
 import { MeshGroup } from '@models_/mesh-group';
 import { Vector3 } from 'three';
@@ -14,11 +14,7 @@ export const YardModel = (props: YardDataItem) => {
     const supportLength = 1.5;
 
     function getYardPartPosition(isShortPart: boolean): Vector3 {
-        return new Vector3(
-            (isShortPart ? -shortYardLength : longYardLength) / 2,
-            0,
-            0
-        );
+        return new Vector3((isShortPart ? -shortYardLength : longYardLength) / 2, 0, 0);
     }
 
     function getSupportPosition(isShortPart: boolean): Vector3 {
@@ -33,7 +29,7 @@ export const YardModel = (props: YardDataItem) => {
         return new Vector3(
             longYardLength + (a / 2) * (isUpper ? -1 : 1),
             (a / 2) * (isUpper ? 1 : -1),
-            0
+            0,
         );
     }
 
@@ -46,58 +42,40 @@ export const YardModel = (props: YardDataItem) => {
             </mesh>
 
             {/* Подпорка короткой части */}
-            <mesh
-                position={getSupportPosition(true)}
-                rotation={[0, 0, -Math.PI / 4]}>
+            <mesh position={getSupportPosition(true)} rotation={[0, 0, -Math.PI / 4]}>
                 <boxGeometry args={[supportLength, supportSize, supportSize]} />
                 <meshStandardMaterial color={yardModelColor} />
             </mesh>
 
             {/* Метеостанция на короткой части */}
-            <WeatherStationModel
-                position={new Vector3(-shortYardLength, 0, 0)}
-            />
+            <WeatherStationModel position={new Vector3(-shortYardLength, 0, 0)} />
 
             {/* Если метеостанции на рее три */}
             {props.amount == 3 && (
                 <>
                     {/* Длинная часть реи с двумя метеостанциями */}
                     <mesh position={getYardPartPosition(false)}>
-                        <boxGeometry
-                            args={[longYardLength, yardSize, yardSize]}
-                        />
+                        <boxGeometry args={[longYardLength, yardSize, yardSize]} />
                         <meshStandardMaterial color={yardModelColor} />
                     </mesh>
 
                     {/* Подпорка длинной части */}
-                    <mesh
-                        position={getSupportPosition(false)}
-                        rotation={[0, 0, Math.PI / 4]}>
-                        <boxGeometry
-                            args={[supportLength, supportSize, supportSize]}
-                        />
+                    <mesh position={getSupportPosition(false)} rotation={[0, 0, Math.PI / 4]}>
+                        <boxGeometry args={[supportLength, supportSize, supportSize]} />
                         <meshStandardMaterial color={yardModelColor} />
                     </mesh>
 
                     {/* Наклонная часть реи */}
-                    <mesh
-                        position={[longYardLength, 0, 0]}
-                        rotation={[0, 0, -Math.PI / 4]}>
-                        <boxGeometry
-                            args={[longYardExtraLength, yardSize, yardSize]}
-                        />
+                    <mesh position={[longYardLength, 0, 0]} rotation={[0, 0, -Math.PI / 4]}>
+                        <boxGeometry args={[longYardExtraLength, yardSize, yardSize]} />
                         <meshStandardMaterial color={yardModelColor} />
                     </mesh>
 
                     {/* Верхняя метеостанция на длинной части */}
-                    <WeatherStationModel
-                        position={getWeatherStationPosition(true)}
-                    />
+                    <WeatherStationModel position={getWeatherStationPosition(true)} />
 
                     {/* Нижняя метеостанция на длинной части */}
-                    <WeatherStationModel
-                        position={getWeatherStationPosition(false)}
-                    />
+                    <WeatherStationModel position={getWeatherStationPosition(false)} />
                 </>
             )}
         </MeshGroup>

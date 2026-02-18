@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import { Canvas } from '@react-three/fiber';
-import { Environment, OrbitControls, PositionMesh, Select } from '@react-three/drei';
+import { Environment, OrbitControls, Select } from '@react-three/drei';
 import { BasePlateModel } from '@models_/base-plate-model';
 import { TelescopeModel } from '@models_/telescope-model';
 import { MastModel } from '@models_/mast-model';

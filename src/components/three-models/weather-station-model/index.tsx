@@ -1,4 +1,4 @@
-import { weatherStationModelColor } from '@types_/colors';
+import { weatherStationModelColor } from '@shared/colors';
 import { Vector3 } from 'three';
 
 interface WeatherStationModelProps {

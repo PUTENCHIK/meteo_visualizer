@@ -1,92 +1,62 @@
-const {
-    defineConfig,
-} = require("eslint/config");
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 
-const tsParser = require("@typescript-eslint/parser");
+export default [
+    { ignores: ['dist', 'node_modules'] },
 
-const {
-    fixupConfigRules,
-    fixupPluginRules,
-} = require("@eslint/compat");
+    // base configs
+    js.configs.recommended,
+    ...tseslint.configs.recommended,
 
-const react = require("eslint-plugin-react");
-const prettier = require("eslint-plugin-prettier");
-const typescriptEslint = require("@typescript-eslint/eslint-plugin");
-const js = require("@eslint/js");
-
-const {
-    FlatCompat,
-} = require("@eslint/eslintrc");
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
-
-module.exports = defineConfig([{
-    languageOptions: {
-        parser: tsParser,
-        ecmaVersion: 2020,
-        sourceType: "module",
-
-        parserOptions: {
-            warnOnUnsupportedTypeScriptVersion: false,
-
-            ecmaFeatures: {
-                jsx: true,
+    // project configs
+    {
+        files: ['**/*.{ts,tsx}'],
+        languageOptions: {
+            ecmaVersion: 2020,
+            globals: {
+                ...globals.browser,
+                ...globals.es2020,
             },
+            parser: tseslint.parser,
+        },
+        plugins: {
+            'react-hooks': reactHooks,
+            'react-refresh': reactRefresh,
+            'prettier': prettierPlugin,
+        },
+        rules: {
+            // base rules
+            ...reactHooks.configs.recommended.rules,
+
+            // отсутствие точек с запятой - ошибка
+            'semi': ['error', 'always'],
+            // кавычки всегда одиночные
+            'quotes': ['error', 'single', { avoidEscape: true }],
+
+            // ошибки prettier считаются как ошибки eslint, а также не заменяет переносы строк
+            'prettier/prettier': ['error', { endOfLine: 'lf' }],
+
+            // предупреждение об any в коде
+            '@typescript-eslint/no-explicit-any': 'warn',
+            // ошибка при неиспользуемых переменных
+            '@typescript-eslint/no-unused-vars': ['error'],
+            // предупреждение при console.log
+            'no-console': ['warn', { allow: ['warn', 'error'] }],
+            // ошибка, если непереназначаемая переменная объявлена не const
+            'prefer-const': 'error',
+
+            // предупреждение при экспорте функций или неконстант, чтобы страница не перезагружалась
+            'react-refresh/only-export-components': [
+                'warn',
+                { allowConstantExport: true },
+            ],
         },
     },
-
-    settings: {
-        react: {
-            version: "detect",
-        },
-    },
-
-    extends: fixupConfigRules(compat.extends(
-        "prettier",
-        "eslint:recommended",
-        "plugin:prettier/recommended",
-        "plugin:react/recommended",
-        "plugin:react-hooks/recommended",
-        "plugin:jsx-a11y/recommended",
-        "plugin:import/typescript",
-        "plugin:@typescript-eslint/recommended",
-    )),
-
-    plugins: {
-        react: fixupPluginRules(react),
-        prettier: fixupPluginRules(prettier),
-        "@typescript-eslint": fixupPluginRules(typescriptEslint),
-    },
-
-    rules: {
-        semi: ["error", "always"],
-
-        quotes: ["error", "single", {
-            avoidEscape: true,
-        }],
-
-        "prettier/prettier": ["error", {
-            endOfLine: "auto",
-        }, {
-            usePrettierrc: true,
-        }],
-
-        "@typescript-eslint/no-unused-vars": ["error"],
-        "react/react-in-jsx-scope": "off",
-        "react/prop-types": "off",
-
-        "jsx-a11y/anchor-is-valid": ["error", {
-            components: ["Link"],
-            specialLink: ["hrefLeft", "hrefRight"],
-            aspects: ["invalidHref", "preferButton"],
-        }],
-        "react/no-unknown-property": ["error", {
-            ignore: ["intensity", "position", "args", "rotation", "scale"]
-        }],
-        "@typescript-eslint/no-explicit-any": ["warn"],
-    },
-}]);
+    // disable conflicts with prettier
+    prettierConfig,
+];

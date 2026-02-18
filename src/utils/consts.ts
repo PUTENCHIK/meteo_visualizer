@@ -1,4 +1,4 @@
-import { MastsDataItem } from '@types_/masts-yards';
+import { type MastsDataItem } from '@shared/masts-yards';
 import { Vector2 } from 'three';
 
 type MastsList = MastsDataItem[];

@@ -1,14 +1,12 @@
 import { MeshGroup } from '@models_/mesh-group';
 import { YardModel } from '@models_/yard-model';
-import { mastModelColor } from '@types_/colors';
-import { EMastHeight, YardDataItem } from '@types_/masts-yards';
+import { mastModelColor } from '@shared/colors';
+import { type MastHeight, type YardDataItem } from '@shared/masts-yards';
 import { Vector2, Vector3 } from 'three';
-import { degToRad } from 'three/src/math/MathUtils';
-
-// export type YardDataList = YardDataItem[];
+import { degToRad } from 'three/src/math/MathUtils.js';
 
 interface MastModelProps {
-    height: EMastHeight;
+    height: MastHeight;
     position: Vector2;
     rotation?: number;
     yards: YardDataItem[];
@@ -31,19 +29,13 @@ export const MastModel = (props: MastModelProps) => {
 
             {/* Мачта */}
             <mesh position={[0, props.height / 2, 0]}>
-                <cylinderGeometry
-                    args={[mastRadius, mastRadius, props.height, 32]}
-                />
+                <cylinderGeometry args={[mastRadius, mastRadius, props.height, 32]} />
                 <meshStandardMaterial color={mastModelColor} />
             </mesh>
 
             {/* Реи с метеостанциями */}
             {props.yards.map((yard, index) => (
-                <YardModel
-                    key={index}
-                    height={yard.height}
-                    amount={yard.amount}
-                />
+                <YardModel key={index} height={yard.height} amount={yard.amount} />
             ))}
         </MeshGroup>
     );

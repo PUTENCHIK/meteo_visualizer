@@ -1,10 +1,10 @@
-module.exports = {
+export default {
     semi: true,
-    trailingComma: 'es5',
+    trailingComma: 'all',
     singleQuote: true,
     jsxSingleQuote: true,
     bracketSameLine: true,
-    printWidth: 80,
+    printWidth: 100,
     useTabs: false,
     tabWidth: 4,
     endOfLine: 'lf',
