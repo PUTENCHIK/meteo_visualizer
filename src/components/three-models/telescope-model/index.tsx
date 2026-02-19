@@ -1,6 +1,7 @@
-import { Edges } from '@react-three/drei';
-import { edgesColor as edgesColor, telescopeModelColor } from '@shared/colors';
-import { edgesEnable, edgesScale, edgesThreshold } from '@utils/consts';
+import { BoxMesh } from '@models_/box-mesh';
+import { telescopeModelColor } from '@shared/colors';
+import { CylinderMesh } from '@models_/cylinder-mesh';
+import { Vector3 } from 'three';
 
 interface TelescopeModelProps {
     height: number;
@@ -12,21 +13,18 @@ export const TelescopeModel = ({ height, radius, length }: TelescopeModelProps) 
     return (
         <>
             {/* Цилиндрическая часть здания */}
-            <mesh position={[radius, height / 2, 0]}>
-                <cylinderGeometry args={[radius, radius, height, 32]} />
-                <meshStandardMaterial color={telescopeModelColor} />
-                {edgesEnable && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                )}
-            </mesh>
+            <CylinderMesh
+                radius={radius}
+                height={height}
+                position={new Vector3(radius, height / 2, 0)}
+                color={telescopeModelColor}
+            />
             {/* Основная часть здания */}
-            <mesh position={[-length / 2 + radius, height / 2, 0]}>
-                <boxGeometry args={[length, height, radius]} />
-                <meshStandardMaterial color={telescopeModelColor} />
-                {edgesEnable && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                )}
-            </mesh>
+            <BoxMesh
+                size={new Vector3(length, height, radius)}
+                position={new Vector3(-length / 2 + radius, height / 2, 0)}
+                color={telescopeModelColor}
+            />
         </>
     );
 };

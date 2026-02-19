@@ -1,9 +1,9 @@
+import { BoxMesh } from '@models_/box-mesh';
 import { MeshGroup } from '@models_/mesh-group';
 import { YardModel } from '@models_/yard-model';
-import { Edges } from '@react-three/drei';
-import { mastModelColor, edgesColor } from '@shared/colors';
+import { mastModelColor } from '@shared/colors';
 import { type MastHeight, type YardDataItem } from '@shared/masts-yards';
-import { edgesEnable, edgesScale, edgesThreshold } from '@utils/consts';
+import { CylinderMesh } from '@models_/cylinder-mesh';
 import { Vector2, Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 
@@ -15,7 +15,7 @@ interface MastModelProps {
 }
 
 export const MastModel = ({ height, position, rotation = 0, yards }: MastModelProps) => {
-    const plateHeight = 0.5;
+    const plateHeight = 0.25;
     const plateSize = 15;
     const mastRadius = 0.3;
 
@@ -24,22 +24,19 @@ export const MastModel = ({ height, position, rotation = 0, yards }: MastModelPr
             position={new Vector3(position.x, 0, position.y)}
             rotation={new Vector3(0, degToRad(rotation), 0)}>
             {/* Платформа для мачты */}
-            <mesh position={[0, plateHeight / 2, 0]}>
-                <boxGeometry args={[plateSize, plateHeight, plateSize]} />
-                <meshStandardMaterial color={mastModelColor} />
-                {edgesEnable && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                )}
-            </mesh>
+            <BoxMesh
+                size={new Vector3(plateSize, plateHeight, plateSize)}
+                position={new Vector3(0, plateHeight / 2, 0)}
+                color={mastModelColor}
+            />
 
             {/* Мачта */}
-            <mesh position={[0, height / 2, 0]}>
-                <cylinderGeometry args={[mastRadius, mastRadius, height, 32]} />
-                <meshStandardMaterial color={mastModelColor} />
-                {edgesEnable && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                )}
-            </mesh>
+            <CylinderMesh
+                radius={mastRadius}
+                height={height}
+                position={new Vector3(0, height / 2, 0)}
+                color={mastModelColor}
+            />
 
             {/* Реи с метеостанциями */}
             {yards.map((yard, index) => (

@@ -1,6 +1,5 @@
-import { Outlines } from '@react-three/drei';
-import { basePlateColor, edgesColor } from '@shared/colors';
-import { edgesEnable, edgesScale } from '@utils/consts';
+import { BoxMesh } from '@models_/box-mesh';
+import { basePlateColor } from '@shared/colors';
 import { Vector3 } from 'three';
 
 interface BasePlateModelProps {
@@ -9,10 +8,10 @@ interface BasePlateModelProps {
 
 export const BasePlateModel = ({ size }: BasePlateModelProps) => {
     return (
-        <mesh position={[0, -size.y / 2, 0]}>
-            <boxGeometry args={size.toArray()} />
-            <meshStandardMaterial color={basePlateColor} />
-            {edgesEnable && <Outlines thickness={edgesScale} color={edgesColor} />}
-        </mesh>
+        <BoxMesh 
+            size={size}
+            position={new Vector3(0, -size.y / 2, 0)}
+            color={basePlateColor}
+        />
     );
 };

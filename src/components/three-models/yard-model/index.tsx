@@ -1,10 +1,9 @@
 import { type YardDataItem } from '@shared/masts-yards';
-import { edgesColor, yardModelColor } from '@shared/colors';
+import { yardModelColor } from '@shared/colors';
 import { WeatherStationModel } from '@models_/weather-station-model';
 import { MeshGroup } from '@models_/mesh-group';
 import { Vector3 } from 'three';
-import { Edges } from '@react-three/drei';
-import { edgesEnable, edgesScale, edgesThreshold } from '@utils/consts';
+import { BoxMesh } from '@models_/box-mesh';
 
 export const YardModel = ({ height, amount }: YardDataItem) => {
     const yardSize = 0.3;
@@ -38,22 +37,19 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
     return (
         <MeshGroup position={new Vector3(0, height, 0)}>
             {/* Короткая часть реи с одной метеостанцией */}
-            <mesh position={getYardPartPosition(true)}>
-                <boxGeometry args={[shortYardLength, yardSize, yardSize]} />
-                <meshStandardMaterial color={yardModelColor} />
-                {edgesEnable && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                )}
-            </mesh>
+            <BoxMesh
+                size={new Vector3(shortYardLength, yardSize, yardSize)}
+                position={getYardPartPosition(true)}
+                color={yardModelColor}
+            />
 
             {/* Подпорка короткой части */}
-            <mesh position={getSupportPosition(true)} rotation={[0, 0, -Math.PI / 4]}>
-                <boxGeometry args={[supportLength, supportSize, supportSize]} />
-                <meshStandardMaterial color={yardModelColor} />
-                {edgesEnable && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                )}
-            </mesh>
+            <BoxMesh
+                size={new Vector3(supportLength, supportSize, supportSize)}
+                position={getSupportPosition(true)}
+                rotation={new Vector3(0, 0, -Math.PI / 4)}
+                color={yardModelColor}
+            />
 
             {/* Метеостанция на короткой части */}
             <WeatherStationModel position={new Vector3(-shortYardLength, 0, 0)} />
@@ -62,43 +58,27 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
             {amount == 3 && (
                 <>
                     {/* Длинная часть реи с двумя метеостанциями */}
-                    <mesh position={getYardPartPosition(false)}>
-                        <boxGeometry args={[longYardLength, yardSize, yardSize]} />
-                        <meshStandardMaterial color={yardModelColor} />
-                        {edgesEnable && (
-                            <Edges
-                                color={edgesColor}
-                                threshold={edgesThreshold}
-                                scale={edgesScale}
-                            />
-                        )}
-                    </mesh>
+                    <BoxMesh
+                        size={new Vector3(longYardLength, yardSize, yardSize)}
+                        position={getYardPartPosition(false)}
+                        color={yardModelColor}
+                    />
 
                     {/* Подпорка длинной части */}
-                    <mesh position={getSupportPosition(false)} rotation={[0, 0, Math.PI / 4]}>
-                        <boxGeometry args={[supportLength, supportSize, supportSize]} />
-                        <meshStandardMaterial color={yardModelColor} />
-                        {edgesEnable && (
-                            <Edges
-                                color={edgesColor}
-                                threshold={edgesThreshold}
-                                scale={edgesScale}
-                            />
-                        )}
-                    </mesh>
+                    <BoxMesh
+                        size={new Vector3(supportLength, supportSize, supportSize)}
+                        position={getSupportPosition(false)}
+                        rotation={new Vector3(0, 0, Math.PI / 4)}
+                        color={yardModelColor}
+                    />
 
                     {/* Наклонная часть реи */}
-                    <mesh position={[longYardLength, 0, 0]} rotation={[0, 0, -Math.PI / 4]}>
-                        <boxGeometry args={[longYardExtraLength, yardSize, yardSize]} />
-                        <meshStandardMaterial color={yardModelColor} />
-                        {edgesEnable && (
-                            <Edges
-                                color={edgesColor}
-                                threshold={edgesThreshold}
-                                scale={edgesScale}
-                            />
-                        )}
-                    </mesh>
+                    <BoxMesh
+                        size={new Vector3(longYardExtraLength, yardSize, yardSize)}
+                        position={new Vector3(longYardLength, 0, 0)}
+                        rotation={new Vector3(0, 0, -Math.PI / 4)}
+                        color={yardModelColor}
+                    />
 
                     {/* Верхняя метеостанция на длинной части */}
                     <WeatherStationModel position={getWeatherStationPosition(true)} />
