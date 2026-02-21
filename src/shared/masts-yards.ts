@@ -1,4 +1,4 @@
-import type { PolarSystemPosition } from "@utils/polar-system";
+import type { PolarSystemPosition } from '@utils/polar-system';
 
 export type MastHeight = 35 | 50;
 

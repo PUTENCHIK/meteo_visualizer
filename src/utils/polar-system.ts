@@ -1,5 +1,5 @@
-import { Vector2 } from "three";
-import { degToRad } from "three/src/math/MathUtils.js";
+import { Vector2 } from 'three';
+import { degToRad } from 'three/src/math/MathUtils.js';
 
 export interface PolarSystemPosition {
     radius: number;
@@ -11,4 +11,4 @@ export const polarPosToXY = (pos: PolarSystemPosition) => {
         pos.radius * Math.sin(degToRad(pos.angle)),
         pos.radius * Math.cos(degToRad(pos.angle)),
     );
-}
+};

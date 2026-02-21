@@ -7,11 +7,5 @@ interface BasePlateModelProps {
 }
 
 export const BasePlateModel = ({ size }: BasePlateModelProps) => {
-    return (
-        <BoxMesh 
-            size={size}
-            position={new Vector3(0, -size.y / 2, 0)}
-            color={basePlateColor}
-        />
-    );
+    return <BoxMesh size={size} position={new Vector3(0, -size.y / 2, 0)} color={basePlateColor} />;
 };

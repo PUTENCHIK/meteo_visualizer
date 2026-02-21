@@ -116,4 +116,4 @@ export const orbidControlSettings: OrbidControlSettings = {
     minDistance: 50,
     maxDistance: 500,
     maxPolarAngle: Math.PI / 2.005,
-}
+};

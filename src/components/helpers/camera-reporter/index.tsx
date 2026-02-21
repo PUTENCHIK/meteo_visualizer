@@ -1,8 +1,8 @@
-import { useThree } from '@react-three/fiber';
+import { useThree, type Camera } from '@react-three/fiber';
 import { useEffect } from 'react';
 
 interface CameraReporterProps {
-    onCameraReady: (camera: any) => void;
+    onCameraReady: (camera: Camera) => void;
 }
 
 export const CameraReporter = ({ onCameraReady }: CameraReporterProps) => {
@@ -10,7 +10,7 @@ export const CameraReporter = ({ onCameraReady }: CameraReporterProps) => {
 
     useEffect(() => {
         if (camera) onCameraReady(camera);
-    }, []);
+    }, [camera, onCameraReady]);
 
     return null;
 };

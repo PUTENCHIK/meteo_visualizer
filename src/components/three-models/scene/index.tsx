@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, type Camera } from '@react-three/fiber';
 import { OrbitControls, type OrbitControlsChangeEvent } from '@react-three/drei';
 import { BasePlateModel } from '@models_/base-plate-model';
 import { TelescopeModel } from '@models_/telescope-model';
@@ -12,10 +12,10 @@ import { polarPosToXY } from '@utils/polar-system';
 import { CameraReporter } from '@helpers/camera-reporter';
 
 interface SceneProps {
-    onCameraReady: (camera: any) => void;
+    onCameraReady: (camera: Camera) => void;
 }
 
-export const Scene = ({onCameraReady}: SceneProps) => {
+export const Scene = ({ onCameraReady }: SceneProps) => {
     const basePlateHeight = 5;
     const basePlatePadding = 100;
     const atmosphereHeight = 60;
@@ -33,7 +33,7 @@ export const Scene = ({onCameraReady}: SceneProps) => {
         size.z += basePlatePadding;
 
         return size;
-    }, [masts]);
+    }, []);
 
     const cameraProps = {
         position: new Vector3(basePlateSize.x, atmosphereHeight * 2, -basePlateSize.z),
