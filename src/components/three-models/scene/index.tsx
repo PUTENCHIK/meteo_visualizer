@@ -1,20 +1,56 @@
 import { Vector3 } from 'three';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, type OrbitControlsChangeEvent } from '@react-three/drei';
 import { BasePlateModel } from '@models_/base-plate-model';
 import { TelescopeModel } from '@models_/telescope-model';
 import { MastModel } from '@models_/mast-model';
-import { masts } from '@utils/consts';
-import { Suspense } from 'react';
+import { masts, orbidControlSettings } from '@utils/consts';
+import { Suspense, useMemo } from 'react';
 import { Loader } from '@components/loader';
 import { AtmosphereModel } from '@models_/atmosphere-model';
+import { polarPosToXY } from '@utils/polar-system';
+import { CameraReporter } from '@helpers/camera-reporter';
 
-export const Scene = () => {
-    const basePlateSize: Vector3 = new Vector3(200, 10, 160);
+interface SceneProps {
+    onCameraReady: (camera: any) => void;
+}
+
+export const Scene = ({onCameraReady}: SceneProps) => {
+    const basePlateHeight = 5;
+    const basePlatePadding = 100;
+    const atmosphereHeight = 60;
+
+    const basePlateSize = useMemo(() => {
+        const size = new Vector3(20, basePlateHeight, 20);
+
+        masts.map((mast) => {
+            const mastPos = polarPosToXY(mast.position);
+
+            size.x = Math.max(size.x, 2 * Math.abs(mastPos.x));
+            size.z = Math.max(size.z, 2 * Math.abs(mastPos.y));
+        });
+        size.x += basePlatePadding;
+        size.z += basePlatePadding;
+
+        return size;
+    }, [masts]);
+
     const cameraProps = {
-        position: new Vector3(-90, 90, 130),
+        position: new Vector3(basePlateSize.x, atmosphereHeight * 2, -basePlateSize.z),
         fov: 60,
     };
+
+    const handleCameraChange = (e?: OrbitControlsChangeEvent) => {
+        if (!e) return;
+
+        const controls = e.target;
+        const target = controls.target;
+
+        target.x = Math.max(-basePlateSize.x / 2, Math.min(basePlateSize.x / 2, target.x));
+        target.y = Math.max(0, Math.min(atmosphereHeight * 2, target.y));
+        target.z = Math.max(-basePlateSize.z / 2, Math.min(basePlateSize.z / 2, target.z));
+    };
+
     return (
         <Canvas camera={cameraProps}>
             <Suspense fallback={<Loader type='circle' />}>
@@ -25,6 +61,7 @@ export const Scene = () => {
                     castShadow
                     shadow-mapSize={[64, 64]}
                 />
+                <CameraReporter onCameraReady={onCameraReady} />
 
                 <BasePlateModel size={basePlateSize} />
                 <TelescopeModel height={12} radius={10} length={35} />
@@ -39,10 +76,15 @@ export const Scene = () => {
                     />
                 ))}
 
-                <AtmosphereModel basePlateSize={basePlateSize} height={60} />
+                <AtmosphereModel basePlateSize={basePlateSize} height={atmosphereHeight} />
             </Suspense>
 
-            <OrbitControls />
+            <OrbitControls
+                onChange={handleCameraChange}
+                minDistance={orbidControlSettings.minDistance}
+                maxDistance={orbidControlSettings.maxDistance}
+                maxPolarAngle={orbidControlSettings.maxPolarAngle}
+            />
         </Canvas>
     );
 };

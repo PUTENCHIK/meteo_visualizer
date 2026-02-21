@@ -39,6 +39,7 @@ export default defineConfig({
             '@pages': path.resolve(__dirname, './src/pages'),
             '@styles': path.resolve(__dirname, './src/styles'),
             '@components': path.resolve(__dirname, './src/components/ui-components'),
+            '@helpers': path.resolve(__dirname, './src/components/helpers'),
         },
     },
     server: {

@@ -1,0 +1,15 @@
+.compass-wrapper {
+    box-sizing: border-box;
+
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    border: 1px solid black;
+    border-radius: 50%;
+
+    pointer-events: none;
+    user-select: none;
+    overflow: hidden;
+    background-color: inherit;
+}

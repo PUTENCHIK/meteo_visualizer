@@ -19,6 +19,7 @@
             "@pages/*": ["src/pages/*"],
             "@styles/*": ["src/styles/*"],
             "@components/*": ["src/components/ui-components/*"],
+            "@helpers/*": ["src/components/helpers/*"],
         },
 
         /* Bundler mode */

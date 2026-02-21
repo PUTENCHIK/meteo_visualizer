@@ -69,6 +69,8 @@ export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps)
         if (meshRef.current.instanceColor) {
             meshRef.current.instanceColor.needsUpdate = true;
         }
+        meshRef.current.computeBoundingBox();
+        meshRef.current.computeBoundingSphere();
     }, [count, particlePositions]);
 
     if (count == 0) return null;

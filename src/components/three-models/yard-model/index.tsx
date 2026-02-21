@@ -47,7 +47,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
             <BoxMesh
                 size={new Vector3(supportLength, supportSize, supportSize)}
                 position={getSupportPosition(true)}
-                rotation={new Vector3(0, 0, -Math.PI / 4)}
+                rotation={new Vector3(0, 0, -45)}
                 color={yardModelColor}
             />
 
@@ -68,7 +68,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
                     <BoxMesh
                         size={new Vector3(supportLength, supportSize, supportSize)}
                         position={getSupportPosition(false)}
-                        rotation={new Vector3(0, 0, Math.PI / 4)}
+                        rotation={new Vector3(0, 0, 45)}
                         color={yardModelColor}
                     />
 
@@ -76,7 +76,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
                     <BoxMesh
                         size={new Vector3(longYardExtraLength, yardSize, yardSize)}
                         position={new Vector3(longYardLength, 0, 0)}
-                        rotation={new Vector3(0, 0, -Math.PI / 4)}
+                        rotation={new Vector3(0, 0, -45)}
                         color={yardModelColor}
                     />
 

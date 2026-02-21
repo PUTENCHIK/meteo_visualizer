@@ -1,4 +1,4 @@
-import { Vector2 } from 'three';
+import type { PolarSystemPosition } from "@utils/polar-system";
 
 export type MastHeight = 35 | 50;
 
@@ -10,8 +10,9 @@ export interface YardDataItem {
 }
 
 export interface MastsDataItem {
+    description?: string;
     height: MastHeight;
-    position: Vector2;
+    position: PolarSystemPosition;
     rotation?: number;
     yards: YardDataItem[];
 }
