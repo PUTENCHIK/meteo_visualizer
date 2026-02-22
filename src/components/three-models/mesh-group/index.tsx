@@ -23,7 +23,6 @@ export const MeshGroup = forwardRef<Group, MeshGroupProps>(
             <group
                 position={position}
                 rotation={[degToRad(rotation.x), degToRad(rotation.y), degToRad(rotation.z)]}
-                // rotation={rotation.toArray()}
                 scale={scale}
                 ref={ref}>
                 {children}

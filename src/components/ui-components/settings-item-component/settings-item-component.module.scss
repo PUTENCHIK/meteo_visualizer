@@ -1,0 +1,17 @@
+.settings-chapter {
+    display: inline-flex;
+    flex-direction: column;
+    row-gap: 16px;
+}
+
+.settings-item {
+    display: inline-flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.items-box {
+    display: inline-flex;
+    flex-direction: column;
+    row-gap: 8px;
+}

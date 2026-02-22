@@ -40,6 +40,7 @@ export default defineConfig({
             '@styles': path.resolve(__dirname, './src/styles'),
             '@components': path.resolve(__dirname, './src/components/ui-components'),
             '@helpers': path.resolve(__dirname, './src/components/helpers'),
+            '@assets': path.resolve(__dirname, './src/assets'),
         },
     },
     server: {

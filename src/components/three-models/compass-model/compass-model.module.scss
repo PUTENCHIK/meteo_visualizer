@@ -2,8 +2,8 @@
     box-sizing: border-box;
 
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: var(--complex-page-padding);
+    right: var(--complex-page-padding);
 
     border: 1px solid black;
     border-radius: 50%;

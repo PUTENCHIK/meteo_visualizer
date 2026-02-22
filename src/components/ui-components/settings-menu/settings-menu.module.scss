@@ -1,0 +1,64 @@
+:root {
+    --section-size: 20px;
+}
+
+.menu-wrapper {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+
+    position: absolute;
+    top: var(--complex-page-padding);
+    bottom: var(--complex-page-padding);
+    left: var(--complex-page-padding);
+}
+
+.sections-box {
+    display: inline-flex;
+    flex-direction: column;
+
+    border-radius: var(--section-size);
+    overflow: hidden;
+}
+
+.section {
+    padding: var(--section-size);
+    display: inline-flex;
+    align-items: center;
+    
+    background-color: var(--menu-background-color);
+    cursor: pointer;
+
+    &:not(:last-child) {
+        border-bottom: 1px solid gray;
+    }
+
+    &:hover {
+        background-color: var(--menu-background-color-hover);
+    }
+
+    &.current {
+        background-color: var(--menu-background-color-hover);
+    }
+}
+
+.settings-menu {
+    min-width: 200px;
+    max-width: 400px;
+    width: 400px;
+    max-height: calc(100% - 2 * var(--complex-page-padding));
+    padding: var(--section-size);
+
+    resize: horizontal;
+    overflow: auto;
+    border-radius: var(--section-size);
+    background-color: var(--menu-background-color);
+}
+
+.menu-content {
+    min-width: 100%;
+
+    display: inline-flex;
+    flex-direction: column;
+    row-gap: 16px;
+}

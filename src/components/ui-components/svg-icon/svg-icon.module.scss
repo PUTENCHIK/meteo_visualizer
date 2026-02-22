@@ -1,0 +1,11 @@
+.svg-icon:not(.custom-color) {
+    color: var(--color-black);
+
+    &.disabled {
+        color: var(--color-disabled);
+    }
+
+    &.primary:not(.disabled) {
+        color: white;
+    }
+}

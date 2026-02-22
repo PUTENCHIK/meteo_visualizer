@@ -20,6 +20,7 @@
             "@styles/*": ["src/styles/*"],
             "@components/*": ["src/components/ui-components/*"],
             "@helpers/*": ["src/components/helpers/*"],
+            "@assets/*": ["src/assets/*"],
         },
 
         /* Bundler mode */

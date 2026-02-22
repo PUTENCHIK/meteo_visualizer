@@ -8,7 +8,7 @@ import { MeshGroup } from '@models_/mesh-group';
 import { Loader } from '@components/loader';
 import { TextMesh } from '@models_/text-mesh';
 
-type CompassType = '2D' | '3D';
+export type CompassType = '2D' | '3D';
 
 interface CompassProps {
     mainCamera?: Camera;
