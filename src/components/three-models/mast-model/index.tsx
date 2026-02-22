@@ -5,7 +5,7 @@ import { YardModel } from '@models_/yard-model';
 import { mastModelColor } from '@shared/colors';
 import { type MastHeight, type YardDataItem } from '@shared/masts-yards';
 import { CylinderMesh } from '@models_/cylinder-mesh';
-import { polarPosToXY, type PolarSystemPosition } from '@utils/polar-system';
+import { polarPosToXY, type PolarSystemPosition } from '@utils/funcs';
 
 interface MastModelProps {
     height: MastHeight;

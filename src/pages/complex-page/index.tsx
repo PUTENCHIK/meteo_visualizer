@@ -9,7 +9,7 @@ export const ComplexPage = () => {
     return (
         <>
             <Scene onCameraReady={setMainCamera} />
-            <CompassModel mainCamera={mainCamera} />
+            <CompassModel mainCamera={mainCamera} compassType='2D' />
         </>
     );
 };

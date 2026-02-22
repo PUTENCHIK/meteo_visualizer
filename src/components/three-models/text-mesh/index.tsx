@@ -8,7 +8,7 @@ import { Vector3 } from 'three';
 type TextFont = 'roboto';
 
 const fontsToFiles: Record<TextFont, string> = {
-    roboto: '/public/roboto_regular.json',
+    roboto: '/roboto_regular.json',
 };
 
 interface TextMeshProps extends EdgesEnable {

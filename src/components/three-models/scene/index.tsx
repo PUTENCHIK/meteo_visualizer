@@ -8,7 +8,7 @@ import { masts, orbidControlSettings } from '@utils/consts';
 import { Suspense, useMemo } from 'react';
 import { Loader } from '@components/loader';
 import { AtmosphereModel } from '@models_/atmosphere-model';
-import { polarPosToXY } from '@utils/polar-system';
+import { polarPosToXY } from '@utils/funcs';
 import { CameraReporter } from '@helpers/camera-reporter';
 
 interface SceneProps {

@@ -1,8 +1,7 @@
+import type { OrbidControlSettings } from '@shared/interfaces';
 import { type MastsDataItem } from '@shared/masts-yards';
 
-type MastsList = MastsDataItem[];
-
-export const masts: MastsList = [
+export const masts: MastsDataItem[] = [
     {
         description: 'Северо-западная мачта',
         height: 50,
@@ -105,12 +104,6 @@ export const edgesEnable = true;
 export const edgesThreshold = 15;
 export const edgesScale = 1;
 export const outlinesThickness = 1;
-
-interface OrbidControlSettings {
-    minDistance: number;
-    maxDistance: number;
-    maxPolarAngle: number;
-}
 
 export const orbidControlSettings: OrbidControlSettings = {
     minDistance: 50,
