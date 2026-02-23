@@ -1,5 +1,5 @@
+import { useSettings } from '@context/use-settings';
 import { SphereMesh } from '@models_/sphere-mesh';
-import { weatherStationModelColor } from '@shared/colors';
 import { Vector3 } from 'three';
 
 interface WeatherStationModelProps {
@@ -9,5 +9,13 @@ interface WeatherStationModelProps {
 export const WeatherStationModel = ({ position }: WeatherStationModelProps) => {
     const radius = 0.35;
 
-    return <SphereMesh radius={radius} position={position} color={weatherStationModelColor} />;
+    const { map: settings } = useSettings();
+
+    return (
+        <SphereMesh
+            radius={radius}
+            position={position}
+            color={settings.model.colors.weatherStationModelColor}
+        />
+    );
 };

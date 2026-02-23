@@ -1,8 +1,7 @@
+import { useSettings } from '@context/use-settings';
 import { MeshGroup } from '@models_/mesh-group';
 import { Center, Edges, Text3D } from '@react-three/drei';
-import { edgesColor } from '@shared/colors';
 import type { EdgesEnable } from '@shared/interfaces';
-import { edgesEnable, edgesScale, edgesThreshold } from '@utils/consts';
 import { Vector3 } from 'three';
 
 type TextFont = 'roboto';
@@ -31,14 +30,21 @@ export const TextMesh = ({
     height,
     forceEdges: forceEdge,
 }: TextMeshProps) => {
+    const { map: settings } = useSettings();
+
     return (
         <MeshGroup position={position} rotation={rotation}>
             <Center>
                 <Text3D font={fontsToFiles[font]} size={size} height={height}>
                     {text.trim()}
                     <meshStandardMaterial color={color} />
-                    {(forceEdge === 'with' || (forceEdge !== 'without' && edgesEnable)) && (
-                        <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
+                    {(forceEdge === 'with' ||
+                        (forceEdge !== 'without' && settings.model.edges.enable)) && (
+                        <Edges
+                            color={settings.model.colors.edgesColor}
+                            threshold={settings.model.edges.threshold}
+                            scale={settings.model.edges.scale}
+                        />
                     )}
                 </Text3D>
             </Center>

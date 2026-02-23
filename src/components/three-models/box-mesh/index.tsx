@@ -1,10 +1,9 @@
 import { Mesh, Vector3 } from 'three';
 import { Edges } from '@react-three/drei';
-import { edgesColor } from '@shared/colors';
-import { edgesEnable, edgesScale, edgesThreshold } from '@utils/consts';
 import { forwardRef } from 'react';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import type { EdgesEnable } from '@shared/interfaces';
+import { useSettings } from '@context/use-settings';
 
 interface BoxMeshProps extends EdgesEnable {
     size: Vector3;
@@ -24,6 +23,8 @@ export const BoxMesh = forwardRef<Mesh, BoxMeshProps>(
         }: BoxMeshProps,
         ref,
     ) => {
+        const { map: settings } = useSettings();
+
         return (
             <mesh
                 position={position}
@@ -31,8 +32,13 @@ export const BoxMesh = forwardRef<Mesh, BoxMeshProps>(
                 ref={ref}>
                 <boxGeometry args={size.toArray()} />
                 <meshStandardMaterial color={color} />
-                {(forceEdge === 'with' || (forceEdge !== 'without' && edgesEnable)) && (
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
+                {(forceEdge === 'with' ||
+                    (forceEdge !== 'without' && settings.model.edges.enable)) && (
+                    <Edges
+                        color={settings.model.colors.edgesColor}
+                        threshold={settings.model.edges.threshold}
+                        scale={settings.model.edges.scale}
+                    />
                 )}
             </mesh>
         );

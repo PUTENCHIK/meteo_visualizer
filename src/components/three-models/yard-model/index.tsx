@@ -1,11 +1,13 @@
 import { type YardDataItem } from '@shared/masts-yards';
-import { yardModelColor } from '@shared/colors';
 import { WeatherStationModel } from '@models_/weather-station-model';
 import { MeshGroup } from '@models_/mesh-group';
 import { Vector3 } from 'three';
 import { BoxMesh } from '@models_/box-mesh';
+import { useSettings } from '@context/use-settings';
 
 export const YardModel = ({ height, amount }: YardDataItem) => {
+    const { map: settings } = useSettings();
+
     const yardSize = 0.3;
     const supportSize = 0.1;
 
@@ -40,7 +42,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
             <BoxMesh
                 size={new Vector3(shortYardLength, yardSize, yardSize)}
                 position={getYardPartPosition(true)}
-                color={yardModelColor}
+                color={settings.model.colors.yardModelColor}
             />
 
             {/* Подпорка короткой части */}
@@ -48,7 +50,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
                 size={new Vector3(supportLength, supportSize, supportSize)}
                 position={getSupportPosition(true)}
                 rotation={new Vector3(0, 0, -45)}
-                color={yardModelColor}
+                color={settings.model.colors.yardModelColor}
             />
 
             {/* Метеостанция на короткой части */}
@@ -61,7 +63,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
                     <BoxMesh
                         size={new Vector3(longYardLength, yardSize, yardSize)}
                         position={getYardPartPosition(false)}
-                        color={yardModelColor}
+                        color={settings.model.colors.yardModelColor}
                     />
 
                     {/* Подпорка длинной части */}
@@ -69,7 +71,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
                         size={new Vector3(supportLength, supportSize, supportSize)}
                         position={getSupportPosition(false)}
                         rotation={new Vector3(0, 0, 45)}
-                        color={yardModelColor}
+                        color={settings.model.colors.yardModelColor}
                     />
 
                     {/* Наклонная часть реи */}
@@ -77,7 +79,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
                         size={new Vector3(longYardExtraLength, yardSize, yardSize)}
                         position={new Vector3(longYardLength, 0, 0)}
                         rotation={new Vector3(0, 0, -45)}
-                        color={yardModelColor}
+                        color={settings.model.colors.yardModelColor}
                     />
 
                     {/* Верхняя метеостанция на длинной части */}

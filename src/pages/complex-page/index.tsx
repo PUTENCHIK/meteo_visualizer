@@ -3,16 +3,19 @@ import { Scene } from '@models_/scene';
 import type { Camera } from '@react-three/fiber';
 import { useState } from 'react';
 import { SettingsMenu } from '@components/settings-menu';
-import { settingsManager } from '@managers/settings-manager';
+import { useSettings } from '@context/use-settings';
 
 export const ComplexPage = () => {
     const [mainCamera, setMainCamera] = useState<Camera>();
+    const { map: settings } = useSettings();
 
     return (
         <>
             <Scene onCameraReady={setMainCamera} />
-            <CompassModel mainCamera={mainCamera} compassType='2D' />
-            <SettingsMenu settings={settingsManager.getAppSettings()} />
+            {settings.compass.enable && (
+                <CompassModel mainCamera={mainCamera} compassType={settings.compass.type} />
+            )}
+            <SettingsMenu />
         </>
     );
 };

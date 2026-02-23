@@ -1,5 +1,5 @@
+import type React from 'react';
 import { type CompassType } from '@models_/compass-model';
-import type { OrbidControlSettings } from '@shared/interfaces';
 import { type MastsDataItem } from '@shared/masts-yards';
 import type { AppSettings, SelectSettings } from '@shared/settings';
 import type { IconName, IconSize } from '@shared/icons';
@@ -7,7 +7,7 @@ import building from '@assets/building.svg?react';
 import compass from '@assets/compass.svg?react';
 import telescope from '@assets/telescope.svg?react';
 import wind from '@assets/wind.svg?react';
-import type React from 'react';
+import camera from '@assets/camera.svg?react';
 
 export const masts: MastsDataItem[] = [
     {
@@ -108,17 +108,6 @@ export const masts: MastsDataItem[] = [
     },
 ];
 
-export const edgesEnable = true;
-export const edgesThreshold = 15;
-export const edgesScale = 1;
-export const outlinesThickness = 1;
-
-export const orbidControlSettings: OrbidControlSettings = {
-    minDistance: 50,
-    maxDistance: 500,
-    maxPolarAngle: Math.PI / 2.005,
-};
-
 export const appSettings = {
     model: {
         title: 'Настройки модели комплекса',
@@ -142,10 +131,29 @@ export const appSettings = {
                         value: true,
                         kind: 'boolean',
                     },
-                    color: {
-                        title: 'Цвет',
-                        value: 'rgba(0, 0, 0, 1)',
-                        kind: 'string',
+                    threshold: {
+                        title: 'Угол появления границ',
+                        value: 15,
+                        min: 1,
+                        max: 180,
+                        step: 1,
+                        kind: 'range',
+                    },
+                    scale: {
+                        title: 'Вынос границ',
+                        value: 1,
+                        min: 0.8,
+                        max: 1.2,
+                        step: 0.01,
+                        kind: 'range',
+                    },
+                    thickness: {
+                        title: 'Толщина границ',
+                        value: 1,
+                        min: 0.5,
+                        max: 5,
+                        step: 0.5,
+                        kind: 'range',
                     },
                 },
                 kind: 'chapter',
@@ -156,27 +164,32 @@ export const appSettings = {
                     basePlateColor: {
                         title: 'Цвет базовой плиты',
                         value: 'rgba(116, 116, 116, 1)',
-                        kind: 'string',
+                        kind: 'color',
                     },
                     telescopeModelColor: {
                         title: 'Цвет модели телескопа',
                         value: 'rgba(104, 104, 104, 1)',
-                        kind: 'string',
+                        kind: 'color',
                     },
                     mastModelColor: {
                         title: 'Цвет мачт',
                         value: 'rgba(104, 104, 104, 1)',
-                        kind: 'string',
+                        kind: 'color',
                     },
                     yardModelColor: {
                         title: 'Цвет мачтовых рей',
                         value: 'rgba(104, 104, 104, 1)',
-                        kind: 'string',
+                        kind: 'color',
                     },
                     weatherStationModelColor: {
                         title: 'Цвет метеостанций',
                         value: 'rgba(87, 104, 201, 1)',
-                        kind: 'string',
+                        kind: 'color',
+                    },
+                    edgesColor: {
+                        title: 'Цвет границ объектов',
+                        value: 'rgba(0, 0, 0, 1)',
+                        kind: 'color',
                     },
                 },
                 kind: 'chapter',
@@ -195,7 +208,10 @@ export const appSettings = {
             height: {
                 title: 'Высота',
                 value: 60,
-                kind: 'number',
+                min: 20,
+                max: 300,
+                step: 5,
+                kind: 'range',
             },
         },
     },
@@ -208,12 +224,47 @@ export const appSettings = {
                 value: true,
                 kind: 'boolean',
             },
-            mode: {
+            type: {
                 title: 'Режим',
                 value: '2D',
                 options: ['2D', '3D'],
                 kind: 'select',
             } satisfies SelectSettings<CompassType>,
+        },
+    },
+    camera: {
+        title: 'Настройки камеры',
+        iconName: 'camera',
+        items: {
+            noLimits: {
+                title: 'Свободная камера',
+                value: false,
+                kind: 'boolean',
+            },
+            minDistance: {
+                title: 'Дистанция приближения',
+                value: 50,
+                min: 30,
+                max: 800,
+                step: 10,
+                kind: 'range',
+            },
+            maxDistance: {
+                title: 'Дистанция отдаления',
+                value: 500,
+                min: 30,
+                max: 800,
+                step: 10,
+                kind: 'range',
+            },
+            maxPolarAngle: {
+                title: 'Максимальный полярный угол камеры',
+                value: 89,
+                min: 0,
+                max: 180,
+                step: 1,
+                kind: 'range',
+            },
         },
     },
 } satisfies AppSettings;
@@ -223,6 +274,7 @@ export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGS
     compass: compass,
     telescope: telescope,
     wind: wind,
+    camera: camera,
 };
 
 export const sizesToStrokes: Record<IconSize, number> = {

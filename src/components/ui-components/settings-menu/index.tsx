@@ -1,20 +1,22 @@
 import clsx from 'clsx';
 import s from './settings-menu.module.scss';
-import type { AppSettings } from '@shared/settings';
 import { SvgIcon } from '@components/svg-icon';
 import { useState } from 'react';
 import { SettingsItemComponent } from '@components/settings-item-component';
+import { useSettings } from '@context/use-settings';
 
-interface SettingsMenuProps {
-    settings: AppSettings;
-}
-
-export const SettingsMenu = ({ settings }: SettingsMenuProps) => {
+export const SettingsMenu = () => {
+    const { raw: settings } = useSettings();
     const [currentSection, setCurrentSection] = useState<string>();
 
     const handleSectionClick = (key: string) => {
         setCurrentSection(key !== currentSection ? key : undefined);
     };
+
+    const section =
+        currentSection && currentSection in settings
+            ? settings[currentSection as keyof typeof settings]
+            : null;
 
     return (
         <div className={clsx(s['menu-wrapper'])}>
@@ -29,12 +31,16 @@ export const SettingsMenu = ({ settings }: SettingsMenuProps) => {
                     </div>
                 ))}
             </div>
-            {currentSection && (
+            {currentSection && section && (
                 <div className={clsx(s['settings-menu'])}>
                     <div className={clsx(s['menu-content'])}>
-                        <h2>{settings[currentSection].title}</h2>
-                        {Object.entries(settings[currentSection].items).map(([key, item]) => (
-                            <SettingsItemComponent key={key} item={item} />
+                        <h2>{section.title}</h2>
+                        {Object.entries(section.items).map(([key, item]) => (
+                            <SettingsItemComponent
+                                key={key}
+                                path={`${currentSection}.${key}`}
+                                item={item}
+                            />
                         ))}
                     </div>
                 </div>

@@ -1,8 +1,8 @@
 import { BoxMesh } from '@models_/box-mesh';
-import { telescopeModelColor } from '@shared/colors';
 import { CylinderMesh } from '@models_/cylinder-mesh';
 import { Vector3 } from 'three';
 import { MeshGroup } from '@models_/mesh-group';
+import { useSettings } from '@context/use-settings';
 
 interface TelescopeModelProps {
     height: number;
@@ -11,6 +11,8 @@ interface TelescopeModelProps {
 }
 
 export const TelescopeModel = ({ height, radius, length }: TelescopeModelProps) => {
+    const { map: settings } = useSettings();
+
     return (
         <MeshGroup>
             {/* Цилиндрическая часть здания */}
@@ -18,13 +20,13 @@ export const TelescopeModel = ({ height, radius, length }: TelescopeModelProps) 
                 radius={radius}
                 height={height}
                 position={new Vector3(-radius, height / 2, 0)}
-                color={telescopeModelColor}
+                color={settings.model.colors.telescopeModelColor}
             />
             {/* Основная часть здания */}
             <BoxMesh
                 size={new Vector3(length + radius, height, radius)}
                 position={new Vector3(length / 2 - radius / 2, height / 2, 0)}
-                color={telescopeModelColor}
+                color={settings.model.colors.telescopeModelColor}
             />
         </MeshGroup>
     );

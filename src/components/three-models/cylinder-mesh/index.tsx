@@ -1,8 +1,7 @@
 import type { Vector3 } from 'three';
 import { Edges, Outlines } from '@react-three/drei';
-import { edgesColor } from '@shared/colors';
-import { edgesEnable, edgesScale, edgesThreshold, outlinesThickness } from '@utils/consts';
 import type { EdgesEnable } from '@shared/interfaces';
+import { useSettings } from '@context/use-settings';
 
 interface CylinderMeshProps extends EdgesEnable {
     radius: number;
@@ -20,14 +19,23 @@ export const CylinderMesh = ({
     color,
     forceEdges: forceEdge,
 }: CylinderMeshProps) => {
+    const { map: settings } = useSettings();
+
     return (
         <mesh position={position}>
             <cylinderGeometry args={[radius, radius, height, segments]} />
             <meshStandardMaterial color={color} />
-            {(forceEdge === 'with' || (forceEdge !== 'without' && edgesEnable)) && (
+            {(forceEdge === 'with' || (forceEdge !== 'without' && settings.model.edges.enable)) && (
                 <>
-                    <Edges color={edgesColor} threshold={edgesThreshold} scale={edgesScale} />
-                    <Outlines thickness={outlinesThickness} color={edgesColor} />
+                    <Edges
+                        color={settings.model.colors.edgesColor}
+                        threshold={settings.model.edges.threshold}
+                        scale={settings.model.edges.scale}
+                    />
+                    <Outlines
+                        thickness={settings.model.edges.thickness}
+                        color={settings.model.colors.edgesColor}
+                    />
                 </>
             )}
         </mesh>

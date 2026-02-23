@@ -1,6 +1,13 @@
 import type { IconName } from './icons';
 
-export type SettingsKind = 'boolean' | 'number' | 'string' | 'select' | 'chapter';
+export type SettingsKind =
+    | 'boolean'
+    | 'number'
+    | 'range'
+    | 'string'
+    | 'color'
+    | 'select'
+    | 'chapter';
 
 interface BaseSettingsPoint {
     kind: SettingsKind;
@@ -20,12 +27,24 @@ export interface NumberSettings extends SettingsPoint<number> {
     kind: 'number';
     min?: number;
     max?: number;
+    step?: number;
+}
+
+export interface RangeSettings extends SettingsPoint<number> {
+    kind: 'range';
+    min: number;
+    max: number;
+    step: number;
 }
 
 export interface StringSettings extends SettingsPoint<string> {
     kind: 'string';
     placeholder?: string;
     maxLength?: number;
+}
+
+export interface ColorSettings extends SettingsPoint<string> {
+    kind: 'color';
 }
 
 export interface SelectSettings<T> extends SettingsPoint<T> {
@@ -44,7 +63,9 @@ export interface SettingsChapter extends BaseSettingsPoint {
 export type SettingsItem =
     | BooleanSettings
     | NumberSettings
+    | RangeSettings
     | StringSettings
+    | ColorSettings
     | SelectSettings<any>
     | SettingsChapter;
 

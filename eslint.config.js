@@ -43,8 +43,10 @@ export default [
 
             // предупреждение об any в коде
             '@typescript-eslint/no-explicit-any': 'warn',
-            // ошибка при неиспользуемых переменных
-            '@typescript-eslint/no-unused-vars': ['error'],
+            // ошибка при неиспользуемых переменных (за исключением _)
+            '@typescript-eslint/no-unused-vars': ['error', {
+                "varsIgnorePattern": "_"
+            }],
             // предупреждение при console.log
             'no-console': ['warn', { allow: ['warn', 'error'] }],
             // ошибка, если непереназначаемая переменная объявлена не const
