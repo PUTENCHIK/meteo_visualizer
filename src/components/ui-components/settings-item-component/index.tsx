@@ -7,15 +7,21 @@ import { RangeInput } from '@components/range-input';
 interface SettingsItemComponentProps {
     item: SettingsItem;
     path: string;
-    offset?: number;
 }
 
-export const SettingsItemComponent = ({ item, path, offset = 1 }: SettingsItemComponentProps) => {
+export const SettingsItemComponent = ({ item, path }: SettingsItemComponentProps) => {
     let Component;
 
     const handleChange = (value: any) => {
         settingsManager.set(path, value);
     };
+
+    const pathEnable = path.split('.').slice(0, -1).join('.') + '.enable';
+    let visible = true;
+
+    if (settingsManager.get(pathEnable) !== undefined && path !== pathEnable) {
+        visible = settingsManager.get(pathEnable);
+    }
 
     switch (item.kind) {
         case 'boolean':
@@ -24,6 +30,7 @@ export const SettingsItemComponent = ({ item, path, offset = 1 }: SettingsItemCo
                     type='checkbox'
                     checked={item.value}
                     onChange={(e) => handleChange(e.target.checked)}
+                    disabled={item.disabled}
                 />
             );
             break;
@@ -92,25 +99,20 @@ export const SettingsItemComponent = ({ item, path, offset = 1 }: SettingsItemCo
                 <div
                     className={clsx(s['items-box'])}
                     style={{
-                        paddingLeft: `${offset * 20}px`,
+                        paddingLeft: `20px`,
                     }}>
                     {Object.entries(item.items).map(([key, item]) => (
-                        <SettingsItemComponent
-                            key={key}
-                            item={item}
-                            path={`${path}.${key}`}
-                            offset={offset + 1}
-                        />
+                        <SettingsItemComponent key={key} item={item} path={`${path}.${key}`} />
                     ))}
                 </div>
             </div>
         );
-    } else {
+    } else if (visible) {
         return (
             <div className={clsx(s['settings-item'])}>
                 <span>{item.title}:</span>
                 {Component}
             </div>
         );
-    }
+    } else return null;
 };

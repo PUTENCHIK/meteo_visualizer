@@ -1,13 +1,21 @@
 import type React from 'react';
 import { type CompassType } from '@models_/compass-model';
 import { type MastsDataItem } from '@shared/masts-yards';
-import type { AppSettings, SelectSettings } from '@shared/settings';
+import type { AppSettings } from '@shared/settings';
 import type { IconName, IconSize } from '@shared/icons';
 import building from '@assets/building.svg?react';
 import compass from '@assets/compass.svg?react';
 import telescope from '@assets/telescope.svg?react';
 import wind from '@assets/wind.svg?react';
 import camera from '@assets/camera.svg?react';
+import {
+    createBoolean,
+    createChapter,
+    createColor,
+    createRange,
+    createSection,
+    createSelect,
+} from './funcs';
 
 export const masts: MastsDataItem[] = [
     {
@@ -108,166 +116,52 @@ export const masts: MastsDataItem[] = [
     },
 ];
 
-export const appSettings = {
-    model: {
-        title: 'Настройки модели комплекса',
-        iconName: 'building',
-        items: {
-            telescopeModelEnable: {
-                title: 'Отображение КСТ-3',
-                value: true,
-                kind: 'boolean',
-            },
-            mastPlatesEnable: {
-                title: 'Отображение оснований мачт',
-                value: true,
-                kind: 'boolean',
-            },
-            edges: {
-                title: 'Границы',
-                items: {
-                    enable: {
-                        title: 'Отображение',
-                        value: true,
-                        kind: 'boolean',
-                    },
-                    threshold: {
-                        title: 'Угол появления границ',
-                        value: 15,
-                        min: 1,
-                        max: 180,
-                        step: 1,
-                        kind: 'range',
-                    },
-                    scale: {
-                        title: 'Вынос границ',
-                        value: 1,
-                        min: 0.8,
-                        max: 1.2,
-                        step: 0.01,
-                        kind: 'range',
-                    },
-                    thickness: {
-                        title: 'Толщина границ',
-                        value: 1,
-                        min: 0.5,
-                        max: 5,
-                        step: 0.5,
-                        kind: 'range',
-                    },
-                },
-                kind: 'chapter',
-            },
-            colors: {
-                title: 'Цвета моделей',
-                items: {
-                    basePlateColor: {
-                        title: 'Цвет базовой плиты',
-                        value: 'rgba(116, 116, 116, 1)',
-                        kind: 'color',
-                    },
-                    telescopeModelColor: {
-                        title: 'Цвет модели телескопа',
-                        value: 'rgba(104, 104, 104, 1)',
-                        kind: 'color',
-                    },
-                    mastModelColor: {
-                        title: 'Цвет мачт',
-                        value: 'rgba(104, 104, 104, 1)',
-                        kind: 'color',
-                    },
-                    yardModelColor: {
-                        title: 'Цвет мачтовых рей',
-                        value: 'rgba(104, 104, 104, 1)',
-                        kind: 'color',
-                    },
-                    weatherStationModelColor: {
-                        title: 'Цвет метеостанций',
-                        value: 'rgba(87, 104, 201, 1)',
-                        kind: 'color',
-                    },
-                    edgesColor: {
-                        title: 'Цвет границ объектов',
-                        value: 'rgba(0, 0, 0, 1)',
-                        kind: 'color',
-                    },
-                },
-                kind: 'chapter',
-            },
-        },
-    },
-    atmosphere: {
-        title: 'Настройки модели атмосферы',
-        iconName: 'wind',
-        items: {
-            enable: {
-                title: 'Отображение',
-                value: true,
-                kind: 'boolean',
-            },
-            height: {
-                title: 'Высота',
-                value: 60,
-                min: 20,
-                max: 300,
-                step: 5,
-                kind: 'range',
-            },
-        },
-    },
-    compass: {
-        title: 'Настройки компаса',
-        iconName: 'compass',
-        items: {
-            enable: {
-                title: 'Отображение',
-                value: true,
-                kind: 'boolean',
-            },
-            type: {
-                title: 'Режим',
-                value: '2D',
-                options: ['2D', '3D'],
-                kind: 'select',
-            } satisfies SelectSettings<CompassType>,
-        },
-    },
-    camera: {
-        title: 'Настройки камеры',
-        iconName: 'camera',
-        items: {
-            noLimits: {
-                title: 'Свободная камера',
-                value: false,
-                kind: 'boolean',
-            },
-            minDistance: {
-                title: 'Дистанция приближения',
-                value: 50,
-                min: 30,
-                max: 800,
-                step: 10,
-                kind: 'range',
-            },
-            maxDistance: {
-                title: 'Дистанция отдаления',
-                value: 500,
-                min: 30,
-                max: 800,
-                step: 10,
-                kind: 'range',
-            },
-            maxPolarAngle: {
-                title: 'Максимальный полярный угол камеры',
-                value: 89,
-                min: 0,
-                max: 180,
-                step: 1,
-                kind: 'range',
-            },
-        },
-    },
-} satisfies AppSettings;
+const rawSettings = {
+    model: createSection('Настройки модели комплекса', 'building', {
+        telescopeModelEnable: createBoolean('Отображение КСТ-3', true),
+        masts: createChapter('Мачты', {
+            radius: createRange('Радиус', 0.3, 0.2, 0.5, 0.05),
+            plates: createChapter('Основания мачт', {
+                enable: createBoolean('Отображение', true),
+                size: createRange('Размер', 15, 5, 30, 1),
+                height: createRange('Высота', 0.25, 0.1, 1, 0.05),
+            }),
+        }),
+        edges: createChapter('Границы', {
+            enable: createBoolean('Отображение', true),
+            threshold: createRange('Угол появления границ', 15, 1, 180, 1),
+            scale: createRange('Вынос границ', 1, 0.8, 1.2, 0.01),
+            thickness: createRange('Толщина границ', 1, 0.5, 5, 0.5),
+        }),
+        colors: createChapter('Цвета моделей', {
+            basePlateColor: createColor('Цвет базовой плиты', 'rgba(116, 116, 116, 1)'),
+            telescopeModelColor: createColor('Цвет модели телескопа', 'rgba(104, 104, 104, 1)'),
+            mastModelColor: createColor('Цвет мачт', 'rgba(104, 104, 104, 1)'),
+            yardModelColor: createColor('Цвет мачтовых рей', 'rgba(104, 104, 104, 1)'),
+            weatherStationModelColor: createColor('Цвет метеостанций', 'rgba(87, 104, 201, 1)'),
+            edgesColor: createColor('Цвет границ объектов', 'rgba(0, 0, 0, 1)'),
+        }),
+    }),
+    atmosphere: createSection('Настройки модели атмосферы', 'wind', {
+        enable: createBoolean('Отображение', true),
+        height: createRange('Высота', 60, 20, 300, 5),
+    }),
+    compass: createSection('Настройки компаса', 'compass', {
+        enable: createBoolean('Отображение', true),
+        type: createSelect<CompassType>('Режим', '2D', ['2D', '3D']),
+    }),
+    camera: createSection('Настройки камеры', 'camera', {
+        noLimits: createBoolean('Свободная камера', false),
+        minDistance: createRange('Дистанция приближения', 50, 30, 800, 10),
+        maxDistance: createRange('Дистанция отдаления', 500, 30, 800, 10),
+        maxPolarAngle: createRange('Максимальный полярный угол камеры', 89, 0, 180, 1),
+    }),
+};
+
+rawSettings satisfies AppSettings;
+
+export const appSettings = rawSettings;
+export type AppConfig = typeof appSettings;
 
 export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
     building: building,

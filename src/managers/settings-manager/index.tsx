@@ -2,7 +2,7 @@ import type { AppSettings, SettingsMap } from '@shared/settings';
 import { appSettings as defaultSettings } from '@utils/consts';
 import { copyObject, createSettingsProxy } from '@utils/funcs';
 
-class SettingsManager<T extends AppSettings> {
+export class SettingsManager<T extends AppSettings> {
     private static instance: SettingsManager<AppSettings> | null = null;
     private appSettings: T;
     public settings: SettingsMap<T>;
@@ -45,7 +45,7 @@ class SettingsManager<T extends AppSettings> {
     }
 
     private notify(): void {
-        this.listeners.forEach((cb) => cb());
+        this.listeners.forEach((listener) => listener());
     }
 
     public get(path: string): any {

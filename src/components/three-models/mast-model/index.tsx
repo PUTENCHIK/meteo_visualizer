@@ -16,10 +16,6 @@ interface MastModelProps {
 }
 
 export const MastModel = ({ height, position, rotation = 0, yards }: MastModelProps) => {
-    const plateHeight = 0.25;
-    const plateSize = 15;
-    const mastRadius = 0.3;
-
     const { map: settings } = useSettings();
 
     return (
@@ -27,17 +23,23 @@ export const MastModel = ({ height, position, rotation = 0, yards }: MastModelPr
             position={new Vector3(polarPosToXY(position).x, 0, polarPosToXY(position).y)}
             rotation={new Vector3(0, rotation, 0)}>
             {/* Платформа для мачты */}
-            {settings.model.mastPlatesEnable && (
+            {settings.model.masts.plates.enable && (
                 <BoxMesh
-                    size={new Vector3(plateSize, plateHeight, plateSize)}
-                    position={new Vector3(0, plateHeight / 2, 0)}
+                    size={
+                        new Vector3(
+                            settings.model.masts.plates.size,
+                            settings.model.masts.plates.height,
+                            settings.model.masts.plates.size,
+                        )
+                    }
+                    position={new Vector3(0, settings.model.masts.plates.height / 2, 0)}
                     color={settings.model.colors.mastModelColor}
                 />
             )}
 
             {/* Мачта */}
             <CylinderMesh
-                radius={mastRadius}
+                radius={settings.model.masts.radius}
                 height={height}
                 position={new Vector3(0, height / 2, 0)}
                 color={settings.model.colors.mastModelColor}

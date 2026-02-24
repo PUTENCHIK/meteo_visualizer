@@ -11,11 +11,12 @@ export type SettingsKind =
 
 interface BaseSettingsPoint {
     kind: SettingsKind;
+    title: string;
+    disabled?: boolean;
 }
 
 // Пункт настроек - конкретное значение указанного типа
 export interface SettingsPoint<T> extends BaseSettingsPoint {
-    title: string;
     value: T;
 }
 
@@ -55,7 +56,6 @@ export interface SelectSettings<T> extends SettingsPoint<T> {
 // Раздел настроек
 export interface SettingsChapter extends BaseSettingsPoint {
     kind: 'chapter';
-    title: string;
     items: Record<string, SettingsItem>;
 }
 
@@ -83,5 +83,5 @@ export type SettingsMap<T> = {
         ? value // если у T[key] есть value (SettingsPoint)
         : T[key] extends { items: infer items }
           ? SettingsMap<items> // иначе, если у T[key] есть items (SettingsChapter | SettingSection)
-          : never; // иначе, непонятно кто это
+          : T[key]; // иначе, вернуть объект по ключу
 };
