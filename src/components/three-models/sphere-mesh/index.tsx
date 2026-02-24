@@ -27,6 +27,7 @@ export const SphereMesh = ({
                 <Outlines
                     thickness={settings.model.edges.thickness}
                     color={settings.model.colors.edgesColor}
+                    scale={settings.model.edges.scale}
                 />
             )}
         </mesh>

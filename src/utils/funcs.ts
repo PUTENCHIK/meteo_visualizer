@@ -51,6 +51,7 @@ export const createBoolean = <T extends boolean>(
         title: title,
         value: value,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };
@@ -68,6 +69,7 @@ export const createNumber = <T extends number>(
         max: others?.max,
         step: others?.step,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };
@@ -88,6 +90,7 @@ export const createRange = <T extends number>(
         max: max,
         step: step,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };
@@ -102,6 +105,7 @@ export const createString = <T extends string>(
         title: title,
         value: value,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };
@@ -116,6 +120,7 @@ export const createColor = <T extends string>(
         title: title,
         value: value,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };
@@ -132,6 +137,7 @@ export const createSelect = <T>(
         value: value,
         options: options,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };
@@ -146,6 +152,7 @@ export const createChapter = <T extends Record<string, SettingsItem>>(
         title: title,
         items: items,
         disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
         ...others,
     };
 };

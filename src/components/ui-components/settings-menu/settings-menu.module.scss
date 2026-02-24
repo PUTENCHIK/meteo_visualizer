@@ -46,8 +46,7 @@
 
 .settings-menu {
     min-width: 200px;
-    max-width: 400px;
-    width: 400px;
+    max-width: max-content;
     max-height: calc(100% - 2 * var(--complex-page-padding));
     padding: var(--section-size);
 

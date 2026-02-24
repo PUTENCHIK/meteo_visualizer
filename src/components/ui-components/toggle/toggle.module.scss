@@ -1,0 +1,47 @@
+:root {
+    --width: 45px;
+    --height: 20px;
+    --padding: 2px;
+}
+
+.toggle {
+    width: var(--width);
+    height: var(--height);
+    padding: var(--padding);
+    box-sizing: border-box;
+    
+    display: flex;
+    justify-content: start;
+
+    cursor: pointer;
+    border-radius: var(--width);
+
+    &.off {
+        background-color: #a3a3a3;
+    }
+
+    &.on {
+        background-color: #e95420;
+        justify-content: end;
+    }
+
+    &.disabled {
+        cursor: default;
+        background-color: #cacaca;
+
+        & > .ball {
+            background-color: #ececec;
+        }
+    }
+}
+
+.ball {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+
+    display: block;
+
+    transition: transform 0.2s;
+    background-color: white;
+    border-radius: 50%;
+}

@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import s from './range-input.module.scss';
+import { useEffect, useState } from 'react';
 
 interface RangeInputProps {
     value: number;
@@ -18,23 +19,47 @@ export const RangeInput = ({
     disabled = false,
     onChange,
 }: RangeInputProps) => {
+    const [showTooltip, setShowTooltip] = useState(false);
+    const [thumbOffset, setThumbOffset] = useState(300);
+
+    useEffect(() => {
+        setThumbOffset(((value - min) / (max - min)) * 100);
+    }, [value, min, max]);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (onChange) onChange(Number(event.target.value));
     };
 
     return (
-        <div className={clsx(s['range-input-wrapper'])}>
-            {min}
-            <input
-                type='range'
-                min={min}
-                max={max}
-                value={value}
-                step={step}
-                onChange={handleChange}
-                disabled={disabled}
-            />
-            {max}
+        <div
+            className={clsx(s['range-input-wrapper'])}
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}>
+            <div>{min}</div>
+            <div className={clsx(s['input-wrapper'])}>
+                <input
+                    className={clsx(s['range-input'])}
+                    type='range'
+                    value={value}
+                    min={min}
+                    max={max}
+                    step={step}
+                    onChange={handleChange}
+                    disabled={disabled}
+                    onMouseDown={() => setShowTooltip(true)}
+                    onMouseUp={() => setShowTooltip(false)}
+                />
+                {showTooltip && (
+                    <span
+                        className={clsx(s['tooltip'])}
+                        style={{
+                            left: `${thumbOffset}%`,
+                        }}>
+                        {value}
+                    </span>
+                )}
+            </div>
+            <div>{max}</div>
         </div>
     );
 };

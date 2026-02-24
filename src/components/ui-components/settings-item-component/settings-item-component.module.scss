@@ -2,15 +2,21 @@
     display: inline-flex;
     flex-direction: column;
     row-gap: 8px;
+
+    &.disabled {
+        color: gray;
+    }
 }
 
 .settings-item {
     display: inline-flex;
+    align-items: center;
     gap: 8px;
     flex-wrap: wrap;
 }
 
 .items-box {
+    padding-left: 20px;
     display: inline-flex;
     flex-direction: column;
     row-gap: 8px;

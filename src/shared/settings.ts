@@ -13,6 +13,7 @@ interface BaseSettingsPoint {
     kind: SettingsKind;
     title: string;
     disabled?: boolean;
+    visible?: boolean;
 }
 
 // Пункт настроек - конкретное значение указанного типа

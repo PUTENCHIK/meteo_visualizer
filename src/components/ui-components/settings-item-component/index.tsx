@@ -3,39 +3,46 @@ import s from './settings-item-component.module.scss';
 import type { SettingsItem } from '@shared/settings';
 import { settingsManager } from '@managers/settings-manager';
 import { RangeInput } from '@components/range-input';
+import { Toggle } from '@components/toggle';
 
 interface SettingsItemComponentProps {
     item: SettingsItem;
     path: string;
+    parentDisabled?: boolean;
 }
 
-export const SettingsItemComponent = ({ item, path }: SettingsItemComponentProps) => {
-    let Component;
+export const SettingsItemComponent = ({
+    item,
+    path,
+    parentDisabled: forceConst = false,
+}: SettingsItemComponentProps) => {
+    let component;
 
     const handleChange = (value: any) => {
         settingsManager.set(path, value);
     };
 
-    const pathEnable = path.split('.').slice(0, -1).join('.') + '.enable';
-    let visible = true;
+    let disabled = item.disabled || forceConst;
+    const visible = item.visible;
 
-    if (settingsManager.get(pathEnable) !== undefined && path !== pathEnable) {
-        visible = settingsManager.get(pathEnable);
+    const pathEnable = path.split('.').slice(0, -1).join('.') + '.enable';
+
+    if (visible && settingsManager.get(pathEnable) !== undefined && path !== pathEnable) {
+        disabled = disabled || !settingsManager.get(pathEnable);
     }
 
     switch (item.kind) {
         case 'boolean':
-            Component = (
-                <input
-                    type='checkbox'
-                    checked={item.value}
-                    onChange={(e) => handleChange(e.target.checked)}
-                    disabled={item.disabled}
+            component = (
+                <Toggle
+                    value={item.value}
+                    onChange={(value) => handleChange(value)}
+                    disabled={disabled}
                 />
             );
             break;
         case 'number':
-            Component = (
+            component = (
                 <input
                     type='number'
                     min={item.min}
@@ -43,42 +50,46 @@ export const SettingsItemComponent = ({ item, path }: SettingsItemComponentProps
                     value={item.value}
                     step={item.step}
                     onChange={(e) => handleChange(Number(e.target.value))}
+                    disabled={disabled}
                 />
             );
             break;
         case 'range':
-            Component = (
+            component = (
                 <RangeInput
                     value={item.value}
                     min={item.min}
                     max={item.max}
                     step={item.step}
                     onChange={handleChange}
+                    disabled={disabled}
                 />
             );
             break;
         case 'string':
-            Component = (
+            component = (
                 <input
                     type='text'
                     maxLength={item.maxLength}
                     placeholder={item.placeholder}
                     value={item.value}
+                    disabled={disabled}
                 />
             );
             break;
         case 'color':
-            Component = (
+            component = (
                 <input
                     type='color'
                     value={item.value}
                     onChange={(e) => handleChange(e.target.value)}
+                    disabled={disabled}
                 />
             );
             break;
         case 'select':
-            Component = (
-                <select onChange={(e) => handleChange(e.target.value)}>
+            component = (
+                <select onChange={(e) => handleChange(e.target.value)} disabled={disabled}>
                     {item.options.map((value, index) => (
                         <option key={index} value={value} selected={item.value === value}>
                             {value}
@@ -88,21 +99,22 @@ export const SettingsItemComponent = ({ item, path }: SettingsItemComponentProps
             );
             break;
         default:
-            Component = null;
+            component = null;
             break;
     }
 
-    if (item.kind === 'chapter') {
+    if (visible && item.kind === 'chapter') {
         return (
-            <div className={clsx(s['settings-chapter'])}>
+            <div className={clsx(s['settings-chapter'], disabled && s['disabled'])}>
                 <h3>{item.title}</h3>
-                <div
-                    className={clsx(s['items-box'])}
-                    style={{
-                        paddingLeft: `20px`,
-                    }}>
+                <div className={clsx(s['items-box'])}>
                     {Object.entries(item.items).map(([key, item]) => (
-                        <SettingsItemComponent key={key} item={item} path={`${path}.${key}`} />
+                        <SettingsItemComponent
+                            key={key}
+                            item={item}
+                            path={`${path}.${key}`}
+                            parentDisabled={disabled}
+                        />
                     ))}
                 </div>
             </div>
@@ -111,7 +123,7 @@ export const SettingsItemComponent = ({ item, path }: SettingsItemComponentProps
         return (
             <div className={clsx(s['settings-item'])}>
                 <span>{item.title}:</span>
-                {Component}
+                {component}
             </div>
         );
     } else return null;
