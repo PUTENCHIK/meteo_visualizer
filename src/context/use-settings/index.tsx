@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import { settingsManager } from '@managers/settings-manager';
 import type { SettingsMap } from '@shared/settings';
 import type { appSettings } from '@utils/consts';
@@ -6,20 +6,13 @@ import type { appSettings } from '@utils/consts';
 type AppSettingsType = typeof appSettings;
 
 export const useSettings = () => {
-    const [_, setTick] = useState(0);
-
-    useEffect(() => {
-        const unsubscribe = settingsManager.subscribe(() => {
-            setTick((t) => t + 1);
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, []);
+    useSyncExternalStore(
+        (callback) => settingsManager.subscribe(callback),
+        () => settingsManager.getRawSettings(),
+    );
 
     return {
-        raw: settingsManager.getAppSettings() as AppSettingsType,
+        raw: settingsManager.getRawSettings() as AppSettingsType,
         map: settingsManager.settings as SettingsMap<AppSettingsType>,
     };
 };

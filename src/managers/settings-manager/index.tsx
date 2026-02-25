@@ -1,32 +1,46 @@
+import { storageManager } from '@managers/local-storage-manager';
 import type { AppSettings, SettingsMap } from '@shared/settings';
-import { appSettings as defaultSettings } from '@utils/consts';
+import { appSettings } from '@utils/consts';
 import { copyObject, createSettingsProxy } from '@utils/funcs';
+
+interface ListenerParams {
+    saveSettings: boolean;
+}
 
 export class SettingsManager<T extends AppSettings> {
     private static instance: SettingsManager<AppSettings> | null = null;
-    private appSettings: T;
+    private rawSettings: T;
     public settings: SettingsMap<T>;
-    private listeners: Set<() => void> = new Set();
+    private listeners: Set<(params?: Partial<ListenerParams>) => void> = new Set();
 
     private constructor(appSettings: T) {
-        this.appSettings = copyObject(appSettings);
-        this.settings = createSettingsProxy(this.appSettings);
+        const defaultSettings = copyObject(appSettings);
+        const savedSettings = storageManager.getItem('settings');
+        this.deepUpdate(defaultSettings, savedSettings);
+        this.rawSettings = defaultSettings;
+        this.settings = createSettingsProxy(this.rawSettings);
+
+        this.subscribe((params?: Partial<ListenerParams>) => {
+            if (params?.saveSettings) {
+                storageManager.setItem('settings', this.rawSettings);
+            }
+        });
     }
 
-    public static getInstance(): SettingsManager<typeof defaultSettings> {
+    public static getInstance(): SettingsManager<typeof appSettings> {
         if (!SettingsManager.instance) {
-            SettingsManager.instance = new SettingsManager(defaultSettings);
+            SettingsManager.instance = new SettingsManager(appSettings);
         }
-        return SettingsManager.instance as SettingsManager<typeof defaultSettings>;
+        return SettingsManager.instance as SettingsManager<typeof appSettings>;
     }
 
-    public getAppSettings(): T {
-        return this.appSettings;
+    public getRawSettings(): T {
+        return this.rawSettings;
     }
 
     public reset(): void {
-        const source = copyObject(defaultSettings);
-        this.deepUpdate(this.appSettings, source);
+        const source = copyObject(appSettings);
+        this.deepUpdate(this.rawSettings, source);
     }
 
     private deepUpdate(target: any, source: any) {
@@ -44,13 +58,15 @@ export class SettingsManager<T extends AppSettings> {
         return () => this.listeners.delete(callback);
     }
 
-    private notify(): void {
-        this.listeners.forEach((listener) => listener());
+    private notify(saveSettings: boolean): void {
+        // Обновление ссылки на настройки для того, чтобы React увидел изменения
+        this.rawSettings = { ...this.rawSettings };
+        this.listeners.forEach((listener) => listener({ saveSettings: saveSettings }));
     }
 
     public get(path: string): any {
         const keys = path.split('.');
-        let current: any = this.appSettings;
+        let current: any = this.rawSettings;
 
         for (const key of keys) {
             if (current[key] !== undefined) {
@@ -67,9 +83,9 @@ export class SettingsManager<T extends AppSettings> {
             : current;
     }
 
-    public set(path: string, value: any): void {
+    public set(path: string, value: any, finalValue?: boolean): void {
         const keys = path.split('.');
-        let current: any = this.appSettings;
+        let current: any = this.rawSettings;
         let key: string;
 
         for (let i = 0; i < keys.length; i++) {
@@ -90,7 +106,7 @@ export class SettingsManager<T extends AppSettings> {
             }
         }
 
-        this.notify();
+        this.notify(finalValue ?? false);
     }
 }
 

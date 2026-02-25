@@ -1,7 +1,9 @@
 import type { Theme } from '@context/theme-context';
+import type { AppSettings } from '@shared/settings';
 
 interface AppData {
     theme: Theme;
+    settings: AppSettings;
 }
 
 const STORAGE_KEY = 'meteo_visualizer';
@@ -25,6 +27,7 @@ class LocalStorageManager {
     public getDefault(): AppData {
         return {
             theme: 'light',
+            settings: {},
         };
     }
 

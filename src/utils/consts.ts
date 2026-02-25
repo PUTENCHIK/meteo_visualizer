@@ -156,12 +156,9 @@ const rawSettings = {
         maxDistance: createRange('Дистанция отдаления', 500, 30, 800, 10),
         maxPolarAngle: createRange('Максимальный полярный угол камеры', 89, 0, 180, 1),
     }),
-};
-
-rawSettings satisfies AppSettings;
+} satisfies AppSettings;
 
 export const appSettings = rawSettings;
-export type AppConfig = typeof appSettings;
 
 export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
     building: building,

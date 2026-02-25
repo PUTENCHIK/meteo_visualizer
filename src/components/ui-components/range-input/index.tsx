@@ -1,24 +1,25 @@
 import clsx from 'clsx';
 import s from './range-input.module.scss';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface RangeInputProps {
-    value: number;
+    startValue: number;
     min: number;
     max: number;
     step: number;
     disabled?: boolean;
-    onChange?: (value: number) => void;
+    onChange?: (value: number, final?: boolean) => void;
 }
 
 export const RangeInput = ({
-    value,
+    startValue,
     min,
     max,
     step,
     disabled = false,
     onChange,
 }: RangeInputProps) => {
+    const [value, setValue] = useState(startValue);
     const [showTooltip, setShowTooltip] = useState(false);
     const [thumbOffset, setThumbOffset] = useState(300);
 
@@ -27,7 +28,17 @@ export const RangeInput = ({
     }, [value, min, max]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (onChange) onChange(Number(event.target.value));
+        setValue(event.target.valueAsNumber);
+        if (onChange) onChange(value);
+    };
+
+    const handleMouseDown = () => {
+        setShowTooltip(true);
+    };
+
+    const handleMouseUp = () => {
+        setShowTooltip(false);
+        if (onChange) onChange(value, true);
     };
 
     return (
@@ -46,8 +57,8 @@ export const RangeInput = ({
                     step={step}
                     onChange={handleChange}
                     disabled={disabled}
-                    onMouseDown={() => setShowTooltip(true)}
-                    onMouseUp={() => setShowTooltip(false)}
+                    onMouseDown={handleMouseDown}
+                    onMouseUp={handleMouseUp}
                 />
                 {showTooltip && (
                     <span

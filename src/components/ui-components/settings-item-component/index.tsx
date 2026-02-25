@@ -18,8 +18,8 @@ export const SettingsItemComponent = ({
 }: SettingsItemComponentProps) => {
     let component;
 
-    const handleChange = (value: any) => {
-        settingsManager.set(path, value);
+    const handleChange = (value: any, finalValue?: boolean) => {
+        settingsManager.set(path, value, finalValue);
     };
 
     let disabled = item.disabled || forceConst;
@@ -57,7 +57,7 @@ export const SettingsItemComponent = ({
         case 'range':
             component = (
                 <RangeInput
-                    value={item.value}
+                    startValue={item.value}
                     min={item.min}
                     max={item.max}
                     step={item.step}
@@ -89,9 +89,12 @@ export const SettingsItemComponent = ({
             break;
         case 'select':
             component = (
-                <select onChange={(e) => handleChange(e.target.value)} disabled={disabled}>
+                <select
+                    onChange={(e) => handleChange(e.target.value)}
+                    disabled={disabled}
+                    defaultValue={item.value}>
                     {item.options.map((value, index) => (
-                        <option key={index} value={value} selected={item.value === value}>
+                        <option key={index} value={value}>
                             {value}
                         </option>
                     ))}
