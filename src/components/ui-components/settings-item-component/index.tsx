@@ -73,6 +73,7 @@ export const SettingsItemComponent = ({
                     maxLength={item.maxLength}
                     placeholder={item.placeholder}
                     value={item.value}
+                    onChange={(e) => handleChange(e.target.value)}
                     disabled={disabled}
                 />
             );

@@ -39,11 +39,12 @@ export const TextMesh = ({
                     {text.trim()}
                     <meshStandardMaterial color={color} />
                     {(forceEdge === 'with' ||
-                        (forceEdge !== 'without' && settings.model.edges.enable)) && (
+                        (forceEdge !== 'without' && settings.scene.edges.enable)) && (
                         <Edges
-                            color={settings.model.colors.edgesColor}
-                            threshold={settings.model.edges.threshold}
-                            scale={settings.model.edges.scale}
+                            color={settings.scene.edges.color}
+                            threshold={settings.scene.edges.threshold}
+                            scale={settings.scene.edges.scale}
+                            lineWidth={settings.scene.edges.thickness}
                         />
                     )}
                 </Text3D>

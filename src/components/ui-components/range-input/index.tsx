@@ -29,7 +29,7 @@ export const RangeInput = ({
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.valueAsNumber);
-        if (onChange) onChange(value);
+        if (onChange) onChange(value, false);
     };
 
     const handleMouseDown = () => {
@@ -38,7 +38,7 @@ export const RangeInput = ({
 
     const handleMouseUp = () => {
         setShowTooltip(false);
-        if (onChange) onChange(value, true);
+        if (onChange) onChange(value);
     };
 
     return (

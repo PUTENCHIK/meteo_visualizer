@@ -7,15 +7,13 @@ interface WeatherStationModelProps {
 }
 
 export const WeatherStationModel = ({ position }: WeatherStationModelProps) => {
-    const radius = 0.35;
-
     const { map: settings } = useSettings();
 
     return (
         <SphereMesh
-            radius={radius}
+            radius={settings.model.weatherStation.radius}
             position={position}
-            color={settings.model.colors.weatherStationModelColor}
+            color={settings.model.weatherStation.color}
         />
     );
 };

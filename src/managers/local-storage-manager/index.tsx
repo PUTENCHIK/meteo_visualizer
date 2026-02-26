@@ -26,7 +26,7 @@ class LocalStorageManager {
 
     public getDefault(): AppData {
         return {
-            theme: 'light',
+            theme: 'dark',
             settings: {},
         };
     }

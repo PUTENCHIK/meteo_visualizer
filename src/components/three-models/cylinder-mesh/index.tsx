@@ -25,17 +25,18 @@ export const CylinderMesh = ({
         <mesh position={position}>
             <cylinderGeometry args={[radius, radius, height, segments]} />
             <meshStandardMaterial color={color} />
-            {(forceEdge === 'with' || (forceEdge !== 'without' && settings.model.edges.enable)) && (
+            {(forceEdge === 'with' || (forceEdge !== 'without' && settings.scene.edges.enable)) && (
                 <>
                     <Edges
-                        color={settings.model.colors.edgesColor}
-                        threshold={settings.model.edges.threshold}
-                        scale={settings.model.edges.scale}
+                        color={settings.scene.edges.color}
+                        threshold={settings.scene.edges.threshold}
+                        scale={settings.scene.edges.scale}
+                        lineWidth={settings.scene.edges.thickness}
                     />
                     <Outlines
-                        thickness={settings.model.edges.thickness}
-                        color={settings.model.colors.edgesColor}
-                        scale={settings.model.edges.scale}
+                        color={settings.scene.edges.color}
+                        thickness={settings.scene.edges.thickness}
+                        scale={settings.scene.edges.scale}
                     />
                 </>
             )}

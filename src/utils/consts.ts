@@ -8,6 +8,7 @@ import compass from '@assets/compass.svg?react';
 import telescope from '@assets/telescope.svg?react';
 import wind from '@assets/wind.svg?react';
 import camera from '@assets/camera.svg?react';
+import scene from '@assets/scene.svg?react';
 import {
     createBoolean,
     createChapter,
@@ -117,29 +118,56 @@ export const masts: MastsDataItem[] = [
 ];
 
 const rawSettings = {
+    scene: createSection('Настройки сцены', 'scene', {
+        edges: createChapter('Границы', {
+            enable: createBoolean('Отображение', true),
+            threshold: createRange('Угол появления', 15, 1, 180, 1),
+            scale: createRange('Вынос', 1, 0.8, 1.2, 0.01),
+            thickness: createRange('Толщина', 1, 0.5, 5, 0.5),
+            color: createColor('Цвет', 'rgba(116, 116, 116, 1)'),
+        }),
+        light: createChapter('Источники света', {
+            ambient: createChapter('Обтекающий', {
+                enable: createBoolean('Отображение', true),
+                intensity: createRange('Интенсивность', 2, 0, 3, 0.1),
+                color: createColor('Цвет', 'rgb(255, 255, 255)'),
+            }),
+            directional: createChapter('Прямой', {
+                enable: createBoolean('Отображение', true),
+                intensity: createRange('Интенсивность', 2, 0, 3, 0.1),
+                castShadow: createBoolean('Тень', true),
+                color: createColor('Цвет', 'rgb(255, 255, 255)'),
+            }),
+        }),
+    }),
     model: createSection('Настройки модели комплекса', 'building', {
-        telescopeModelEnable: createBoolean('Отображение КСТ-3', true),
+        basePlate: createChapter('Базовая плита', {
+            enable: createBoolean('Отображение', true),
+            height: createRange('Высота', 5, 1, 30, 1),
+            padding: createRange('Отступ от мачт', 100, 0, 200, 1),
+            color: createColor('Цвет', 'rgba(116, 116, 116, 1)'),
+        }),
+        telescope: createChapter('КСТ-3', {
+            enable: createBoolean('Отображение', true),
+            height: createRange('Высота', 12, 5, 20, 1),
+            radius: createRange('Радиус', 10, 5, 20, 1),
+            length: createRange('Длина', 35, 0, 50, 5),
+            color: createColor('Цвет', 'rgba(104, 104, 104, 1)'),
+        }),
         masts: createChapter('Мачты', {
             radius: createRange('Радиус', 0.3, 0.2, 0.5, 0.05),
             plates: createChapter('Основания мачт', {
                 enable: createBoolean('Отображение', true),
                 size: createRange('Размер', 15, 5, 30, 1),
                 height: createRange('Высота', 0.25, 0.1, 1, 0.05),
+                color: createColor('Цвет', 'rgba(104, 104, 104, 1)'),
             }),
+            mastsColor: createColor('Цвет мачт', 'rgba(104, 104, 104, 1)'),
+            yardsColor: createColor('Цвет мачтовых рей', 'rgba(104, 104, 104, 1)'),
         }),
-        edges: createChapter('Границы', {
-            enable: createBoolean('Отображение', true),
-            threshold: createRange('Угол появления границ', 15, 1, 180, 1),
-            scale: createRange('Вынос границ', 1, 0.8, 1.2, 0.01),
-            thickness: createRange('Толщина границ', 1, 0.5, 5, 0.5),
-        }),
-        colors: createChapter('Цвета моделей', {
-            basePlateColor: createColor('Цвет базовой плиты', 'rgba(116, 116, 116, 1)'),
-            telescopeModelColor: createColor('Цвет модели телескопа', 'rgba(104, 104, 104, 1)'),
-            mastModelColor: createColor('Цвет мачт', 'rgba(104, 104, 104, 1)'),
-            yardModelColor: createColor('Цвет мачтовых рей', 'rgba(104, 104, 104, 1)'),
-            weatherStationModelColor: createColor('Цвет метеостанций', 'rgba(87, 104, 201, 1)'),
-            edgesColor: createColor('Цвет границ объектов', 'rgba(0, 0, 0, 1)'),
+        weatherStation: createChapter('Метеостанции', {
+            radius: createRange('Радиус', 0.35, 0.2, 0.5, 0.05),
+            color: createColor('Цвет', 'rgba(87, 104, 201, 1)'),
         }),
     }),
     atmosphere: createSection('Настройки модели атмосферы', 'wind', {
@@ -166,6 +194,7 @@ export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGS
     telescope: telescope,
     wind: wind,
     camera: camera,
+    scene: scene,
 };
 
 export const sizesToStrokes: Record<IconSize, number> = {

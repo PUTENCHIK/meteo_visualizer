@@ -18,25 +18,22 @@ interface SceneProps {
 }
 
 export const Scene = ({ onCameraReady }: SceneProps) => {
-    const basePlateHeight = 5;
-    const basePlatePadding = 100;
-
     const { map: settings } = useSettings();
 
     const basePlateSize = useMemo(() => {
-        const size = new Vector3(20, basePlateHeight, 20);
+        const size = new Vector3(20, settings.model.basePlate.height, 20);
 
-        masts.map((mast) => {
+        masts.forEach((mast) => {
             const mastPos = polarPosToXY(mast.position);
-
             size.x = Math.max(size.x, 2 * Math.abs(mastPos.x));
             size.z = Math.max(size.z, 2 * Math.abs(mastPos.y));
         });
-        size.x += basePlatePadding;
-        size.z += basePlatePadding;
+
+        size.x += settings.model.basePlate.padding;
+        size.z += settings.model.basePlate.padding;
 
         return size;
-    }, []);
+    }, [settings.model.basePlate.height, settings.model.basePlate.padding]);
 
     const cameraProps = {
         position: new Vector3(basePlateSize.x, settings.atmosphere.height * 2, -basePlateSize.z),
@@ -57,18 +54,30 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
     return (
         <Canvas camera={cameraProps}>
             <Suspense fallback={<Loader type='circle' />}>
-                <ambientLight intensity={2} />
-                <directionalLight
-                    position={[200, 200, 200]}
-                    intensity={2}
-                    castShadow
-                    shadow-mapSize={[64, 64]}
-                />
+                {settings.scene.light.ambient.enable && (
+                    <ambientLight
+                        intensity={settings.scene.light.ambient.intensity}
+                        color={settings.scene.light.ambient.color}
+                    />
+                )}
+                {settings.scene.light.directional.enable && (
+                    <directionalLight
+                        position={[200, 200, 200]}
+                        intensity={settings.scene.light.directional.intensity}
+                        castShadow={settings.scene.light.directional.castShadow}
+                        shadow-mapSize={[64, 64]}
+                        color={settings.scene.light.directional.color}
+                    />
+                )}
                 <CameraReporter onCameraReady={onCameraReady} />
 
-                <BasePlateModel size={basePlateSize} />
-                {settings.model.telescopeModelEnable && (
-                    <TelescopeModel height={12} radius={10} length={35} />
+                {settings.model.basePlate.enable && <BasePlateModel size={basePlateSize} />}
+                {settings.model.telescope.enable && (
+                    <TelescopeModel
+                        height={settings.model.telescope.height}
+                        radius={settings.model.telescope.radius}
+                        length={settings.model.telescope.length}
+                    />
                 )}
 
                 {masts.map((item, index) => (

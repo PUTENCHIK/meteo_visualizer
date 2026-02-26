@@ -45,9 +45,23 @@ export class SettingsManager<T extends AppSettings> {
 
     private deepUpdate(target: any, source: any) {
         for (const key in source) {
-            if (source[key] && typeof source[key] === 'object' && 'items' in source[key]) {
+            if (
+                source[key] &&
+                typeof source[key] === 'object' &&
+                'items' in source[key] &&
+                target[key] &&
+                typeof target[key] === 'object' &&
+                'items' in target[key]
+            ) {
                 this.deepUpdate(target[key].items, source[key].items);
-            } else if (source[key] && typeof source[key] === 'object' && 'value' in source[key]) {
+            } else if (
+                source[key] &&
+                typeof source[key] === 'object' &&
+                'value' in source[key] &&
+                target[key] &&
+                typeof target[key] === 'object' &&
+                'value' in target[key]
+            ) {
                 target[key].value = source[key].value;
             }
         }
@@ -106,7 +120,7 @@ export class SettingsManager<T extends AppSettings> {
             }
         }
 
-        this.notify(finalValue ?? false);
+        this.notify(finalValue ?? true);
     }
 }
 

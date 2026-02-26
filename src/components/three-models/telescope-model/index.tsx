@@ -20,13 +20,13 @@ export const TelescopeModel = ({ height, radius, length }: TelescopeModelProps) 
                 radius={radius}
                 height={height}
                 position={new Vector3(-radius, height / 2, 0)}
-                color={settings.model.colors.telescopeModelColor}
+                color={settings.model.telescope.color}
             />
             {/* Основная часть здания */}
             <BoxMesh
                 size={new Vector3(length + radius, height, radius)}
                 position={new Vector3(length / 2 - radius / 2, height / 2, 0)}
-                color={settings.model.colors.telescopeModelColor}
+                color={settings.model.telescope.color}
             />
         </MeshGroup>
     );

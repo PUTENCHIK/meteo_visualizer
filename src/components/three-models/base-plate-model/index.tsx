@@ -13,7 +13,7 @@ export const BasePlateModel = ({ size }: BasePlateModelProps) => {
         <BoxMesh
             size={size}
             position={new Vector3(0, -size.y / 2, 0)}
-            color={settings.model.colors.basePlateColor}
+            color={settings.model.basePlate.color}
         />
     );
 };

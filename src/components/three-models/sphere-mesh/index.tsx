@@ -23,11 +23,11 @@ export const SphereMesh = ({
         <mesh position={position}>
             <sphereGeometry args={[radius, segments, segments]} />
             <meshStandardMaterial color={color} />
-            {(forceEdge === 'with' || (forceEdge !== 'without' && settings.model.edges.enable)) && (
+            {(forceEdge === 'with' || (forceEdge !== 'without' && settings.scene.edges.enable)) && (
                 <Outlines
-                    thickness={settings.model.edges.thickness}
-                    color={settings.model.colors.edgesColor}
-                    scale={settings.model.edges.scale}
+                    color={settings.scene.edges.color}
+                    thickness={settings.scene.edges.thickness}
+                    scale={settings.scene.edges.scale}
                 />
             )}
         </mesh>

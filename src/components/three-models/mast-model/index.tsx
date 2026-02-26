@@ -33,7 +33,7 @@ export const MastModel = ({ height, position, rotation = 0, yards }: MastModelPr
                         )
                     }
                     position={new Vector3(0, settings.model.masts.plates.height / 2, 0)}
-                    color={settings.model.colors.mastModelColor}
+                    color={settings.model.masts.plates.color}
                 />
             )}
 
@@ -42,7 +42,7 @@ export const MastModel = ({ height, position, rotation = 0, yards }: MastModelPr
                 radius={settings.model.masts.radius}
                 height={height}
                 position={new Vector3(0, height / 2, 0)}
-                color={settings.model.colors.mastModelColor}
+                color={settings.model.masts.mastsColor}
             />
 
             {/* Реи с метеостанциями */}
