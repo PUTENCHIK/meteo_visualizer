@@ -16,7 +16,10 @@ import {
     createRange,
     createSection,
     createSelect,
+    createTab,
+    createTabItem,
 } from './funcs';
+import type { AtmosphereParticleForm } from '@models_/atmosphere-particle';
 
 export const masts: MastsDataItem[] = [
     {
@@ -124,7 +127,7 @@ const rawSettings = {
             threshold: createRange('Угол появления', 15, 1, 180, 1),
             scale: createRange('Вынос', 1, 0.8, 1.2, 0.01),
             thickness: createRange('Толщина', 1, 0.5, 5, 0.5),
-            color: createColor('Цвет', 'rgba(116, 116, 116, 1)'),
+            color: createColor('Цвет', 'black'),
         }),
         light: createChapter('Источники света', {
             ambient: createChapter('Обтекающий', {
@@ -173,6 +176,17 @@ const rawSettings = {
     atmosphere: createSection('Настройки модели атмосферы', 'wind', {
         enable: createBoolean('Отображение', true),
         height: createRange('Высота', 60, 20, 300, 5),
+        model: createTab('Вид модели', 'particles', {
+            particles: createTabItem('Частицы', 'particles', {
+                size: createRange('Размер', 1, 0.7, 5, 0.1),
+                frequency: createRange('Частота', 0.08, 0.01, 0.3, 0.01),
+                opacity: createRange('Прозрачность', 0.5, 0.1, 1, 0.05),
+                form: createSelect<AtmosphereParticleForm>('Форма', 'sphere', ['sphere', 'cube']),
+            }),
+            heatmaps: createTabItem('Тепловые карты', 'heatmaps', {
+                color: createColor('Цвет', 'color'),
+            }),
+        }),
     }),
     compass: createSection('Настройки компаса', 'compass', {
         enable: createBoolean('Отображение', true),
@@ -182,7 +196,7 @@ const rawSettings = {
         noLimits: createBoolean('Свободная камера', false),
         minDistance: createRange('Дистанция приближения', 50, 30, 800, 10),
         maxDistance: createRange('Дистанция отдаления', 500, 30, 800, 10),
-        maxPolarAngle: createRange('Максимальный полярный угол камеры', 89, 0, 180, 1),
+        maxPolarAngle: createRange('Максимальный полярный угол', 89, 0, 180, 1),
     }),
 } satisfies AppSettings;
 

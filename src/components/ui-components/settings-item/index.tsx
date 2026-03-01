@@ -1,28 +1,25 @@
 import clsx from 'clsx';
-import s from './settings-item-component.module.scss';
-import type { SettingsItem } from '@shared/settings';
+import s from './settings-item.module.scss';
+import type { SettingsItem as SettingsItemType } from '@shared/settings';
 import { settingsManager } from '@managers/settings-manager';
 import { RangeInput } from '@components/range-input';
 import { Toggle } from '@components/toggle';
+import { TabsMenu } from '@components/tabs-menu';
 
-interface SettingsItemComponentProps {
-    item: SettingsItem;
+interface SettingsItemProps {
+    item: SettingsItemType;
     path: string;
     parentDisabled?: boolean;
 }
 
-export const SettingsItemComponent = ({
-    item,
-    path,
-    parentDisabled: forceConst = false,
-}: SettingsItemComponentProps) => {
+export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsItemProps) => {
     let component;
 
     const handleChange = (value: any, finalValue?: boolean) => {
         settingsManager.set(path, value, finalValue);
     };
 
-    let disabled = item.disabled || forceConst;
+    let disabled = item.disabled || parentDisabled;
     const visible = item.visible;
 
     const pathEnable = path.split('.').slice(0, -1).join('.') + '.enable';
@@ -30,6 +27,7 @@ export const SettingsItemComponent = ({
     if (visible && settingsManager.get(pathEnable) !== undefined && path !== pathEnable) {
         disabled = disabled || !settingsManager.get(pathEnable);
     }
+    let tabs: Record<string, string> = {};
 
     switch (item.kind) {
         case 'boolean':
@@ -102,33 +100,57 @@ export const SettingsItemComponent = ({
                 </select>
             );
             break;
-        default:
-            component = null;
-            break;
-    }
-
-    if (visible && item.kind === 'chapter') {
-        return (
-            <div className={clsx(s['settings-chapter'], disabled && s['disabled'])}>
-                <h3>{item.title}</h3>
-                <div className={clsx(s['items-box'])}>
-                    {Object.entries(item.items).map(([key, item]) => (
-                        <SettingsItemComponent
+        case 'tab':
+            Object.entries(item.tabs).map(([key, tab]) => {
+                tabs[key] = tab.title;
+            });
+            component = (
+                <div className={clsx(s['settings-tab'])}>
+                    <TabsMenu
+                        current={item.value}
+                        tabs={tabs}
+                        onChange={(value) => handleChange(value)}
+                        disabled={disabled}
+                    />
+                    {Object.entries(item.tabs[item.value].content).map(([key, tabItem]) => (
+                        <SettingsItem
                             key={key}
-                            item={item}
-                            path={`${path}.${key}`}
+                            item={tabItem}
+                            path={`${path}.${item.value}.${key}`}
                             parentDisabled={disabled}
                         />
                     ))}
                 </div>
-            </div>
-        );
-    } else if (visible) {
-        return (
-            <div className={clsx(s['settings-item'])}>
-                <span>{item.title}:</span>
-                {component}
-            </div>
-        );
+            );
+            break;
+        default:
+            component = null;
+            break;
+    }
+    if (visible) {
+        if (item.kind === 'chapter') {
+            return (
+                <div className={clsx(s['settings-chapter'], disabled && s['disabled'])}>
+                    <h3>{item.title}</h3>
+                    <div className={clsx(s['items-box'])}>
+                        {Object.entries(item.items).map(([key, item]) => (
+                            <SettingsItem
+                                key={key}
+                                item={item}
+                                path={`${path}.${key}`}
+                                parentDisabled={disabled}
+                            />
+                        ))}
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className={clsx(s['settings-item'])}>
+                    {item.kind !== 'tab' && <span>{item.title}:</span>}
+                    {component}
+                </div>
+            );
+        }
     } else return null;
 };

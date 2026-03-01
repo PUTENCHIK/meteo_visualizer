@@ -10,6 +10,8 @@ import type {
     SettingsChapter,
     SettingsItem,
     SettingsMap,
+    SettingsTab,
+    SettingsTabItem,
     StringSettings,
 } from '@shared/settings';
 import { Vector2 } from 'three';
@@ -25,13 +27,31 @@ export const polarPosToXY = (pos: PolarSystemPosition) => {
 export const createSettingsProxy = <T extends AppSettings>(target: T): SettingsMap<T> => {
     return new Proxy(target, {
         get(obj: any, prop: string) {
-            const value = obj[prop];
+            // SettingsSection и SettingsChapter
+            if (obj.items && typeof obj.items === 'object') {
+                return createSettingsProxy(obj.items)[prop];
+            }
 
-            if (value && typeof value === 'object' && 'items' in value) {
-                return createSettingsProxy(value.items);
-            } else if (value && typeof value === 'object' && 'value' in value) {
-                return value.value;
-            } else return value;
+            if (obj.kind === 'tab') {
+                // SettingsTab.value
+                if (prop === 'value') return obj.value;
+                // SettingsTabItem
+                if (obj.tabs && prop in obj.tabs) {
+                    const tabItem = obj.tabs[prop];
+                    return createSettingsProxy(tabItem.content);
+                }
+            }
+
+            const item = obj[prop];
+            if (item && typeof item === 'object') {
+                // SettingsPoint
+                if ('value' in item && item.kind !== 'tab') {
+                    return item.value;
+                }
+                return createSettingsProxy(item);
+            }
+
+            return item;
         },
     }) as SettingsMap<T>;
 };
@@ -151,6 +171,40 @@ export const createChapter = <T extends Record<string, SettingsItem>>(
         kind: 'chapter' as const,
         title: title,
         items: items,
+        disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
+        ...others,
+    };
+};
+
+export const createTabItem = <T extends string, K extends Record<string, SettingsItem>>(
+    title: string,
+    value: T,
+    content: K,
+    others?: Partial<Omit<SettingsTabItem, 'kind' | 'title' | 'value' | 'content'>>,
+) => {
+    return {
+        kind: 'tab-item' as const,
+        title: title,
+        value: value,
+        content: content,
+        disabled: others?.disabled ?? false,
+        visible: others?.visible ?? true,
+        ...others,
+    };
+};
+
+export const createTab = <K extends Record<string, SettingsTabItem>, T extends K[keyof K]['value']>(
+    title: string,
+    value: T,
+    tabs: K,
+    others?: Partial<Omit<SettingsTab, 'kind' | 'title' | 'current' | 'tabs'>>,
+) => {
+    return {
+        kind: 'tab' as const,
+        title: title,
+        value: value,
+        tabs: tabs,
         disabled: others?.disabled ?? false,
         visible: others?.visible ?? true,
         ...others,

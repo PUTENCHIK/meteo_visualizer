@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-type AtmosphereParticleForm = 'cube' | 'sphere';
+export type AtmosphereParticleForm = 'cube' | 'sphere';
 
 interface AtmosphereParticleProps {
     size: number;

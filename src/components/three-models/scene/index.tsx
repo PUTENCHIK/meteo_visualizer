@@ -90,10 +90,14 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                     />
                 ))}
                 {settings.atmosphere.enable && (
-                    <AtmosphereModel
-                        basePlateSize={basePlateSize}
-                        height={settings.atmosphere.height}
-                    />
+                    <>
+                        {settings.atmosphere.model.value === 'particles' && (
+                            <AtmosphereModel
+                                basePlateSize={basePlateSize}
+                                height={settings.atmosphere.height}
+                            />
+                        )}
+                    </>
                 )}
             </Suspense>
 

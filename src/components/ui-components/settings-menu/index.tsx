@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import s from './settings-menu.module.scss';
 import { SvgIcon } from '@components/svg-icon';
 import { useState } from 'react';
-import { SettingsItemComponent } from '@components/settings-item-component';
+import { SettingsItem } from '@components/settings-item';
 import { useSettings } from '@context/use-settings';
 
 export const SettingsMenu = () => {
@@ -36,11 +36,7 @@ export const SettingsMenu = () => {
                     <div className={clsx(s['menu-content'])}>
                         <h2>{section.title}</h2>
                         {Object.entries(section.items).map(([key, item]) => (
-                            <SettingsItemComponent
-                                key={key}
-                                path={`${currentSection}.${key}`}
-                                item={item}
-                            />
+                            <SettingsItem key={key} path={`${currentSection}.${key}`} item={item} />
                         ))}
                     </div>
                 </div>

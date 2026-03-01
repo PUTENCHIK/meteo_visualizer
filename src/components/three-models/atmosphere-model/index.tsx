@@ -1,3 +1,4 @@
+import { useSettings } from '@context/use-settings';
 import { AtmosphereParticle } from '@models_/atmosphere-particle';
 import { useEffect, useMemo, useRef } from 'react';
 import { Color, InstancedMesh, Object3D, Vector3 } from 'three';
@@ -8,8 +9,12 @@ interface AtmosphereModelProps {
 }
 
 export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps) => {
-    const particleSize = 1;
-    const particleFrequency = 0.08;
+    const { map: settings } = useSettings();
+
+    const particleSize = settings.atmosphere.model.particles.size;
+    const particleFrequency = settings.atmosphere.model.particles.frequency;
+    const particleForm = settings.atmosphere.model.particles.form;
+    const particleOpacity = settings.atmosphere.model.particles.opacity;
 
     const meshRef = useRef<InstancedMesh>(null);
 
@@ -46,7 +51,7 @@ export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps)
         }
 
         return list;
-    }, [basePlateSize, height]);
+    }, [basePlateSize, height, particleSize, particleFrequency]);
 
     const count = particlePositions.length;
 
@@ -81,7 +86,7 @@ export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps)
             args={[undefined, undefined, count]}
             castShadow={false}
             receiveShadow={false}>
-            <AtmosphereParticle form='sphere' size={particleSize} />
+            <AtmosphereParticle form={particleForm} size={particleSize} opacity={particleOpacity} />
         </instancedMesh>
     );
 };

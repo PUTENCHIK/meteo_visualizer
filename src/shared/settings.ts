@@ -7,7 +7,9 @@ export type SettingsKind =
     | 'string'
     | 'color'
     | 'select'
-    | 'chapter';
+    | 'chapter'
+    | 'tab'
+    | 'tab-item';
 
 interface BaseSettingsPoint {
     kind: SettingsKind;
@@ -60,6 +62,18 @@ export interface SettingsChapter extends BaseSettingsPoint {
     items: Record<string, SettingsItem>;
 }
 
+// Вкладка с настройками
+export interface SettingsTabItem extends SettingsPoint<string> {
+    kind: 'tab-item';
+    content: Record<string, SettingsItem>;
+}
+
+// Меню с вкладками настроек
+export interface SettingsTab extends SettingsPoint<string> {
+    kind: 'tab';
+    tabs: Record<string, SettingsTabItem>;
+}
+
 // Элемент секции или раздела настроек - это пункт или вложенный раздел
 export type SettingsItem =
     | BooleanSettings
@@ -68,7 +82,8 @@ export type SettingsItem =
     | StringSettings
     | ColorSettings
     | SelectSettings<any>
-    | SettingsChapter;
+    | SettingsChapter
+    | SettingsTab;
 
 // Глобальная секция настроек, отображаемая в худе
 export interface SettingSection {
@@ -80,9 +95,20 @@ export interface SettingSection {
 export type AppSettings = Record<string, SettingSection>;
 
 export type SettingsMap<T> = {
-    [key in keyof T]: T[key] extends { value: infer value }
-        ? value // если у T[key] есть value (SettingsPoint)
-        : T[key] extends { items: infer items }
-          ? SettingsMap<items> // иначе, если у T[key] есть items (SettingsChapter | SettingSection)
-          : T[key]; // иначе, вернуть объект по ключу
+    // SettingsTab
+    [key in keyof T]: T[key] extends { kind: 'tab' }
+        ? { value: T[key] extends { value: infer V } ? V : string } & SettingsMap<
+              T[key] extends { tabs: infer Tabs } ? Tabs : never
+          >
+        : // SettingsTabItem
+          T[key] extends { kind: 'tab-item' }
+          ? // { value: T[key] extends SettingsTabItem<infer C> ? C : never } &
+            SettingsMap<T[key] extends { content: infer C } ? C : never>
+          : // SettingsPoint
+            T[key] extends { value: infer V }
+            ? V
+            : // SettingSection или SettingChapter
+              T[key] extends { items: infer I }
+              ? SettingsMap<I>
+              : T[key];
 };

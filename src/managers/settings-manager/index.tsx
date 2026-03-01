@@ -48,21 +48,20 @@ export class SettingsManager<T extends AppSettings> {
             if (
                 source[key] &&
                 typeof source[key] === 'object' &&
-                'items' in source[key] &&
                 target[key] &&
-                typeof target[key] === 'object' &&
-                'items' in target[key]
+                typeof target[key] === 'object'
             ) {
-                this.deepUpdate(target[key].items, source[key].items);
-            } else if (
-                source[key] &&
-                typeof source[key] === 'object' &&
-                'value' in source[key] &&
-                target[key] &&
-                typeof target[key] === 'object' &&
-                'value' in target[key]
-            ) {
-                target[key].value = source[key].value;
+                if ('value' in source[key] && 'value' in target[key]) {
+                    target[key].value = source[key].value;
+                }
+
+                if ('items' in source[key] && 'items' in target[key]) {
+                    this.deepUpdate(target[key].items, source[key].items);
+                } else if ('content' in source[key] && 'content' in target[key]) {
+                    this.deepUpdate(target[key].content, source[key].content);
+                } else if ('tabs' in source[key] && 'tabs' in target[key]) {
+                    this.deepUpdate(target[key].tabs, source[key].tabs);
+                }
             }
         }
     }
@@ -83,15 +82,18 @@ export class SettingsManager<T extends AppSettings> {
         let current: any = this.rawSettings;
 
         for (const key of keys) {
-            if (current[key] !== undefined) {
-                current = current[key];
-                if (current && typeof current === 'object' && 'items' in current) {
-                    current = current.items;
-                }
-            } else {
-                return undefined;
+            if (current[key] == undefined) return undefined;
+
+            current = current[key];
+            if (!current || typeof current !== 'object') return undefined;
+
+            if ('items' in current) {
+                current = current.items;
+            } else if ('tabs' in current) {
+                current = current.tabs;
             }
         }
+
         return current && typeof current === 'object' && 'value' in current
             ? current.value
             : current;
@@ -114,6 +116,10 @@ export class SettingsManager<T extends AppSettings> {
             } else {
                 if (current[key]?.items) {
                     current = current[key].items;
+                } else if (current[key]?.tabs) {
+                    current = current[key].tabs;
+                } else if (current[key]?.content) {
+                    current = current[key].content;
                 } else {
                     current = current[key];
                 }
