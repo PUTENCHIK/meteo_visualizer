@@ -28,8 +28,9 @@ export const RangeInput = ({
     }, [value, min, max]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(event.target.valueAsNumber);
-        if (onChange) onChange(value, false);
+        const v = event.target.valueAsNumber;
+        setValue(v);
+        if (onChange) onChange(v, false);
     };
 
     const handleMouseDown = () => {
@@ -46,7 +47,7 @@ export const RangeInput = ({
             className={clsx(s['range-input-wrapper'])}
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}>
-            <div>{min}</div>
+            <span className={clsx(s['limit'])}>{min}</span>
             <div className={clsx(s['input-wrapper'])}>
                 <input
                     className={clsx(s['range-input'])}
@@ -55,8 +56,8 @@ export const RangeInput = ({
                     min={min}
                     max={max}
                     step={step}
-                    onChange={handleChange}
                     disabled={disabled}
+                    onChange={handleChange}
                     onMouseDown={handleMouseDown}
                     onMouseUp={handleMouseUp}
                 />
@@ -70,7 +71,7 @@ export const RangeInput = ({
                     </span>
                 )}
             </div>
-            <div>{max}</div>
+            <span className={clsx(s['limit'])}>{max}</span>
         </div>
     );
 };

@@ -27,12 +27,13 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
     if (visible && settingsManager.get(pathEnable) !== undefined && path !== pathEnable) {
         disabled = disabled || !settingsManager.get(pathEnable);
     }
-    let tabs: Record<string, string> = {};
+    const tabs: Record<string, string> = {};
 
     switch (item.kind) {
         case 'boolean':
             component = (
                 <Toggle
+                    key={path}
                     value={item.value}
                     onChange={(value) => handleChange(value)}
                     disabled={disabled}
@@ -42,6 +43,7 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
         case 'number':
             component = (
                 <input
+                    key={path}
                     type='number'
                     min={item.min}
                     max={item.max}
@@ -55,6 +57,7 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
         case 'range':
             component = (
                 <RangeInput
+                    key={path}
                     startValue={item.value}
                     min={item.min}
                     max={item.max}
@@ -67,6 +70,7 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
         case 'string':
             component = (
                 <input
+                    key={path}
                     type='text'
                     maxLength={item.maxLength}
                     placeholder={item.placeholder}
@@ -79,6 +83,7 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
         case 'color':
             component = (
                 <input
+                    key={path}
                     type='color'
                     value={item.value}
                     onChange={(e) => handleChange(e.target.value)}
@@ -89,6 +94,7 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
         case 'select':
             component = (
                 <select
+                    key={path}
                     onChange={(e) => handleChange(e.target.value)}
                     disabled={disabled}
                     defaultValue={item.value}>

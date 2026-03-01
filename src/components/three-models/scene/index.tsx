@@ -12,6 +12,7 @@ import { polarPosToXY } from '@utils/funcs';
 import { CameraReporter } from '@helpers/camera-reporter';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { useSettings } from '@context/use-settings';
+import { Heatmap } from '@models_/heatmap';
 
 interface SceneProps {
     onCameraReady: (camera: Camera) => void;
@@ -36,7 +37,11 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
     }, [settings.model.basePlate.height, settings.model.basePlate.padding]);
 
     const cameraProps = {
-        position: new Vector3(basePlateSize.x, settings.atmosphere.height * 2, -basePlateSize.z),
+        position: new Vector3(
+            basePlateSize.x,
+            settings.atmosphere.model.particles.height * 2,
+            -basePlateSize.z,
+        ),
         fov: 60,
     };
 
@@ -47,7 +52,7 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
         const target = controls.target;
 
         target.x = Math.max(-basePlateSize.x / 2, Math.min(basePlateSize.x / 2, target.x));
-        target.y = Math.max(0, Math.min(settings.atmosphere.height * 2, target.y));
+        target.y = Math.max(0, Math.min(settings.atmosphere.model.particles.height * 2, target.y));
         target.z = Math.max(-basePlateSize.z / 2, Math.min(basePlateSize.z / 2, target.z));
     };
 
@@ -94,12 +99,20 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                         {settings.atmosphere.model.value === 'particles' && (
                             <AtmosphereModel
                                 basePlateSize={basePlateSize}
-                                height={settings.atmosphere.height}
+                                height={settings.atmosphere.model.particles.height}
+                            />
+                        )}
+                        {settings.atmosphere.model.value === 'heatmaps' && (
+                            <Heatmap
+                                basePlateSize={basePlateSize}
+                                height={settings.atmosphere.model.heatmaps.height}
                             />
                         )}
                     </>
                 )}
             </Suspense>
+
+            {settings.scene.grid.enable && <gridHelper args={[basePlateSize.x, basePlateSize.z]} />}
 
             <OrbitControls
                 onChange={handleCameraChange}

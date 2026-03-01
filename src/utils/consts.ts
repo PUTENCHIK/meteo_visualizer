@@ -142,6 +142,9 @@ const rawSettings = {
                 color: createColor('Цвет', 'rgb(255, 255, 255)'),
             }),
         }),
+        grid: createChapter('Сетка', {
+            enable: createBoolean('Отображение', false),
+        }),
     }),
     model: createSection('Настройки модели комплекса', 'building', {
         basePlate: createChapter('Базовая плита', {
@@ -175,16 +178,18 @@ const rawSettings = {
     }),
     atmosphere: createSection('Настройки модели атмосферы', 'wind', {
         enable: createBoolean('Отображение', true),
-        height: createRange('Высота', 60, 20, 300, 5),
         model: createTab('Вид модели', 'particles', {
             particles: createTabItem('Частицы', 'particles', {
+                height: createRange('Высота', 60, 20, 300, 5),
                 size: createRange('Размер', 1, 0.7, 5, 0.1),
                 frequency: createRange('Частота', 0.08, 0.01, 0.3, 0.01),
                 opacity: createRange('Прозрачность', 0.5, 0.1, 1, 0.05),
                 form: createSelect<AtmosphereParticleForm>('Форма', 'sphere', ['sphere', 'cube']),
             }),
             heatmaps: createTabItem('Тепловые карты', 'heatmaps', {
-                color: createColor('Цвет', 'color'),
+                height: createRange('Высота', 30, 1, 100, 1),
+                pixelAmount: createRange('Кол-во пикселей', 100, 1, 256, 1),
+                opacity: createRange('Прозрачность', 0.5, 0.1, 1, 0.1),
             }),
         }),
     }),
