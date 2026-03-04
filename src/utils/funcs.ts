@@ -1,3 +1,4 @@
+import type { WeatherStationData } from '@context/weather-station-context';
 import type { IconName } from '@shared/icons';
 import type { PolarSystemPosition } from '@shared/interfaces';
 import type {
@@ -14,7 +15,7 @@ import type {
     SettingsTabItem,
     StringSettings,
 } from '@shared/settings';
-import { Vector2 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 
 export const polarPosToXY = (pos: PolarSystemPosition) => {
@@ -221,4 +222,40 @@ export const createSection = <T extends Record<string, SettingsItem>>(
         iconName: iconName,
         items: items,
     };
+};
+
+export const getInterpolatedValue = (
+    position: Vector3,
+    stations: WeatherStationData[],
+    degree: number = 2,
+): number => {
+    if (stations.length === 0) return 0;
+
+    let totalWeight = 0;
+    let weightedValue = 0;
+
+    for (const station of stations) {
+        const distance = position.distanceTo(station.position);
+
+        if (distance < 0.1) return station.value;
+
+        const weight = 1 / Math.pow(distance, degree);
+        weightedValue += station.value * weight;
+        totalWeight += weight;
+    }
+
+    return weightedValue / totalWeight;
+};
+
+export const getMappedValue = (
+    v: number,
+    inMin: number,
+    inMax: number,
+    outMin: number,
+    outMax: number,
+    limitValue: boolean = true,
+) => {
+    if (limitValue) v = Math.min(inMax, Math.max(v, inMin));
+    if (inMax === inMin) return (outMax - outMin) / 2;
+    return outMin + ((v - inMin) * (outMax - outMin)) / (inMax - inMin);
 };

@@ -3,8 +3,11 @@
     --background-color: #272727;
     --menu-background-color: #1d1d1d;
     --menu-background-color-hover: #131313;
+    --header-background-color: white;
+    --icon-default-color: var(--text-primary);
 }
 
 [data-theme='dark'] {
     --text-primary: white;
+    --header-background-color: #121212;
 }

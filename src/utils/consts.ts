@@ -9,6 +9,7 @@ import telescope from '@assets/telescope.svg?react';
 import wind from '@assets/wind.svg?react';
 import camera from '@assets/camera.svg?react';
 import scene from '@assets/scene.svg?react';
+import arrow from '@assets/arrow.svg?react';
 import {
     createBoolean,
     createChapter,
@@ -23,6 +24,7 @@ import type { AtmosphereParticleForm } from '@models_/atmosphere-particle';
 
 export const masts: MastsDataItem[] = [
     {
+        stationPrefix: 'west',
         description: 'Северо-западная мачта',
         height: 50,
         position: { radius: 230, angle: 45 },
@@ -50,6 +52,7 @@ export const masts: MastsDataItem[] = [
         ],
     },
     {
+        stationPrefix: 'north',
         description: 'Северная мачта',
         height: 35,
         position: { radius: 100, angle: 0 },
@@ -73,6 +76,7 @@ export const masts: MastsDataItem[] = [
         ],
     },
     {
+        stationPrefix: 'east',
         description: 'Восточная мачта',
         height: 35,
         position: { radius: 60, angle: 270 },
@@ -96,6 +100,7 @@ export const masts: MastsDataItem[] = [
         ],
     },
     {
+        stationPrefix: 'south',
         description: 'Южная мачта',
         height: 35,
         position: { radius: 30, angle: 180 },
@@ -178,6 +183,7 @@ const rawSettings = {
     }),
     atmosphere: createSection('Настройки модели атмосферы', 'wind', {
         enable: createBoolean('Отображение', true),
+        degreeOfInterpolation: createRange('Степень интерполяции', 3, 1, 4, 1),
         model: createTab('Вид модели', 'particles', {
             particles: createTabItem('Частицы', 'particles', {
                 height: createRange('Высота', 60, 20, 300, 5),
@@ -214,6 +220,7 @@ export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGS
     wind: wind,
     camera: camera,
     scene: scene,
+    arrow: arrow,
 };
 
 export const sizesToStrokes: Record<IconSize, number> = {

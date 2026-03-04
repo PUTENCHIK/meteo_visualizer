@@ -1,5 +1,8 @@
 import { useSettings } from '@context/use-settings';
-import { useEffect, useMemo, useRef } from 'react';
+import { useWeatherStations } from '@context/weather-station-context';
+import { useFrame } from '@react-three/fiber';
+import { getInterpolatedValue, getMappedValue } from '@utils/funcs';
+import { useMemo, useRef } from 'react';
 import { InstancedMesh, Vector3, Object3D, Color, DoubleSide, Vector2 } from 'three';
 
 interface InstancedHeatmapProps {
@@ -9,6 +12,7 @@ interface InstancedHeatmapProps {
 
 export const Heatmap = ({ basePlateSize, height }: InstancedHeatmapProps) => {
     const { map: settings } = useSettings();
+    const { getStations } = useWeatherStations();
 
     const meshRef = useRef<InstancedMesh>(null!);
     const opacity = settings.atmosphere.model.heatmaps.opacity;
@@ -37,26 +41,43 @@ export const Heatmap = ({ basePlateSize, height }: InstancedHeatmapProps) => {
 
     const count = pixelPositions.length;
 
-    useEffect(() => {
+    const obj = useMemo(() => new Object3D(), [amount]);
+
+    useFrame(() => {
         if (!meshRef.current || count == 0) return;
 
-        const obj = new Object3D();
+        const stations = getStations();
+        const stationsList = Object.values(stations);
 
-        pixelPositions.forEach((pos, i) => {
-            obj.position.copy(pos);
+        let minValue = 1e6;
+        let maxValue = 0;
+        for (const station of stationsList) {
+            minValue = Math.min(station.value, minValue);
+            maxValue = Math.max(station.value, maxValue);
+        }
+
+        pixelPositions.forEach((p, i) => {
+            obj.position.copy(p);
             obj.updateMatrix();
             meshRef.current.setMatrixAt(i, obj.matrix);
 
-            const t = Math.random();
-            const color = new Color(1 - t, t, 0);
+            // if (minValue !== maxValue) {
+            const t = getInterpolatedValue(
+                p,
+                stationsList,
+                settings.atmosphere.degreeOfInterpolation,
+            );
+            const tm = getMappedValue(t, minValue, maxValue, 0, 1);
+            const color = new Color(1 - tm, tm, 0);
             meshRef.current.setColorAt(i, color);
+            // }
         });
 
         meshRef.current.instanceMatrix.needsUpdate = true;
         if (meshRef.current.instanceColor) {
             meshRef.current.instanceColor.needsUpdate = true;
         }
-    }, [count, pixelPositions]);
+    });
 
     const materialProps = useMemo(
         () => ({
@@ -72,7 +93,7 @@ export const Heatmap = ({ basePlateSize, height }: InstancedHeatmapProps) => {
 
     return (
         <instancedMesh ref={meshRef} args={[undefined, undefined, count]} position={[0, height, 0]}>
-            <boxGeometry args={[sizes.x, sizes.x / 100, sizes.y]} />
+            <boxGeometry args={[sizes.x, 0.1, sizes.y]} />
             <meshBasicMaterial {...materialProps} />
         </instancedMesh>
     );

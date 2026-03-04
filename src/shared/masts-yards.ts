@@ -10,6 +10,7 @@ export interface YardDataItem {
 }
 
 export interface MastsDataItem {
+    stationPrefix: string;
     description?: string;
     height: MastHeight;
     position: PolarSystemPosition;

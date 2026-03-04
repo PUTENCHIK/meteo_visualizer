@@ -1,6 +1,9 @@
 import { useSettings } from '@context/use-settings';
+import { useWeatherStations } from '@context/weather-station-context';
 import { AtmosphereParticle } from '@models_/atmosphere-particle';
-import { useEffect, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { getInterpolatedValue, getMappedValue } from '@utils/funcs';
+import { useMemo, useRef } from 'react';
 import { Color, InstancedMesh, Object3D, Vector3 } from 'three';
 
 interface AtmosphereModelProps {
@@ -10,6 +13,7 @@ interface AtmosphereModelProps {
 
 export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps) => {
     const { map: settings } = useSettings();
+    const { getStations } = useWeatherStations();
 
     const particleSize = settings.atmosphere.model.particles.size;
     const particleFrequency = settings.atmosphere.model.particles.frequency;
@@ -55,28 +59,45 @@ export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps)
 
     const count = particlePositions.length;
 
-    useEffect(() => {
+    const obj = useMemo(() => new Object3D(), [height, particleSize, particleFrequency]);
+
+    useFrame(() => {
         if (!meshRef.current || count == 0) return;
 
-        const obj = new Object3D();
+        const stations = getStations();
+        const stationsList = Object.values(stations);
+
+        let minValue = 1e6;
+        let maxValue = 0;
+        for (const station of stationsList) {
+            minValue = Math.min(station.value, minValue);
+            maxValue = Math.max(station.value, maxValue);
+        }
+
         particlePositions.forEach((p, i) => {
-            obj.position.set(p.x, p.y, p.z);
-            obj.scale.set(1, 1, 1);
+            obj.position.copy(p);
             obj.updateMatrix();
             meshRef.current!.setMatrixAt(i, obj.matrix);
 
-            const t = Math.random();
-            const color = new Color(1 - t, t, 0);
-
+            // if (minValue !== maxValue) {
+            const t = getInterpolatedValue(
+                p,
+                stationsList,
+                settings.atmosphere.degreeOfInterpolation,
+            );
+            const tm = getMappedValue(t, minValue, maxValue, 0, 1);
+            const color = new Color(1 - tm, tm, 0);
             meshRef.current!.setColorAt(i, color);
+            // }
         });
+
         meshRef.current.instanceMatrix.needsUpdate = true;
         if (meshRef.current.instanceColor) {
             meshRef.current.instanceColor.needsUpdate = true;
         }
         meshRef.current.computeBoundingBox();
         meshRef.current.computeBoundingSphere();
-    }, [count, particlePositions]);
+    });
 
     if (count == 0) return null;
 

@@ -1,0 +1,21 @@
+.header-menu-wrapper {
+    display: flex;
+    column-gap: 40px;
+    align-items: center;
+
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.header-group {
+    display: inline-flex;
+    column-gap: 20px;
+    align-items: center;
+}
+
+.header-item {
+    display: inline-flex;
+    column-gap: 8px;
+    align-items: center;
+}

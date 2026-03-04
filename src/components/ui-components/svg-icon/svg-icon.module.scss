@@ -1,5 +1,5 @@
 .svg-icon:not(.custom-color) {
-    color: var(--color-black);
+    color: var(--icon-default-color);
 
     &.disabled {
         color: var(--color-disabled);

@@ -1,0 +1,59 @@
+import clsx from 'clsx';
+import s from './icon-button.module.scss';
+import { SvgIcon } from '@components/svg-icon';
+import type { IconName, IconSize } from '@shared/icons';
+
+type IconButtonType = 'default' | 'secondary' | 'primary';
+
+interface IconButtonStyle {
+    className: string;
+    iconColor?: string;
+}
+
+const typeToStyles: Record<IconButtonType, IconButtonStyle> = {
+    default: {
+        className: 'default',
+    },
+    secondary: {
+        className: 'secondary',
+        // iconColor: '',
+    },
+    primary: {
+        className: 'primary',
+        // iconColor: '',
+    },
+};
+
+interface IconButtonProps {
+    iconName: IconName;
+    title: string;
+    type?: IconButtonType;
+    iconSize?: IconSize;
+    disabled?: boolean;
+    onClick?: () => void;
+}
+
+export const IconButton = ({
+    iconName,
+    title,
+    type = 'default',
+    iconSize = 24,
+    disabled = false,
+    onClick,
+}: IconButtonProps) => {
+    return (
+        <button
+            type='button'
+            className={clsx(s['button'], s[typeToStyles[type].className])}
+            title={title}
+            disabled={disabled}
+            onClick={onClick}>
+            <SvgIcon
+                iconName={iconName}
+                size={iconSize}
+                disabled={disabled}
+                color={typeToStyles[type].iconColor}
+            />
+        </button>
+    );
+};
