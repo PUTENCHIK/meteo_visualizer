@@ -1,100 +1,111 @@
 import { useSettings } from '@context/use-settings';
 import { useWeatherStations } from '@context/weather-station-context';
 import { useFrame } from '@react-three/fiber';
-import { getInterpolatedValue, getMappedValue } from '@utils/funcs';
+import { vertexShader, fragmentShader } from '@utils/consts';
 import { useMemo, useRef } from 'react';
-import { InstancedMesh, Vector3, Object3D, Color, DoubleSide, Vector2 } from 'three';
+import { Vector3, Object3D, Vector2, ShaderMaterial, Vector4 } from 'three';
 
-interface InstancedHeatmapProps {
+interface HeatmapProps {
     basePlateSize: Vector3;
     height: number;
 }
 
-export const Heatmap = ({ basePlateSize, height }: InstancedHeatmapProps) => {
+export const Heatmap = ({ basePlateSize, height }: HeatmapProps) => {
     const { map: settings } = useSettings();
     const { getStations } = useWeatherStations();
 
-    const meshRef = useRef<InstancedMesh>(null!);
-    const opacity = settings.atmosphere.model.heatmaps.opacity;
-    const amount = settings.atmosphere.model.heatmaps.pixelAmount;
+    const materialRef = useRef<ShaderMaterial>(null);
 
-    const sizes: Vector2 = useMemo(() => {
-        return new Vector2(basePlateSize.x / amount, basePlateSize.z / amount);
-    }, [basePlateSize.x, basePlateSize.z, amount]);
+    const MAX_STATIONS = settings.atmosphere.maxStations;
+    const degree = settings.atmosphere.degreeOfInterpolation;
+    const scaleMin = settings.atmosphere.scale.min;
+    const scaleMax = settings.atmosphere.scale.max;
 
-    const pixelPositions = useMemo(() => {
+    const pixelOpacity = settings.atmosphere.model.heatmaps.opacity;
+    const pixelAmount = settings.atmosphere.model.heatmaps.pixelAmount;
+
+    const shader = useMemo(
+        () => ({
+            uniforms: {
+                uStations: { value: [new Vector4(0, 0, 0, 0)] },
+                uStationCount: { value: 0 },
+                uDegree: { value: degree },
+                uMinVal: { value: scaleMin },
+                uMaxVal: { value: scaleMax },
+                uOpacity: { value: 1.0 },
+            },
+            vertexShader: vertexShader(MAX_STATIONS),
+            fragmentShader: fragmentShader,
+        }),
+        [MAX_STATIONS, degree, scaleMin, scaleMax],
+    );
+
+    const pixelSizes: Vector2 = useMemo(() => {
+        return new Vector2(basePlateSize.x / pixelAmount, basePlateSize.z / pixelAmount);
+    }, [basePlateSize.x, basePlateSize.z, pixelAmount]);
+
+    const { pixelPositions, pixelCount } = useMemo(() => {
         const list: Vector3[] = [];
 
-        for (let i = 0; i < amount; i++) {
-            for (let j = 0; j < amount; j++) {
+        for (let i = 0; i < pixelAmount; i++) {
+            for (let j = 0; j < pixelAmount; j++) {
                 list.push(
                     new Vector3(
-                        -basePlateSize.x / 2 + (i + 0.5) * sizes.x,
+                        -basePlateSize.x / 2 + (i + 0.5) * pixelSizes.x,
                         0,
-                        -basePlateSize.z / 2 + (j + 0.5) * sizes.y,
+                        -basePlateSize.z / 2 + (j + 0.5) * pixelSizes.y,
                     ),
                 );
             }
         }
-        return list;
-    }, [basePlateSize, amount, sizes.x, sizes.y]);
+        return { pixelPositions: list, pixelCount: list.length };
+    }, [basePlateSize, pixelAmount, pixelSizes.x, pixelSizes.y]);
 
-    const count = pixelPositions.length;
+    const instanceMatrices = useMemo(() => {
+        if (pixelCount === 0) return new Float32Array(0);
 
-    const obj = useMemo(() => new Object3D(), [amount]);
-
-    useFrame(() => {
-        if (!meshRef.current || count == 0) return;
-
-        const stations = getStations();
-        const stationsList = Object.values(stations);
-
-        let minValue = 1e6;
-        let maxValue = 0;
-        for (const station of stationsList) {
-            minValue = Math.min(station.value, minValue);
-            maxValue = Math.max(station.value, maxValue);
-        }
-
-        pixelPositions.forEach((p, i) => {
-            obj.position.copy(p);
+        const array = new Float32Array(pixelCount * 16);
+        const obj = new Object3D();
+        pixelPositions.forEach((pos, i) => {
+            obj.position.copy(pos);
             obj.updateMatrix();
-            meshRef.current.setMatrixAt(i, obj.matrix);
-
-            // if (minValue !== maxValue) {
-            const t = getInterpolatedValue(
-                p,
-                stationsList,
-                settings.atmosphere.degreeOfInterpolation,
-            );
-            const tm = getMappedValue(t, minValue, maxValue, 0, 1);
-            const color = new Color(1 - tm, tm, 0);
-            meshRef.current.setColorAt(i, color);
-            // }
+            obj.matrix.toArray(array, i * 16);
         });
+        return array;
+    }, [pixelPositions, pixelCount]);
 
-        meshRef.current.instanceMatrix.needsUpdate = true;
-        if (meshRef.current.instanceColor) {
-            meshRef.current.instanceColor.needsUpdate = true;
-        }
-    });
-
-    const materialProps = useMemo(
-        () => ({
-            transparent: true,
-            opacity: opacity,
-            depthWrite: false,
-            side: DoubleSide,
-        }),
-        [opacity],
+    const stationsData = useMemo(
+        () => new Array(MAX_STATIONS).fill(null).map(() => new Vector4()),
+        [MAX_STATIONS],
     );
 
-    if (count == 0) return null;
+    useFrame(() => {
+        if (!materialRef.current) return;
+
+        const stations = Object.values(getStations());
+
+        for (let i = 0; i < MAX_STATIONS; i++) {
+            if (i < stations.length) {
+                const s = stations[i];
+                stationsData[i].set(s.position.x, s.position.y, s.position.z, s.value);
+            } else {
+                stationsData[i].set(0, 0, 0, 0);
+            }
+        }
+
+        materialRef.current.uniforms.uStations.value = stationsData;
+        materialRef.current.uniforms.uStationCount.value = Math.min(stations.length, MAX_STATIONS);
+        materialRef.current.uniforms.uDegree.value = degree;
+        materialRef.current.uniforms.uOpacity.value = pixelOpacity;
+    });
+
+    if (pixelCount == 0) return null;
 
     return (
-        <instancedMesh ref={meshRef} args={[undefined, undefined, count]} position={[0, height, 0]}>
-            <boxGeometry args={[sizes.x, 0.1, sizes.y]} />
-            <meshBasicMaterial {...materialProps} />
+        <instancedMesh args={[undefined, undefined, pixelCount]} position={[0, height, 0]}>
+            <instancedBufferAttribute attach='instanceMatrix' args={[instanceMatrices, 16]} />
+            <boxGeometry args={[pixelSizes.x, 0.1, pixelSizes.y]} />
+            <shaderMaterial ref={materialRef} args={[shader]} transparent />
         </instancedMesh>
     );
 };

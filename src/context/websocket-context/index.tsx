@@ -60,7 +60,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                             break;
                         }
                     }
-                    updateStation(message.pollable_name, value);
+                    updateStation(name, value);
                 }
             } catch (error) {
                 console.error(`Parsing error: ${error}`);

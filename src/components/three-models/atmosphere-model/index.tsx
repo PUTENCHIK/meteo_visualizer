@@ -1,10 +1,9 @@
 import { useSettings } from '@context/use-settings';
 import { useWeatherStations } from '@context/weather-station-context';
-import { AtmosphereParticle } from '@models_/atmosphere-particle';
 import { useFrame } from '@react-three/fiber';
-import { getInterpolatedValue, getMappedValue } from '@utils/funcs';
+import { fragmentShader, vertexShader } from '@utils/consts';
 import { useMemo, useRef } from 'react';
-import { Color, InstancedMesh, Object3D, Vector3 } from 'three';
+import { Object3D, ShaderMaterial, Vector3, Vector4 } from 'three';
 
 interface AtmosphereModelProps {
     basePlateSize: Vector3;
@@ -15,14 +14,36 @@ export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps)
     const { map: settings } = useSettings();
     const { getStations } = useWeatherStations();
 
+    const materialRef = useRef<ShaderMaterial>(null);
+
+    const MAX_STATIONS = settings.atmosphere.maxStations;
+    const degree = settings.atmosphere.degreeOfInterpolation;
+    const scaleMin = settings.atmosphere.scale.min;
+    const scaleMax = settings.atmosphere.scale.max;
+
     const particleSize = settings.atmosphere.model.particles.size;
+    const particleSegments = settings.atmosphere.model.particles.segments;
     const particleFrequency = settings.atmosphere.model.particles.frequency;
     const particleForm = settings.atmosphere.model.particles.form;
     const particleOpacity = settings.atmosphere.model.particles.opacity;
 
-    const meshRef = useRef<InstancedMesh>(null);
+    const shader = useMemo(
+        () => ({
+            uniforms: {
+                uStations: { value: [new Vector4(0, 0, 0, 0)] },
+                uStationCount: { value: 0 },
+                uDegree: { value: degree },
+                uMinVal: { value: scaleMin },
+                uMaxVal: { value: scaleMax },
+                uOpacity: { value: 1.0 },
+            },
+            vertexShader: vertexShader(MAX_STATIONS),
+            fragmentShader: fragmentShader,
+        }),
+        [MAX_STATIONS, degree, scaleMin, scaleMax],
+    );
 
-    const particlePositions = useMemo(() => {
+    const { particlePositions, particleCount } = useMemo(() => {
         const minParticles = 2;
 
         const list: Vector3[] = [];
@@ -54,60 +75,61 @@ export const AtmosphereModel = ({ basePlateSize, height }: AtmosphereModelProps)
             }
         }
 
-        return list;
+        return { particlePositions: list, particleCount: list.length };
     }, [basePlateSize, height, particleSize, particleFrequency]);
 
-    const count = particlePositions.length;
+    const instanceMatrices = useMemo(() => {
+        if (particleCount === 0) return new Float32Array(0);
 
-    const obj = useMemo(() => new Object3D(), [height, particleSize, particleFrequency]);
+        const array = new Float32Array(particleCount * 16);
+        const obj = new Object3D();
+        particlePositions.forEach((pos, i) => {
+            obj.position.copy(pos);
+            obj.updateMatrix();
+            obj.matrix.toArray(array, i * 16);
+        });
+        return array;
+    }, [particlePositions, particleCount]);
+
+    const stationsData = useMemo(
+        () => new Array(MAX_STATIONS).fill(null).map(() => new Vector4()),
+        [MAX_STATIONS],
+    );
 
     useFrame(() => {
-        if (!meshRef.current || count == 0) return;
+        if (!materialRef.current) return;
 
-        const stations = getStations();
-        const stationsList = Object.values(stations);
+        const stations = Object.values(getStations());
 
-        let minValue = 1e6;
-        let maxValue = 0;
-        for (const station of stationsList) {
-            minValue = Math.min(station.value, minValue);
-            maxValue = Math.max(station.value, maxValue);
+        for (let i = 0; i < MAX_STATIONS; i++) {
+            if (i < stations.length) {
+                const s = stations[i];
+                stationsData[i].set(s.position.x, s.position.y, s.position.z, s.value);
+            } else {
+                stationsData[i].set(0, 0, 0, 0);
+            }
         }
 
-        particlePositions.forEach((p, i) => {
-            obj.position.copy(p);
-            obj.updateMatrix();
-            meshRef.current!.setMatrixAt(i, obj.matrix);
+        const uniforms = materialRef.current.uniforms;
 
-            // if (minValue !== maxValue) {
-            const t = getInterpolatedValue(
-                p,
-                stationsList,
-                settings.atmosphere.degreeOfInterpolation,
-            );
-            const tm = getMappedValue(t, minValue, maxValue, 0, 1);
-            const color = new Color(1 - tm, tm, 0);
-            meshRef.current!.setColorAt(i, color);
-            // }
-        });
-
-        meshRef.current.instanceMatrix.needsUpdate = true;
-        if (meshRef.current.instanceColor) {
-            meshRef.current.instanceColor.needsUpdate = true;
-        }
-        meshRef.current.computeBoundingBox();
-        meshRef.current.computeBoundingSphere();
+        uniforms.uStations.value = stationsData;
+        uniforms.uStationCount.value = Math.min(stations.length, MAX_STATIONS);
+        uniforms.uDegree.value = degree;
+        uniforms.uOpacity.value = particleOpacity;
+        uniforms.uMinVal.value = scaleMin;
+        uniforms.uMaxVal.value = scaleMax;
     });
 
-    if (count == 0) return null;
-
     return (
-        <instancedMesh
-            ref={meshRef}
-            args={[undefined, undefined, count]}
-            castShadow={false}
-            receiveShadow={false}>
-            <AtmosphereParticle form={particleForm} size={particleSize} opacity={particleOpacity} />
+        <instancedMesh args={[undefined, undefined, particleCount]}>
+            <instancedBufferAttribute attach='instanceMatrix' args={[instanceMatrices, 16]} />
+            {particleForm === 'cube' && (
+                <boxGeometry args={[particleSize, particleSize, particleSize]} />
+            )}
+            {particleForm === 'sphere' && (
+                <sphereGeometry args={[particleSize / 2, particleSegments, particleSegments]} />
+            )}
+            <shaderMaterial ref={materialRef} args={[shader]} transparent />
         </instancedMesh>
     );
 };

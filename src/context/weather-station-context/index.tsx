@@ -16,11 +16,13 @@ interface WeatherStationContextType {
 const getStationPos = (name: string): Vector3 => {
     const parts = name.toLowerCase().split('-');
     let mastPos: Vector2 = new Vector2(0, 0);
+    let lastMast = undefined;
     for (const mast of masts) {
         mastPos = polarPosToXY(mast.position);
+        lastMast = mast;
         if (mast.stationPrefix === parts[0]) break;
     }
-    return new Vector3(mastPos.x, Math.random() * 100, mastPos.y);
+    return new Vector3(mastPos.x, Math.random() * (lastMast?.height ?? 100), mastPos.y);
 };
 
 const WeatherStationContext = createContext<WeatherStationContextType | undefined>(undefined);
