@@ -1,0 +1,36 @@
+.dialog-window {
+    border-radius: var(--window-padding);
+    background-color: var(--menu-background-color);
+    box-shadow: 6px 6px 8px 0 color-mix(in srgb, var(--menu-background-color), transparent 60%);
+    outline: 1px solid #80808080;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+}
+
+.window-title {
+    display: flex;
+    flex-wrap: nowrap;
+    column-gap: 8px;
+    align-items: center;
+
+    padding: var(--window-padding) var(--window-padding) 0 var(--window-padding);
+    cursor: move;
+}
+
+h2.title {
+    width: 100%;
+}
+
+.content {
+    box-sizing: border-box;
+    padding: 0 var(--window-padding) var(--window-padding) var(--window-padding);
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+}

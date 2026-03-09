@@ -41,6 +41,7 @@ export default defineConfig({
             '@components': path.resolve(__dirname, './src/components/ui-components'),
             '@helpers': path.resolve(__dirname, './src/components/helpers'),
             '@assets': path.resolve(__dirname, './src/assets'),
+            '@dialogs': path.resolve(__dirname, './src/components/dialogs'),
         },
     },
     server: {

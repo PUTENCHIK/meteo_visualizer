@@ -16,11 +16,9 @@ const typeToStyles: Record<IconButtonType, IconButtonStyle> = {
     },
     secondary: {
         className: 'secondary',
-        // iconColor: '',
     },
     primary: {
         className: 'primary',
-        // iconColor: '',
     },
 };
 
@@ -29,6 +27,7 @@ interface IconButtonProps {
     title: string;
     type?: IconButtonType;
     iconSize?: IconSize;
+    className?: string;
     disabled?: boolean;
     onClick?: () => void;
 }
@@ -38,13 +37,14 @@ export const IconButton = ({
     title,
     type = 'default',
     iconSize = 24,
+    className,
     disabled = false,
     onClick,
 }: IconButtonProps) => {
     return (
         <button
             type='button'
-            className={clsx(s['button'], s[typeToStyles[type].className])}
+            className={clsx(s['button'], s[typeToStyles[type].className], className)}
             title={title}
             disabled={disabled}
             onClick={onClick}>

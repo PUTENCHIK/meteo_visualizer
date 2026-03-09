@@ -9,15 +9,15 @@ import { Suspense } from 'react';
 import { Loader } from '@components/loader';
 import { WebSocketProvider } from '@context/websocket-context';
 import { WeatherStationProvider } from '@context/weather-station-context';
+import { DialogProvider } from '@context/dialog-context';
+import { ProviderComposer } from '@context/provider-composer';
+
+const providers = [ThemeProvider, DialogProvider, WeatherStationProvider, WebSocketProvider];
 
 createRoot(document.getElementById('root')!).render(
-    <WeatherStationProvider>
-        <WebSocketProvider>
-            <ThemeProvider>
-                <Suspense fallback={<Loader type='circle' />}>
-                    <RouterProvider router={AppRouter} />
-                </Suspense>
-            </ThemeProvider>
-        </WebSocketProvider>
-    </WeatherStationProvider>,
+    <ProviderComposer providers={providers}>
+        <Suspense fallback={<Loader type='circle' />}>
+            <RouterProvider router={AppRouter} />
+        </Suspense>
+    </ProviderComposer>,
 );

@@ -16,17 +16,17 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
     const longYardExtraLength = 2;
     const supportLength = 1.5;
 
-    function getYardPartPosition(isShortPart: boolean): Vector3 {
+    const getYardPartPosition = (isShortPart: boolean): Vector3 => {
         return new Vector3((isShortPart ? -shortYardLength : longYardLength) / 2, 0, 0);
-    }
+    };
 
-    function getSupportPosition(isShortPart: boolean): Vector3 {
+    const getSupportPosition = (isShortPart: boolean): Vector3 => {
         const a = Math.sqrt((supportLength * supportLength) / 2);
 
         return new Vector3((a / 2) * (isShortPart ? -1 : 1), -a / 2, 0);
-    }
+    };
 
-    function getWeatherStationPosition(isUpper: boolean): Vector3 {
+    const getWeatherStationPosition = (isUpper: boolean): Vector3 => {
         const a = Math.sqrt((longYardExtraLength * longYardExtraLength) / 2);
 
         return new Vector3(
@@ -34,7 +34,7 @@ export const YardModel = ({ height, amount }: YardDataItem) => {
             (a / 2) * (isUpper ? 1 : -1),
             0,
         );
-    }
+    };
 
     return (
         <MeshGroup position={new Vector3(0, height, 0)}>

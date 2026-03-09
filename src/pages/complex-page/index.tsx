@@ -8,15 +8,17 @@ import { SettingsMenu } from '@components/settings-menu';
 import { useSettings } from '@context/use-settings';
 import { IconButton } from '@components/icon-button';
 import { useNavigate } from 'react-router-dom';
-import { Toggle } from '@components/toggle';
-import { useSocket } from '@context/websocket-context';
+import { LinkButton } from '@components/link-button';
+import { useDialogs } from '@context/dialog-context';
+import { ComplexDataDialog } from '@dialogs/complex-data-dialog';
+import { WebsocketApiDialog } from '@dialogs/websocket-api-dialog';
 
 export const ComplexPage = () => {
+    const navigate = useNavigate();
     const { map: settings } = useSettings();
-    const { isConnected, toggleConnection } = useSocket();
+    const { toggleDialog } = useDialogs();
 
     const [mainCamera, setMainCamera] = useState<Camera>();
-    const navigate = useNavigate();
 
     const handleBackToHomePageClick = () => {
         navigate('/');
@@ -24,7 +26,6 @@ export const ComplexPage = () => {
 
     return (
         <>
-            <Scene onCameraReady={setMainCamera} />
             <div className={clsx(s['header-menu-wrapper'])}>
                 <div className={clsx(s['header-group'])}>
                     <IconButton
@@ -35,16 +36,23 @@ export const ComplexPage = () => {
                     <h2>Комплекс МАМКА №1243</h2>
                 </div>
                 <div className={clsx(s['header-group'])}>
-                    <div className={clsx(s['header-item'])}>
-                        <span>Соединение с веб-сокетом:</span>
-                        <Toggle value={isConnected} onChange={toggleConnection} />
-                    </div>
+                    <LinkButton
+                        title={'Данные комплекса'}
+                        onClick={() => toggleDialog('complexData')}
+                    />
+                    <LinkButton title={'Веб-сокет'} onClick={() => toggleDialog('websocketApi')} />
                 </div>
             </div>
+
+            <Scene onCameraReady={setMainCamera} />
             {settings.compass.enable && (
                 <CompassModel mainCamera={mainCamera} compassType={settings.compass.type} />
             )}
+
             <SettingsMenu />
+
+            <ComplexDataDialog />
+            <WebsocketApiDialog />
         </>
     );
 };

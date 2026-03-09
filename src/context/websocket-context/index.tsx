@@ -29,11 +29,18 @@ interface ServerMessage {
     poll_result: PollResult | null;
 }
 
+interface SocketConfig {
+    host: string;
+    port: number;
+}
+
 interface SocketContextType {
     sendMessage: (data: any) => void;
     readyState: ReadyState;
     isConnected: boolean;
     toggleConnection: () => void;
+    config: SocketConfig;
+    updateConfig: (host: string, port: number) => void;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -42,10 +49,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const { updateStation } = useWeatherStations();
 
     const [connectionEnabled, setConnectionEnabled] = useState(false);
+    const [config, setConfig] = useState<SocketConfig>({
+        host: 'localhost',
+        port: 5052,
+    });
 
-    const host = 'localhost';
-    const port = 5052;
-    const socketUrl = connectionEnabled ? `ws://${host}:${port}/ws` : null;
+    const socketUrl = connectionEnabled ? `ws://${config.host}:${config.port}/ws` : null;
 
     const { sendJsonMessage, readyState } = useWebSocket<ServerMessage>(socketUrl, {
         onMessage: (event) => {
@@ -80,8 +89,10 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             readyState,
             isConnected,
             toggleConnection: () => setConnectionEnabled((prev) => !prev),
+            config,
+            updateConfig: (host: string, port: number) => setConfig({ host, port }),
         }),
-        [sendJsonMessage, readyState, isConnected],
+        [sendJsonMessage, readyState, isConnected, config],
     );
 
     return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>;

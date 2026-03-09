@@ -12,6 +12,7 @@
     bottom: var(--complex-page-padding);
     left: var(--complex-page-padding);
     pointer-events: none;
+    z-index: 8;
 }
 
 .sections-box {

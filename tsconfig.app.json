@@ -21,6 +21,7 @@
             "@components/*": ["src/components/ui-components/*"],
             "@helpers/*": ["src/components/helpers/*"],
             "@assets/*": ["src/assets/*"],
+            "@dialogs/*": ["src/components/dialogs/*"],
         },
 
         /* Bundler mode */

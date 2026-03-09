@@ -1,0 +1,18 @@
+.link-button {
+    height: min-content;
+    padding: 6px 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: color-mix(in srgb, var(--icon-default-color), transparent 90%);
+    border-radius: 8px;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+
+    &:hover {
+        background-color: color-mix(in srgb, var(--icon-default-color), transparent 80%);
+    }
+}

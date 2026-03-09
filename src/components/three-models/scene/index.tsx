@@ -22,6 +22,14 @@ interface SceneProps {
 export const Scene = ({ onCameraReady }: SceneProps) => {
     const { map: settings } = useSettings();
 
+    const sceneStyle = useMemo(() => {
+        return settings.scene.background.enable
+            ? {
+                  backgroundColor: '#24136a',
+              }
+            : undefined;
+    }, [settings.scene.background.enable]);
+
     const basePlateSize = useMemo(() => {
         const size = new Vector3(20, settings.model.basePlate.height, 20);
 
@@ -58,7 +66,7 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
     };
 
     return (
-        <Canvas camera={cameraProps}>
+        <Canvas camera={cameraProps} style={sceneStyle}>
             <Suspense fallback={<Loader type='circle' />}>
                 {settings.scene.light.ambient.enable && (
                     <ambientLight

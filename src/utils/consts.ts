@@ -10,6 +10,7 @@ import wind from '@assets/wind.svg?react';
 import camera from '@assets/camera.svg?react';
 import scene from '@assets/scene.svg?react';
 import arrow from '@assets/arrow.svg?react';
+import cross from '@assets/cross.svg?react';
 import {
     createBoolean,
     createChapter,
@@ -128,6 +129,9 @@ export const masts: MastsDataItem[] = [
 
 const rawSettings = {
     scene: createSection('Настройки сцены', 'scene', {
+        background: createChapter('Фон', {
+            enable: createBoolean('Имитация неба', false),
+        }),
         edges: createChapter('Границы', {
             enable: createBoolean('Отображение', true),
             threshold: createRange('Угол появления', 15, 1, 180, 1),
@@ -237,6 +241,7 @@ export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGS
     camera: camera,
     scene: scene,
     arrow: arrow,
+    cross: cross,
 };
 
 export const sizesToStrokes: Record<IconSize, number> = {

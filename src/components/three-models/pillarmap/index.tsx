@@ -108,16 +108,10 @@ export const Pillarmap = ({ basePlateSize, height }: PillarmapProps) => {
     if (pixelCount == 0) return null;
 
     return (
-        <instancedMesh
-            args={[undefined, undefined, pixelCount]}
-            position={[0, 0.5, 0]}>
+        <instancedMesh args={[undefined, undefined, pixelCount]} position={[0, 0.5, 0]}>
             <instancedBufferAttribute attach='instanceMatrix' args={[instanceMatrices, 16]} />
             <boxGeometry args={[pixelSizes.x, 1, pixelSizes.y]} />
-            <shaderMaterial
-                ref={materialRef}
-                args={[shader]}
-                transparent
-            />
+            <shaderMaterial ref={materialRef} args={[shader]} transparent />
         </instancedMesh>
     );
 };
