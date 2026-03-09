@@ -13,6 +13,7 @@ import { CameraReporter } from '@helpers/camera-reporter';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { useSettings } from '@context/use-settings';
 import { Heatmap } from '@models_/heatmap';
+import { Pillarmap } from '@models_/pillarmap';
 
 interface SceneProps {
     onCameraReady: (camera: Camera) => void;
@@ -102,10 +103,16 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                                 height={settings.atmosphere.model.particles.height}
                             />
                         )}
-                        {settings.atmosphere.model.value === 'heatmaps' && (
+                        {settings.atmosphere.model.value === 'heatmap' && (
                             <Heatmap
                                 basePlateSize={basePlateSize}
-                                height={settings.atmosphere.model.heatmaps.height}
+                                height={settings.atmosphere.model.heatmap.height}
+                            />
+                        )}
+                        {settings.atmosphere.model.value === 'pillarmap' && (
+                            <Pillarmap
+                                basePlateSize={basePlateSize}
+                                height={settings.atmosphere.model.pillarmap.height}
                             />
                         )}
                     </>

@@ -2,19 +2,18 @@ import { useSettings } from '@context/use-settings';
 import { useWeatherStations } from '@context/weather-station-context';
 import { useFrame } from '@react-three/fiber';
 import { vertexShader, fragmentShader } from '@utils/consts';
-import { useLayoutEffect, useMemo, useRef } from 'react';
-import { Vector3, Object3D, Vector2, ShaderMaterial, Vector4, PlaneGeometry } from 'three';
+import { useMemo, useRef } from 'react';
+import { Vector3, Object3D, Vector2, ShaderMaterial, Vector4 } from 'three';
 
-interface HeatmapProps {
+interface PillarmapProps {
     basePlateSize: Vector3;
     height: number;
 }
 
-export const Heatmap = ({ basePlateSize, height }: HeatmapProps) => {
+export const Pillarmap = ({ basePlateSize, height }: PillarmapProps) => {
     const { map: settings } = useSettings();
     const { getStations } = useWeatherStations();
 
-    const geometryRef = useRef<PlaneGeometry>(null);
     const materialRef = useRef<ShaderMaterial>(null);
 
     const MAX_STATIONS = settings.atmosphere.maxStations;
@@ -22,8 +21,8 @@ export const Heatmap = ({ basePlateSize, height }: HeatmapProps) => {
     const scaleMin = settings.atmosphere.scale.min;
     const scaleMax = settings.atmosphere.scale.max;
 
-    const pixelOpacity = settings.atmosphere.model.heatmap.opacity;
-    const pixelAmount = settings.atmosphere.model.heatmap.pixelAmount;
+    const pixelOpacity = settings.atmosphere.model.pillarmap.opacity;
+    const pixelAmount = settings.atmosphere.model.pillarmap.pixelAmount;
 
     const shader = useMemo(
         () => ({
@@ -34,13 +33,13 @@ export const Heatmap = ({ basePlateSize, height }: HeatmapProps) => {
                 uMinVal: { value: scaleMin },
                 uMaxVal: { value: scaleMax },
                 uOpacity: { value: 1.0 },
-                uScaling: { value: false },
-                uScalingHeight: { value: 1.0 },
+                uScaling: { value: true },
+                uScalingHeight: { value: height },
             },
             vertexShader: vertexShader(MAX_STATIONS),
             fragmentShader: fragmentShader,
         }),
-        [MAX_STATIONS, degree, scaleMin, scaleMax],
+        [MAX_STATIONS, degree, scaleMin, scaleMax, height],
     );
 
     const pixelSizes: Vector2 = useMemo(() => {
@@ -82,12 +81,6 @@ export const Heatmap = ({ basePlateSize, height }: HeatmapProps) => {
         [MAX_STATIONS],
     );
 
-    useLayoutEffect(() => {
-        if (geometryRef.current) {
-            geometryRef.current.rotateX(-Math.PI / 2);
-        }
-    }, []);
-
     useFrame(() => {
         if (!materialRef.current) return;
 
@@ -115,16 +108,15 @@ export const Heatmap = ({ basePlateSize, height }: HeatmapProps) => {
     if (pixelCount == 0) return null;
 
     return (
-        <instancedMesh args={[undefined, undefined, pixelCount]} position={[0, height, 0]}>
+        <instancedMesh
+            args={[undefined, undefined, pixelCount]}
+            position={[0, 0.5, 0]}>
             <instancedBufferAttribute attach='instanceMatrix' args={[instanceMatrices, 16]} />
-            <planeGeometry args={[pixelSizes.x, pixelSizes.y]} ref={geometryRef} />
+            <boxGeometry args={[pixelSizes.x, 1, pixelSizes.y]} />
             <shaderMaterial
                 ref={materialRef}
                 args={[shader]}
                 transparent
-                depthWrite={false}
-                depthTest={true}
-                side={2}
             />
         </instancedMesh>
     );

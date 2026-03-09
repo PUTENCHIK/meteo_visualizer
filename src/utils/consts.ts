@@ -203,10 +203,15 @@ const rawSettings = {
                 opacity: createRange('Прозрачность', 0.5, 0.1, 1, 0.05),
                 form: createSelect<AtmosphereParticleForm>('Форма', 'sphere', ['sphere', 'cube']),
             }),
-            heatmaps: createTabItem('Тепловые карты', 'heatmaps', {
+            heatmap: createTabItem('Тепловая карта', 'heatmap', {
                 height: createRange('Высота', 30, 1, 100, 1),
                 pixelAmount: createRange('Кол-во пикселей', 100, 1, 512, 1),
                 opacity: createRange('Прозрачность', 0.5, 0.1, 1, 0.1),
+            }),
+            pillarmap: createTabItem('Столбчатая карта', 'pillarmap', {
+                height: createRange('Высота', 70, 10, 100, 1),
+                pixelAmount: createRange('Кол-во пикселей', 64, 1, 128, 1),
+                opacity: createRange('Прозрачность', 0.3, 0.1, 1, 0.1),
             }),
         }),
     }),
@@ -265,6 +270,10 @@ export const vertexShader = (maxStations: number) => `
     uniform vec4 uStations[MAX_STATIONS];
     uniform int uStationCount;
     uniform float uDegree;
+    uniform float uMinVal;
+    uniform float uMaxVal;
+    uniform bool uScaling;
+    uniform float uScalingHeight;
 
     void main() {
         // позиция частицы
@@ -286,7 +295,22 @@ export const vertexShader = (maxStations: number) => `
         }
         
         vValue = valueSum / weightSum;
+        vec3 localPos = position;
+
+        if (uScaling) {
+            float t = clamp((vValue - uMinVal) / (uMaxVal - uMinVal), 0.0, 1.0);
+
+            // коэффициент для масштабирования * нормированное значение * максимальная высота
+            // визуализации
+            float yScale = 2.0 * t * uScalingHeight; 
+
+            // вершины верхней грани boxGeometry заскейлятся
+            if (localPos.y > 0.0) {
+                localPos.y *= yScale;
+            }
+        }
+
         // C сам разберётся
-        gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(localPos, 1.0);
     }
 `;
