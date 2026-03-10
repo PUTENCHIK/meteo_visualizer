@@ -1,9 +1,11 @@
 import type { Theme } from '@context/theme-context';
+import type { SocketConfig } from '@context/websocket-context';
 import type { AppSettings } from '@shared/settings';
 
 interface AppData {
     theme: Theme;
     settings: AppSettings;
+    socketContext: SocketConfig;
 }
 
 const STORAGE_KEY = 'meteo_visualizer';
@@ -28,6 +30,7 @@ class LocalStorageManager {
         return {
             theme: 'dark',
             settings: {},
+            socketContext: { host: 'localhost', port: 5052 },
         };
     }
 
@@ -40,7 +43,8 @@ class LocalStorageManager {
     }
 
     public getItem<K extends keyof AppData>(key: K): AppData[K] {
-        return this.getData()[key];
+        const data = this.getData();
+        return key in data ? data[key] : this.getDefault()[key];
     }
 
     public setItem<K extends keyof AppData>(key: K, value: AppData[K]): void {

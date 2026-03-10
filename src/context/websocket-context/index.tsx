@@ -1,4 +1,5 @@
 import { useWeatherStations } from '@context/weather-station-context';
+import { storageManager } from '@managers/local-storage-manager';
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
@@ -29,7 +30,7 @@ interface ServerMessage {
     poll_result: PollResult | null;
 }
 
-interface SocketConfig {
+export interface SocketConfig {
     host: string;
     port: number;
 }
@@ -41,6 +42,7 @@ interface SocketContextType {
     toggleConnection: () => void;
     config: SocketConfig;
     updateConfig: (host: string, port: number) => void;
+    socketUrl: string;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -49,12 +51,11 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     const { updateStation } = useWeatherStations();
 
     const [connectionEnabled, setConnectionEnabled] = useState(false);
-    const [config, setConfig] = useState<SocketConfig>({
-        host: 'localhost',
-        port: 5052,
-    });
+    const [config, setConfig] = useState<SocketConfig>(storageManager.getItem('socketContext'));
 
-    const socketUrl = connectionEnabled ? `ws://${config.host}:${config.port}/ws` : null;
+    const getSocketUrl = () => `ws://${config.host}:${config.port}/ws`;
+
+    const socketUrl = connectionEnabled ? getSocketUrl() : null;
 
     const { sendJsonMessage, readyState } = useWebSocket<ServerMessage>(socketUrl, {
         onMessage: (event) => {
@@ -83,6 +84,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
 
     const isConnected = [ReadyState.OPEN, ReadyState.CONNECTING].includes(readyState);
 
+    const updateConfig = (host: string, port: number) => {
+        const newConfig = { host, port };
+        setConfig(newConfig);
+        storageManager.setItem('socketContext', newConfig);
+    };
+
     const contextValue = useMemo(
         () => ({
             sendMessage: sendJsonMessage,
@@ -90,7 +97,8 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
             isConnected,
             toggleConnection: () => setConnectionEnabled((prev) => !prev),
             config,
-            updateConfig: (host: string, port: number) => setConfig({ host, port }),
+            updateConfig: updateConfig,
+            socketUrl: getSocketUrl(),
         }),
         [sendJsonMessage, readyState, isConnected, config],
     );

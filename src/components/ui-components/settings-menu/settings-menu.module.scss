@@ -1,6 +1,4 @@
-:root {
-    --section-size: 20px;
-}
+@use '../../../styles/mixins.scss' as m;
 
 .menu-wrapper {
     display: flex;
@@ -16,16 +14,15 @@
 }
 
 .sections-box {
+    @include m.window;
+
     display: inline-flex;
     flex-direction: column;
-
-    border-radius: var(--section-size);
-    overflow: hidden;
     pointer-events: auto;
 }
 
 .section {
-    padding: var(--section-size);
+    padding: var(--window-padding);
     display: inline-flex;
     align-items: center;
     
@@ -46,15 +43,15 @@
 }
 
 .settings-menu {
+    @include m.window;
+
     min-width: 200px;
     max-width: max-content;
     max-height: calc(100% - 2 * var(--complex-page-padding));
-    padding: var(--section-size);
+    padding: var(--window-padding);
 
     resize: horizontal;
     overflow: auto;
-    border-radius: var(--section-size);
-    background-color: var(--menu-background-color);
     pointer-events: auto;
 }
 

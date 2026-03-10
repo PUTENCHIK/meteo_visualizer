@@ -1,0 +1,19 @@
+@use '../../../styles/mixins.scss' as m;
+
+.button {
+    @include m.input;
+    cursor: pointer;
+
+    &.secondary {
+        background-color: color-mix(in srgb, var(--icon-default-color), transparent 90%);
+    
+        &:hover {
+            background-color: color-mix(in srgb, var(--icon-default-color), transparent 80%);
+        }
+    }
+
+    &.primary {
+        background-color: var(--main-color);
+        color: white;
+    }
+}

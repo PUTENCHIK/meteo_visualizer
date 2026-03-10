@@ -1,0 +1,26 @@
+label.label {
+    display: flex;
+    gap: 8px;
+
+    &.horizontal {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    &.vertical {
+        flex-direction: column;
+    }
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 6px;
+}
+
+span.error {
+    font-size: 14px;
+    font-style: italic;
+    color: red;
+}

@@ -4,6 +4,17 @@ body {
     color: var(--text-primary);
 }
 
-h1, h2, h3 {
+body,
+button,
+input,
+select,
+textarea {
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+h1,
+h2,
+h3 {
     margin: 0;
 }

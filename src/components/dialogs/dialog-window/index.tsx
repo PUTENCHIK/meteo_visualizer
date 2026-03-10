@@ -3,14 +3,16 @@ import s from './dialog-window.module.scss';
 import { Rnd } from 'react-rnd';
 import { IconButton } from '@components/icon-button';
 import { useDialogs, type DialogId } from '@context/dialog-context';
+import React from 'react';
 
 interface DialogWindowProps {
     dialogId: DialogId;
     title: string;
+    buttons?: React.ReactNode[];
     children: React.ReactNode;
 }
 
-export const DialogWindow = ({ dialogId, title, children }: DialogWindowProps) => {
+export const DialogWindow = ({ dialogId, title, buttons, children }: DialogWindowProps) => {
     const { activeDialogs, closeDialog, focusDialog } = useDialogs();
 
     const isOpen = activeDialogs.includes(dialogId);
@@ -41,7 +43,7 @@ export const DialogWindow = ({ dialogId, title, children }: DialogWindowProps) =
             style={{
                 zIndex: 10 + activeDialogs.indexOf(dialogId),
             }}>
-            <div className={clsx(s['content-wrapper'])}>
+            <div className={clsx(s['window-content'])}>
                 <div className='handle-area'>
                     <div className={clsx(s['window-title'])}>
                         <h2 className={clsx(s['title'])}>{title}</h2>
@@ -53,7 +55,16 @@ export const DialogWindow = ({ dialogId, title, children }: DialogWindowProps) =
                         />
                     </div>
                 </div>
-                <div className={clsx(s['content'])}>{children}</div>
+                <div className={clsx(s['content'])}>
+                    <div className={clsx(s['children-wrapper'])}>{children}</div>
+                    {buttons && buttons.length > 0 && (
+                        <div className={clsx(s['buttons-box'])}>
+                            {buttons.map((btn, index) => (
+                                <React.Fragment key={index}>{btn}</React.Fragment>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </Rnd>
     );

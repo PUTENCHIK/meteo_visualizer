@@ -8,10 +8,10 @@ import { SettingsMenu } from '@components/settings-menu';
 import { useSettings } from '@context/use-settings';
 import { IconButton } from '@components/icon-button';
 import { useNavigate } from 'react-router-dom';
-import { LinkButton } from '@components/link-button';
 import { useDialogs } from '@context/dialog-context';
 import { ComplexDataDialog } from '@dialogs/complex-data-dialog';
 import { WebsocketApiDialog } from '@dialogs/websocket-api-dialog';
+import { Button } from '@components/button';
 
 export const ComplexPage = () => {
     const navigate = useNavigate();
@@ -36,11 +36,11 @@ export const ComplexPage = () => {
                     <h2>Комплекс МАМКА №1243</h2>
                 </div>
                 <div className={clsx(s['header-group'])}>
-                    <LinkButton
+                    <Button
                         title={'Данные комплекса'}
                         onClick={() => toggleDialog('complexData')}
                     />
-                    <LinkButton title={'Веб-сокет'} onClick={() => toggleDialog('websocketApi')} />
+                    <Button title={'Веб-сокет'} onClick={() => toggleDialog('websocketApi')} />
                 </div>
             </div>
 

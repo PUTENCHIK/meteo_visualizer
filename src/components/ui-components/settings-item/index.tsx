@@ -5,6 +5,8 @@ import { settingsManager } from '@managers/settings-manager';
 import { RangeInput } from '@components/range-input';
 import { Toggle } from '@components/toggle';
 import { TabsMenu } from '@components/tabs-menu';
+import { TextInput } from '@components/text-input';
+import { NumberInput } from '@components/number-input';
 
 interface SettingsItemProps {
     item: SettingsItemType;
@@ -42,14 +44,13 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
             break;
         case 'number':
             component = (
-                <input
+                <NumberInput
                     key={path}
-                    type='number'
+                    defaultValue={item.value}
                     min={item.min}
                     max={item.max}
-                    value={item.value}
                     step={item.step}
-                    onChange={(e) => handleChange(Number(e.target.value))}
+                    onChange={handleChange}
                     disabled={disabled}
                 />
             );
@@ -69,14 +70,13 @@ export const SettingsItem = ({ item, path, parentDisabled = false }: SettingsIte
             break;
         case 'string':
             component = (
-                <input
+                <TextInput
                     key={path}
-                    type='text'
-                    maxLength={item.maxLength}
+                    defaultValue={item.value}
                     placeholder={item.placeholder}
-                    value={item.value}
-                    onChange={(e) => handleChange(e.target.value)}
+                    maxLength={item.maxLength}
                     disabled={disabled}
+                    onChange={handleChange}
                 />
             );
             break;

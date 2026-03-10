@@ -1,0 +1,23 @@
+@mixin window {
+    border-radius: var(--window-padding);
+    background-color: var(--menu-background-color);
+    box-shadow: 6px 6px 8px 0 color-mix(in srgb, var(--menu-background-color), transparent 60%);
+    outline: 1px solid var(--outline-color);
+    overflow: hidden;
+}
+
+@mixin input {
+    height: 32px;
+    padding: 6px 12px;
+    box-sizing: border-box;
+
+    border: 0;
+    outline: 0;
+    border-radius: 12px;
+    background-color: var(--input-background);
+    color: var(--text-primary);
+
+    &:focus-visible {
+        outline: 1px solid var(--outline-color);
+    }
+}
