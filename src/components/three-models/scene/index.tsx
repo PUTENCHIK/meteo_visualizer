@@ -8,12 +8,14 @@ import { masts } from '@utils/consts';
 import { Suspense, useMemo } from 'react';
 import { Loader } from '@components/loader';
 import { AtmosphereModel } from '@models_/atmosphere-model';
-import { polarPosToXY } from '@utils/funcs';
+import { coordsToNumber, getSunPosition, polarPosToXY, sunPosToXYZ } from '@utils/funcs';
 import { CameraReporter } from '@helpers/camera-reporter';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { useSettings } from '@context/use-settings';
 import { Heatmap } from '@models_/heatmap';
 import { Pillarmap } from '@models_/pillarmap';
+import { SunModel } from '@models_/sun-model';
+import { useComplexData } from '@context/complex-data-context';
 
 interface SceneProps {
     onCameraReady: (camera: Camera) => void;
@@ -21,6 +23,7 @@ interface SceneProps {
 
 export const Scene = ({ onCameraReady }: SceneProps) => {
     const { map: settings } = useSettings();
+    const { position: complexPosition } = useComplexData();
 
     const sceneStyle = useMemo(() => {
         return settings.scene.background.enable
@@ -65,6 +68,15 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
         target.z = Math.max(-basePlateSize.z / 2, Math.min(basePlateSize.z / 2, target.z));
     };
 
+    const directionalLightPos: Vector3 = useMemo(() => {
+        const { azimuth: a, elevation: e } = getSunPosition(
+            coordsToNumber(complexPosition.lat),
+            coordsToNumber(complexPosition.lon),
+        );
+
+        return sunPosToXYZ(a, e, settings.model.sun.orbitalRadius);
+    }, [complexPosition.lat, complexPosition.lon, settings.model.sun.orbitalRadius]);
+
     return (
         <Canvas camera={cameraProps} style={sceneStyle}>
             <Suspense fallback={<Loader type='circle' />}>
@@ -76,10 +88,8 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                 )}
                 {settings.scene.light.directional.enable && (
                     <directionalLight
-                        position={[200, 200, 200]}
+                        position={directionalLightPos}
                         intensity={settings.scene.light.directional.intensity}
-                        castShadow={settings.scene.light.directional.castShadow}
-                        shadow-mapSize={[64, 64]}
                         color={settings.scene.light.directional.color}
                     />
                 )}
@@ -125,6 +135,8 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                         )}
                     </>
                 )}
+
+                {settings.model.sun.enable && <SunModel />}
             </Suspense>
 
             {settings.scene.grid.enable && <gridHelper args={[basePlateSize.x, basePlateSize.z]} />}

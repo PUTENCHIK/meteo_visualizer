@@ -8,11 +8,11 @@ import '@styles/colors.css';
 import { Suspense } from 'react';
 import { Loader } from '@components/loader';
 import { WebSocketProvider } from '@context/websocket-context';
-import { WeatherStationProvider } from '@context/weather-station-context';
+import { ComplexDataProvider } from '@context/complex-data-context';
 import { DialogProvider } from '@context/dialog-context';
 import { ProviderComposer } from '@context/provider-composer';
 
-const providers = [ThemeProvider, DialogProvider, WeatherStationProvider, WebSocketProvider];
+const providers = [ThemeProvider, DialogProvider, ComplexDataProvider, WebSocketProvider];
 
 createRoot(document.getElementById('root')!).render(
     <ProviderComposer providers={providers}>

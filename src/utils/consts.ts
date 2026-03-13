@@ -148,7 +148,6 @@ const rawSettings = {
             directional: createChapter('Прямой', {
                 enable: createBoolean('Отображение', true),
                 intensity: createRange('Интенсивность', 2, 0, 3, 0.1),
-                castShadow: createBoolean('Тень', true),
                 color: createColor('Цвет', 'rgb(255, 255, 255)'),
             }),
         }),
@@ -184,6 +183,12 @@ const rawSettings = {
         weatherStation: createChapter('Метеостанции', {
             radius: createRange('Радиус', 0.35, 0.2, 0.5, 0.05),
             color: createColor('Цвет', 'rgba(87, 104, 201, 1)'),
+        }),
+        sun: createChapter('Солнце', {
+            enable: createBoolean('Отображение', true),
+            size: createRange('Размер', 5, 1, 20, 1),
+            orbitalRadius: createRange('Радиус орбиты', 200, 100, 500, 10),
+            color: createColor('Цвет', 'rgba(255, 204, 0, 1)'),
         }),
     }),
     atmosphere: createSection('Настройки модели атмосферы', 'wind', {

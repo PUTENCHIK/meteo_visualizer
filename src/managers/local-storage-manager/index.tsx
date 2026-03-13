@@ -1,11 +1,14 @@
+import type { ComplexPosition } from '@context/complex-data-context';
 import type { Theme } from '@context/theme-context';
 import type { SocketConfig } from '@context/websocket-context';
 import type { AppSettings } from '@shared/settings';
+import { Vector3 } from 'three';
 
 interface AppData {
     theme: Theme;
     settings: AppSettings;
     socketContext: SocketConfig;
+    position: ComplexPosition;
 }
 
 const STORAGE_KEY = 'meteo_visualizer';
@@ -31,6 +34,7 @@ class LocalStorageManager {
             theme: 'dark',
             settings: {},
             socketContext: { host: 'localhost', port: 5052 },
+            position: { lat: new Vector3(), lon: new Vector3() },
         };
     }
 

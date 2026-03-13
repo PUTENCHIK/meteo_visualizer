@@ -1,5 +1,5 @@
 import { useSettings } from '@context/use-settings';
-import { useWeatherStations } from '@context/weather-station-context';
+import { useComplexData } from '@context/complex-data-context';
 import { useFrame } from '@react-three/fiber';
 import { vertexShader, fragmentShader } from '@utils/consts';
 import { useMemo, useRef } from 'react';
@@ -12,7 +12,7 @@ interface PillarmapProps {
 
 export const Pillarmap = ({ basePlateSize, height }: PillarmapProps) => {
     const { map: settings } = useSettings();
-    const { getStations } = useWeatherStations();
+    const { getStations } = useComplexData();
 
     const materialRef = useRef<ShaderMaterial>(null);
 

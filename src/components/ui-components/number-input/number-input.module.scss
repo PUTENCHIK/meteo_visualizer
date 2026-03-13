@@ -1,5 +1,22 @@
 @use '../../../styles/mixins.scss' as m;
 
+.number-input-wrapper {
+    width: 100%;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
 .number-input {
     @include m.input;
+    width: 100%;
+}
+
+.postfix {
+    position: absolute;
+    right: 10px;
+    top: 4px;
+    font-size: 12px;
+    color: color-mix(in srgb, var(--text-primary), transparent 30%);
+    user-select: none;
 }

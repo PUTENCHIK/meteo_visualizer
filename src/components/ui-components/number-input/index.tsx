@@ -1,69 +1,94 @@
 import clsx from 'clsx';
 import s from './number-input.module.scss';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 interface NumberInputProps {
     defaultValue: number;
     placeholder?: string;
+    className?: string;
+    postfix?: string;
     min?: number;
     max?: number;
     maxLength?: number;
     step?: number;
+    decimal?: number;
     disabled?: boolean;
     onChange?: (value: number) => void;
 }
 
-export const NumberInput = ({
-    defaultValue,
-    placeholder,
-    min,
-    max,
-    maxLength,
-    step,
-    disabled = false,
-    onChange,
-}: NumberInputProps) => {
-    const [value, setValue] = useState<string>(defaultValue ? `${defaultValue}` : '');
+export interface NumberInputRef {
+    update: () => void;
+}
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const v = event.target.value;
-        const num = Number(v);
+export const NumberInput = forwardRef<NumberInputRef, NumberInputProps>(
+    (
+        {
+            defaultValue,
+            placeholder,
+            className,
+            postfix,
+            min,
+            max,
+            maxLength,
+            step,
+            decimal,
+            disabled = false,
+            onChange,
+        }: NumberInputProps,
+        ref,
+    ) => {
+        const [value, setValue] = useState<string>(`${defaultValue}`);
 
-        if (isNaN(num) && v.length > 0 && v !== '-') {
-            return;
-        }
-        if (maxLength && v.length > maxLength) {
-            return;
-        }
-        setValue(v);
-    };
+        const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const v = event.target.value;
+            const num = Number(v);
 
-    const handleBlur = () => {
-        let num = parseInt(value);
+            if (isNaN(num) && v.length > 0 && v !== '-') {
+                return;
+            }
+            if (maxLength && v.length > maxLength) {
+                return;
+            }
+            setValue(v);
+        };
 
-        if (isNaN(num)) {
-            setValue(defaultValue.toString());
-            onChange?.(defaultValue);
-            return;
-        }
+        const handleBlur = () => {
+            let num = parseFloat(value);
 
-        num = Math.max(num, min ? min : num);
-        num = Math.min(num, max ? max : num);
+            if (isNaN(num)) {
+                setValue(defaultValue.toString());
+                onChange?.(defaultValue);
+                return;
+            }
+            if (decimal !== undefined && decimal >= 0) num = Number(num.toFixed(decimal));
 
-        setValue(num.toString());
-        onChange?.(num);
-    };
+            num = Math.max(num, min ? min : num);
+            num = Math.min(num, max ? max : num);
 
-    return (
-        <input
-            type='text'
-            className={clsx(s['number-input'])}
-            value={value}
-            placeholder={placeholder}
-            step={step}
-            disabled={disabled}
-            onChange={handleChange}
-            onBlur={handleBlur}
-        />
-    );
-};
+            setValue(num.toString());
+            onChange?.(num);
+        };
+
+        useImperativeHandle(ref, () => ({
+            update: () => {
+                setValue(defaultValue.toString());
+            },
+        }));
+
+        return (
+            <div className={clsx(s['number-input-wrapper'])}>
+                <input
+                    type='text'
+                    className={clsx(s['number-input'], className)}
+                    value={value}
+                    placeholder={placeholder}
+                    step={step}
+                    disabled={disabled}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                />
+                {postfix && <span className={clsx(s['postfix'])}>{postfix}</span>}
+            </div>
+        );
+    },
+);

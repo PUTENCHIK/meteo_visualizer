@@ -1,4 +1,4 @@
-import { useWeatherStations } from '@context/weather-station-context';
+import { useComplexData } from '@context/complex-data-context';
 import { storageManager } from '@managers/local-storage-manager';
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
@@ -48,7 +48,7 @@ interface SocketContextType {
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
-    const { updateStation } = useWeatherStations();
+    const { updateStation } = useComplexData();
 
     const [connectionEnabled, setConnectionEnabled] = useState(false);
     const [config, setConfig] = useState<SocketConfig>(storageManager.getItem('socketContext'));

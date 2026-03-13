@@ -1,4 +1,3 @@
-import type { WeatherStationData } from '@context/weather-station-context';
 import type { IconName } from '@shared/icons';
 import type { PolarSystemPosition } from '@shared/interfaces';
 import type {
@@ -16,7 +15,7 @@ import type {
     StringSettings,
 } from '@shared/settings';
 import { Vector2, Vector3 } from 'three';
-import { degToRad } from 'three/src/math/MathUtils.js';
+import { degToRad, radToDeg } from 'three/src/math/MathUtils.js';
 
 export const polarPosToXY = (pos: PolarSystemPosition) => {
     return new Vector2(
@@ -224,38 +223,76 @@ export const createSection = <T extends Record<string, SettingsItem>>(
     };
 };
 
-export const getInterpolatedValue = (
-    position: Vector3,
-    stations: WeatherStationData[],
-    degree: number = 2,
-): number => {
-    if (stations.length === 0) return 0;
-
-    let totalWeight = 0;
-    let weightedValue = 0;
-
-    for (const station of stations) {
-        const distance = position.distanceTo(station.position);
-
-        if (distance < 0.1) return station.value;
-
-        const weight = 1 / Math.pow(distance, degree);
-        weightedValue += station.value * weight;
-        totalWeight += weight;
-    }
-
-    return weightedValue / totalWeight;
+export const coordsToNumber = (coords: Vector3): number => {
+    return coords.x + coords.y / 60 + coords.z / 3600;
 };
 
-export const getMappedValue = (
-    v: number,
-    inMin: number,
-    inMax: number,
-    outMin: number,
-    outMax: number,
-    limitValue: boolean = true,
-) => {
-    if (limitValue) v = Math.min(inMax, Math.max(v, inMin));
-    if (inMax === inMin) return (outMax - outMin) / 2;
-    return outMin + ((v - inMin) * (outMax - outMin)) / (inMax - inMin);
+export const getSunPosition = (
+    lat: number,
+    lon: number,
+    date?: Date,
+): { azimuth: number; elevation: number } => {
+    const now = date ?? new Date();
+
+    // дата начала года
+    const start = new Date(now.getUTCFullYear(), 0, 0);
+    // кол-во миллисекунд от начала года
+    const diff = now.getTime() - start.getTime();
+    // номер дня
+    const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    // Коэффициент для уравнения времени (в радианах)
+    const b = degToRad((360 / 365) * (dayOfYear - 81));
+    // склонение Солнца
+    const delta = degToRad(23.44 * Math.sin(b));
+
+    // Уравнение времени в минутах (компенсирует неравномерность движения Земли)
+    const equationOfTime = 9.87 * Math.sin(2 * b) - 7.53 * Math.cos(b) - 1.5 * Math.sin(b);
+
+    // часы UTC
+    const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+    // истинное солнечное время
+    const solarTime = utcHours + lon / 15 + equationOfTime / 60;
+
+    // часовой угол
+    const hourAngle = degToRad(15 * (solarTime - 12));
+
+    // широта в радианах
+    const latRad = degToRad(lat);
+
+    // === //
+
+    // высота Солнца
+    const sinEl =
+        Math.sin(latRad) * Math.sin(delta) +
+        Math.cos(latRad) * Math.cos(delta) * Math.cos(hourAngle);
+    const elevation = radToDeg(Math.asin(sinEl));
+
+    // косинус азимута Солнца
+    let cosAz =
+        (Math.sin(delta) - Math.sin(degToRad(elevation)) * Math.sin(latRad)) /
+        (Math.cos(degToRad(elevation)) * Math.cos(latRad));
+
+    // acos [-1, 1]
+    cosAz = Math.max(-1, Math.min(1, cosAz));
+    // азимут Солнца
+    let azimuth = radToDeg(Math.acos(cosAz));
+
+    // корректировка азимута для времени после полудня
+    if (hourAngle > 0) {
+        azimuth = 360 - azimuth;
+    }
+
+    return { azimuth: Number(azimuth.toFixed(10)), elevation: Number(elevation.toFixed(10)) };
+};
+
+export const sunPosToXYZ = (a: number, e: number, r: number): Vector3 => {
+    const azRad = degToRad(a);
+    const elRad = degToRad(e);
+
+    return new Vector3(
+        -r * Math.cos(elRad) * Math.sin(azRad),
+        r * Math.sin(elRad),
+        r * Math.cos(elRad) * Math.cos(azRad),
+    );
 };

@@ -1,0 +1,38 @@
+.vector-input {
+    width: 100%;
+    display: flex;
+    column-gap: 1px;
+    flex-wrap: nowrap;
+    border-radius: 12px;
+}
+
+.axis-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 4px;
+
+    &:first-child .axis-input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    &:not(:first-child):not(:last-child) .axis-input {
+        border-radius: 0;
+    }
+
+    &:last-child .axis-input {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
+
+.axis-input {
+    width: 100%;
+}
+
+span.axis-label {
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+}
