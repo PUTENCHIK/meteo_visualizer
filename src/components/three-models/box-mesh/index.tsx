@@ -2,8 +2,8 @@ import { Mesh, Vector3 } from 'three';
 import { Edges } from '@react-three/drei';
 import { forwardRef } from 'react';
 import { degToRad } from 'three/src/math/MathUtils.js';
-import type { EdgesEnable } from '@shared/interfaces';
 import { useSettings } from '@context/use-settings';
+import type { EdgesEnable } from '@utils/three-models';
 
 interface BoxMeshProps extends EdgesEnable {
     size: Vector3;

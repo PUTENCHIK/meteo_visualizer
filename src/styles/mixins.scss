@@ -6,6 +6,13 @@
     overflow: hidden;
 }
 
+@mixin item-box {
+    box-sizing: border-box;
+    padding: var(--box-padding);
+    border-radius: var(--box-padding);
+    border: 1px solid var(--outline-color);
+}
+
 @mixin input {
     height: 32px;
     padding: 6px 12px;

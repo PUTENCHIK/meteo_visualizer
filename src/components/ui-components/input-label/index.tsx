@@ -1,16 +1,21 @@
 import clsx from 'clsx';
 import s from './input-label.module.scss';
 
-type InputLabelType = 'horizontal' | 'vertical';
+type InputLabelOrientation = 'horizontal' | 'vertical';
 
 interface InputLabelProps {
     label: string;
-    type?: InputLabelType;
+    orientation?: InputLabelOrientation;
     error?: string;
     children: React.ReactNode;
 }
 
-export const InputLabel = ({ label, type = 'vertical', error, children }: InputLabelProps) => {
+export const InputLabel = ({
+    label,
+    orientation: type = 'vertical',
+    error,
+    children,
+}: InputLabelProps) => {
     return (
         <label className={clsx(s['label'], s[type])}>
             <span>{label}:</span>

@@ -1,7 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { settingsManager } from '@managers/settings-manager';
-import type { SettingsMap } from '@shared/settings';
-import type { appSettings } from '@utils/consts';
+import type { appSettings, SettingsMap } from '@utils/settings';
 
 type AppSettingsType = typeof appSettings;
 

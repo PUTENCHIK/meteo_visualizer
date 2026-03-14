@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import s from './vector-input.module.scss';
 import { NumberInput, type NumberInputRef } from '@components/number-input';
-import { Vector3, Vector4, type Vector2 } from 'three';
+import { Vector3, Vector4, Vector2 } from 'three';
 import { forwardRef, useImperativeHandle, useRef, type ReactElement } from 'react';
 
 type VectorAxes<T> = Extract<keyof T, 'x' | 'y' | 'z' | 'w'>;
@@ -45,7 +45,11 @@ const InnerVectorInput = <T extends VectorInputType>(
         'w' in value ? ['x', 'y', 'z', 'w'] : 'z' in value ? ['x', 'y', 'z'] : ['x', 'y'];
 
     const handleChange = (axis: keyof T, newValue: number) => {
-        const v = value.clone() as T;
+        let vectorType: any = Vector2;
+        if ('w' in value) vectorType = Vector4;
+        else if ('z' in value) vectorType = Vector3;
+
+        const v = new vectorType().copy(value);
         (v[axis] as number) = newValue;
         onChange?.(v);
     };

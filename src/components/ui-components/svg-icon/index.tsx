@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import s from './svg-icon.module.scss';
-import { type IconName, type IconSize } from '@shared/icons';
-import { iconFiles, sizesToStrokes } from '@utils/consts';
+import { type IconName, type IconSize, iconFiles, sizesToStrokes } from '@utils/icons';
 
 interface SvgIconProps {
     iconName: IconName;

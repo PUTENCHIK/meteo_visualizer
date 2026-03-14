@@ -1,9 +1,11 @@
 import { useSettings } from '@context/use-settings';
 import { useComplexData } from '@context/complex-data-context';
 import { useFrame } from '@react-three/fiber';
-import { fragmentShader, vertexShader } from '@utils/consts';
 import { useMemo, useRef } from 'react';
 import { Object3D, ShaderMaterial, Vector3, Vector4 } from 'three';
+import { vertexShader, fragmentShader } from '@utils/shaders';
+
+export type AtmosphereParticleForm = 'sphere' | 'cube';
 
 interface AtmosphereModelProps {
     basePlateSize: Vector3;

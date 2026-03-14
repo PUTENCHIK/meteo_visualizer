@@ -4,15 +4,31 @@ import { Rnd } from 'react-rnd';
 import { IconButton } from '@components/icon-button';
 import { useDialogs, type DialogId } from '@context/dialog-context';
 import React from 'react';
+import { useSettings } from '@context/use-settings';
+
+interface WindowSizeLimits {
+    min?: number;
+    max?: number;
+}
 
 interface DialogWindowProps {
     dialogId: DialogId;
     title: string;
     buttons?: React.ReactNode[];
-    children: React.ReactNode;
+    widthLimits?: WindowSizeLimits;
+    heightLimits?: WindowSizeLimits;
+    children?: React.ReactNode;
 }
 
-export const DialogWindow = ({ dialogId, title, buttons, children }: DialogWindowProps) => {
+export const DialogWindow = ({
+    dialogId,
+    title,
+    buttons,
+    widthLimits,
+    heightLimits,
+    children,
+}: DialogWindowProps) => {
+    const { map: settings } = useSettings();
     const { activeDialogs, closeDialog, focusDialog } = useDialogs();
 
     const isOpen = activeDialogs.includes(dialogId);
@@ -32,16 +48,17 @@ export const DialogWindow = ({ dialogId, title, buttons, children }: DialogWindo
                 width: 'auto',
                 height: 'auto',
             }}
-            minWidth={200}
-            minHeight={200}
-            maxWidth={600}
-            maxHeight={600}
+            minWidth={widthLimits?.min ?? settings.ui.windows.minWidth}
+            maxWidth={widthLimits?.max ?? settings.ui.windows.maxWidth}
+            minHeight={heightLimits?.min ?? settings.ui.windows.minHeight}
+            maxHeight={heightLimits?.max ?? settings.ui.windows.maxHeight}
             bounds='window'
             dragHandleClassName='handle-area'
             cancel='.close-button'
             onMouseDown={() => focusDialog(dialogId)}
             style={{
                 zIndex: 10 + activeDialogs.indexOf(dialogId),
+                maxHeight: `${heightLimits?.max ?? settings.ui.windows.maxHeight}px`,
             }}>
             <div className={clsx(s['window-content'])}>
                 <div className='handle-area'>

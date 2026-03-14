@@ -30,7 +30,7 @@ export const WebsocketApiDialog = () => {
                 <Button title='Сбросить' onClick={handleReset} />,
                 <Button title='Сохранить' type='primary' onClick={handleSave} />,
             ]}>
-            <InputLabel label='Подключение' type='horizontal'>
+            <InputLabel label='Подключение' orientation='horizontal'>
                 <Toggle value={isConnected} onChange={toggleConnection} />
             </InputLabel>
             <span>Адрес: {socketUrl}</span>

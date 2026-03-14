@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
-export type DialogId = 'complexData' | 'websocketApi';
+export type DialogId = 'complexData' | 'websocketApi' | 'masts';
 
 interface DialogContextType {
     activeDialogs: DialogId[];

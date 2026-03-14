@@ -1,0 +1,37 @@
+@use '../../../styles/mixins.scss' as m;
+
+.empty-label-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+span.empty-label {
+    text-align: center;
+    font-style: italic;
+}
+
+.mast-item {
+    @include m.item-box;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    column-gap: 12px;
+    align-items: end;
+}
+
+span.number {
+    font-size: 22px;
+}

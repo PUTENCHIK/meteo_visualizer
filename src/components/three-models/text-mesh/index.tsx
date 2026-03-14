@@ -1,7 +1,7 @@
 import { useSettings } from '@context/use-settings';
 import { MeshGroup } from '@models_/mesh-group';
 import { Center, Edges, Text3D } from '@react-three/drei';
-import type { EdgesEnable } from '@shared/interfaces';
+import type { EdgesEnable } from '@utils/three-models';
 import { Vector3 } from 'three';
 
 type TextFont = 'roboto';

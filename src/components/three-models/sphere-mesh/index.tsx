@@ -1,8 +1,8 @@
 import { Vector3, type Mesh } from 'three';
 import { Outlines } from '@react-three/drei';
-import type { EdgesEnable } from '@shared/interfaces';
 import { useSettings } from '@context/use-settings';
 import { forwardRef } from 'react';
+import type { EdgesEnable } from '@utils/three-models';
 
 interface SphereMeshProps extends EdgesEnable {
     radius: number;

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import s from './icon-button.module.scss';
 import { SvgIcon } from '@components/svg-icon';
-import type { IconName, IconSize } from '@shared/icons';
+import type { IconName, IconSize } from '@utils/icons';
 
 type IconButtonType = 'default' | 'secondary' | 'primary';
 

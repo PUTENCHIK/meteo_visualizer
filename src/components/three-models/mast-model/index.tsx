@@ -2,25 +2,25 @@ import { Vector3 } from 'three';
 import { BoxMesh } from '@models_/box-mesh';
 import { MeshGroup } from '@models_/mesh-group';
 import { YardModel } from '@models_/yard-model';
-import { type MastHeight, type YardDataItem } from '@shared/masts-yards';
 import { CylinderMesh } from '@models_/cylinder-mesh';
-import { polarPosToXY } from '@utils/funcs';
-import type { PolarSystemPosition } from '@shared/interfaces';
 import { useSettings } from '@context/use-settings';
+import { getMastConfig, type MastConfigName } from '@utils/complexes';
+import { type PolarSystemPosition, polarToLocal } from '@utils/coordinate-systems';
 
 interface MastModelProps {
-    height: MastHeight;
     position: PolarSystemPosition;
     rotation?: number;
-    yards: YardDataItem[];
+    configName: MastConfigName;
 }
 
-export const MastModel = ({ height, position, rotation = 0, yards }: MastModelProps) => {
+export const MastModel = ({ position, rotation = 0, configName }: MastModelProps) => {
     const { map: settings } = useSettings();
+
+    const config = getMastConfig(configName);
 
     return (
         <MeshGroup
-            position={new Vector3(polarPosToXY(position).x, 0, polarPosToXY(position).y)}
+            position={new Vector3(polarToLocal(position).x, 0, polarToLocal(position).y)}
             rotation={new Vector3(0, rotation, 0)}>
             {/* Платформа для мачты */}
             {settings.model.masts.plates.enable && (
@@ -40,13 +40,13 @@ export const MastModel = ({ height, position, rotation = 0, yards }: MastModelPr
             {/* Мачта */}
             <CylinderMesh
                 radius={settings.model.masts.radius}
-                height={height}
-                position={new Vector3(0, height / 2, 0)}
+                height={config.height}
+                position={new Vector3(0, config.height / 2, 0)}
                 color={settings.model.masts.mastsColor}
             />
 
             {/* Реи с метеостанциями */}
-            {yards.map((yard, index) => (
+            {config.yards.map((yard, index) => (
                 <YardModel key={index} height={yard.height} amount={yard.amount} />
             ))}
         </MeshGroup>

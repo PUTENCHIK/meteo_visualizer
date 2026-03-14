@@ -1,7 +1,7 @@
 import type { Vector3 } from 'three';
 import { Edges, Outlines } from '@react-three/drei';
-import type { EdgesEnable } from '@shared/interfaces';
 import { useSettings } from '@context/use-settings';
+import type { EdgesEnable } from '@utils/three-models';
 
 interface CylinderMeshProps extends EdgesEnable {
     radius: number;

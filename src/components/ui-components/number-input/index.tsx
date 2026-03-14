@@ -62,8 +62,8 @@ export const NumberInput = forwardRef<NumberInputRef, NumberInputProps>(
             }
             if (decimal !== undefined && decimal >= 0) num = Number(num.toFixed(decimal));
 
-            num = Math.max(num, min ? min : num);
-            num = Math.min(num, max ? max : num);
+            num = Math.max(num, min !== undefined ? min : num);
+            num = Math.min(num, max !== undefined ? max : num);
 
             setValue(num.toString());
             onChange?.(num);

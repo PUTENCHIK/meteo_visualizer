@@ -1,9 +1,9 @@
 import { useSettings } from '@context/use-settings';
 import { useComplexData } from '@context/complex-data-context';
 import { useFrame } from '@react-three/fiber';
-import { vertexShader, fragmentShader } from '@utils/consts';
 import { useMemo, useRef } from 'react';
 import { Vector3, Object3D, Vector2, ShaderMaterial, Vector4 } from 'three';
+import { vertexShader, fragmentShader } from '@utils/shaders';
 
 interface PillarmapProps {
     basePlateSize: Vector3;

@@ -32,7 +32,6 @@ export default defineConfig({
     resolve: {
         alias: {
             '@models_': path.resolve(__dirname, './src/components/three-models'),
-            '@shared': path.resolve(__dirname, './src/shared'),
             '@utils': path.resolve(__dirname, './src/utils'),
             '@context': path.resolve(__dirname, './src/context'),
             '@managers': path.resolve(__dirname, './src/managers'),

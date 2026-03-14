@@ -1,7 +1,11 @@
 import { storageManager } from '@managers/local-storage-manager';
-import type { AppSettings, SettingsMap } from '@shared/settings';
-import { appSettings } from '@utils/consts';
-import { copyObject, createSettingsProxy } from '@utils/funcs';
+import { copyObject } from '@utils/common';
+import {
+    appSettings,
+    createSettingsProxy,
+    type AppSettings,
+    type SettingsMap,
+} from '@utils/settings';
 
 interface ListenerParams {
     saveSettings: boolean;

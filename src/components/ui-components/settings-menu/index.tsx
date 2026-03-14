@@ -21,15 +21,21 @@ export const SettingsMenu = () => {
     return (
         <div className={clsx(s['menu-wrapper'])}>
             <div className={clsx(s['sections-box'])}>
-                {Object.entries(settings).map(([key, section]) => (
-                    <div
-                        key={key}
-                        className={clsx(s['section'], key === currentSection && s['current'])}
-                        title={section.title}
-                        onClick={() => handleSectionClick(key)}>
-                        <SvgIcon iconName={section.iconName} size={24} color='white' />
-                    </div>
-                ))}
+                {Object.entries(settings).map(
+                    ([key, section]) =>
+                        section.visible && (
+                            <div
+                                key={key}
+                                className={clsx(
+                                    s['section'],
+                                    key === currentSection && s['current'],
+                                )}
+                                title={section.title}
+                                onClick={() => handleSectionClick(key)}>
+                                <SvgIcon iconName={section.iconName} size={24} color='white' />
+                            </div>
+                        ),
+                )}
             </div>
             {currentSection && section && (
                 <div className={clsx(s['settings-menu'])}>

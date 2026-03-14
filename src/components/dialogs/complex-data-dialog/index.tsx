@@ -3,7 +3,7 @@ import { InputLabel } from '@components/input-label';
 import { VectorInput, type VectorInputRef } from '@components/vector-input';
 import { useComplexData } from '@context/complex-data-context';
 import { DialogWindow } from '@dialogs/dialog-window';
-import { coordsToNumber } from '@utils/funcs';
+import { geographicToNumber } from '@utils/coordinate-systems';
 import { useEffect, useRef, useState } from 'react';
 import { Vector3 } from 'three';
 
@@ -21,7 +21,7 @@ export const ComplexDataDialog = () => {
     }, [latitude, longitude]);
 
     const handleLatitudeChange = (lat: Vector3) => {
-        const degrees = coordsToNumber(lat);
+        const degrees = geographicToNumber(lat);
         if (degrees > 90) {
             setLatitude(new Vector3(90, 0, 0));
         } else if (degrees < -90) {
@@ -32,7 +32,7 @@ export const ComplexDataDialog = () => {
     };
 
     const handleLongitudeChange = (lon: Vector3) => {
-        const degrees = coordsToNumber(lon);
+        const degrees = geographicToNumber(lon);
         if (degrees > 180) {
             setLongitude(new Vector3(180, 0, 0));
         } else if (degrees < -180) {
@@ -55,6 +55,7 @@ export const ComplexDataDialog = () => {
         <DialogWindow
             dialogId='complexData'
             title='Данные комплекса'
+            heightLimits={{ max: 400 }}
             buttons={[
                 <Button title='Сбросить' onClick={handleReset} />,
                 <Button title='Сохранить' type='primary' onClick={handleSave} />,

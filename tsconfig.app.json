@@ -12,7 +12,6 @@
         "rootDir": "src",
         "paths": {
             "@models_/*": ["src/components/three-models/*"],
-            "@shared/*": ["src/shared/*"],
             "@utils/*": ["src/utils/*"],
             "@context/*": ["src/context/*"],
             "@managers/*": ["src/managers/*"],

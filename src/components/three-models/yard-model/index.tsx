@@ -1,11 +1,11 @@
-import { type YardDataItem } from '@shared/masts-yards';
 import { WeatherStationModel } from '@models_/weather-station-model';
 import { MeshGroup } from '@models_/mesh-group';
 import { Vector3 } from 'three';
 import { BoxMesh } from '@models_/box-mesh';
 import { useSettings } from '@context/use-settings';
+import type { Yard } from '@utils/complexes';
 
-export const YardModel = ({ height, amount }: YardDataItem) => {
+export const YardModel = ({ height, amount }: Yard) => {
     const { map: settings } = useSettings();
 
     const yardSize = 0.3;

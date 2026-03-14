@@ -4,17 +4,16 @@ import { OrbitControls, type OrbitControlsChangeEvent } from '@react-three/drei'
 import { BasePlateModel } from '@models_/base-plate-model';
 import { TelescopeModel } from '@models_/telescope-model';
 import { MastModel } from '@models_/mast-model';
-import { masts } from '@utils/consts';
 import { Suspense, useMemo } from 'react';
 import { Loader } from '@components/loader';
 import { AtmosphereModel } from '@models_/atmosphere-model';
-import { coordsToNumber, getSunPosition, polarPosToXY, sunPosToXYZ } from '@utils/funcs';
 import { CameraReporter } from '@helpers/camera-reporter';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { useSettings } from '@context/use-settings';
 import { Heatmap } from '@models_/heatmap';
 import { Pillarmap } from '@models_/pillarmap';
 import { SunModel } from '@models_/sun-model';
+import { polarToLocal } from '@utils/coordinate-systems';
 import { useComplexData } from '@context/complex-data-context';
 
 interface SceneProps {
@@ -23,7 +22,7 @@ interface SceneProps {
 
 export const Scene = ({ onCameraReady }: SceneProps) => {
     const { map: settings } = useSettings();
-    const { position: complexPosition } = useComplexData();
+    const { masts } = useComplexData();
 
     const sceneStyle = useMemo(() => {
         return settings.scene.background.enable
@@ -37,7 +36,7 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
         const size = new Vector3(20, settings.model.basePlate.height, 20);
 
         masts.forEach((mast) => {
-            const mastPos = polarPosToXY(mast.position);
+            const mastPos = polarToLocal(mast.position);
             size.x = Math.max(size.x, 2 * Math.abs(mastPos.x));
             size.z = Math.max(size.z, 2 * Math.abs(mastPos.y));
         });
@@ -46,7 +45,7 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
         size.z += settings.model.basePlate.padding;
 
         return size;
-    }, [settings.model.basePlate.height, settings.model.basePlate.padding]);
+    }, [settings.model.basePlate.height, settings.model.basePlate.padding, masts]);
 
     const cameraProps = {
         position: new Vector3(
@@ -68,15 +67,6 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
         target.z = Math.max(-basePlateSize.z / 2, Math.min(basePlateSize.z / 2, target.z));
     };
 
-    const directionalLightPos: Vector3 = useMemo(() => {
-        const { azimuth: a, elevation: e } = getSunPosition(
-            coordsToNumber(complexPosition.lat),
-            coordsToNumber(complexPosition.lon),
-        );
-
-        return sunPosToXYZ(a, e, settings.model.sun.orbitalRadius);
-    }, [complexPosition.lat, complexPosition.lon, settings.model.sun.orbitalRadius]);
-
     return (
         <Canvas camera={cameraProps} style={sceneStyle}>
             <Suspense fallback={<Loader type='circle' />}>
@@ -86,13 +76,8 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                         color={settings.scene.light.ambient.color}
                     />
                 )}
-                {settings.scene.light.directional.enable && (
-                    <directionalLight
-                        position={directionalLightPos}
-                        intensity={settings.scene.light.directional.intensity}
-                        color={settings.scene.light.directional.color}
-                    />
-                )}
+                <SunModel />
+
                 <CameraReporter onCameraReady={onCameraReady} />
 
                 {settings.model.basePlate.enable && <BasePlateModel size={basePlateSize} />}
@@ -107,10 +92,9 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                 {masts.map((item, index) => (
                     <MastModel
                         key={index}
-                        height={item.height}
                         position={item.position}
                         rotation={item.rotation}
-                        yards={item.yards}
+                        configName={item.configName}
                     />
                 ))}
                 {settings.atmosphere.enable && (
@@ -135,8 +119,6 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                         )}
                     </>
                 )}
-
-                {settings.model.sun.enable && <SunModel />}
             </Suspense>
 
             {settings.scene.grid.enable && <gridHelper args={[basePlateSize.x, basePlateSize.z]} />}
