@@ -4,24 +4,23 @@ import { MeshGroup } from '@models_/mesh-group';
 import { YardModel } from '@models_/yard-model';
 import { CylinderMesh } from '@models_/cylinder-mesh';
 import { useSettings } from '@context/use-settings';
-import { getMastConfig, type MastConfigName } from '@utils/complexes';
-import { type PolarSystemPosition, polarToLocal } from '@utils/coordinate-systems';
+import { getMastConfig, type Mast } from '@utils/complexes';
+import { polarToLocal } from '@utils/coordinate-systems';
 
 interface MastModelProps {
-    position: PolarSystemPosition;
-    rotation?: number;
-    configName: MastConfigName;
+    data: Mast;
 }
 
-export const MastModel = ({ position, rotation = 0, configName }: MastModelProps) => {
+export const MastModel = ({ data }: MastModelProps) => {
     const { map: settings } = useSettings();
 
-    const config = getMastConfig(configName);
+    const config = getMastConfig(data.configName);
 
     return (
         <MeshGroup
-            position={new Vector3(polarToLocal(position).x, 0, polarToLocal(position).y)}
-            rotation={new Vector3(0, rotation, 0)}>
+            name={data.id}
+            position={new Vector3(polarToLocal(data.position).x, 0, polarToLocal(data.position).y)}
+            rotation={new Vector3(0, data.rotation, 0)}>
             {/* Платформа для мачты */}
             {settings.model.masts.plates.enable && (
                 <BoxMesh
@@ -47,7 +46,7 @@ export const MastModel = ({ position, rotation = 0, configName }: MastModelProps
 
             {/* Реи с метеостанциями */}
             {config.yards.map((yard, index) => (
-                <YardModel key={index} height={yard.height} amount={yard.amount} />
+                <YardModel key={index} data={yard} />
             ))}
         </MeshGroup>
     );

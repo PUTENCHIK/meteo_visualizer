@@ -5,7 +5,11 @@ import { BoxMesh } from '@models_/box-mesh';
 import { useSettings } from '@context/use-settings';
 import type { Yard } from '@utils/complexes';
 
-export const YardModel = ({ height, amount }: Yard) => {
+interface YardModelProps {
+    data: Yard;
+}
+
+export const YardModel = ({ data }: YardModelProps) => {
     const { map: settings } = useSettings();
 
     const yardSize = 0.3;
@@ -37,7 +41,7 @@ export const YardModel = ({ height, amount }: Yard) => {
     };
 
     return (
-        <MeshGroup position={new Vector3(0, height, 0)}>
+        <MeshGroup position={new Vector3(0, data.height, 0)}>
             {/* Короткая часть реи с одной метеостанцией */}
             <BoxMesh
                 size={new Vector3(shortYardLength, yardSize, yardSize)}
@@ -57,7 +61,7 @@ export const YardModel = ({ height, amount }: Yard) => {
             <WeatherStationModel position={new Vector3(-shortYardLength, 0, 0)} />
 
             {/* Если метеостанции на рее три */}
-            {amount == 3 && (
+            {data.amount == 3 && (
                 <>
                     {/* Длинная часть реи с двумя метеостанциями */}
                     <BoxMesh

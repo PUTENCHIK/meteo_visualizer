@@ -1,9 +1,10 @@
-import type { Vector3 } from 'three';
+import type { Mesh, Vector3 } from 'three';
 import { Edges, Outlines } from '@react-three/drei';
 import { useSettings } from '@context/use-settings';
-import type { EdgesEnable } from '@utils/three-models';
+import type { EdgesEnable, Namable } from '@utils/three-models';
+import { forwardRef } from 'react';
 
-interface CylinderMeshProps extends EdgesEnable {
+interface CylinderMeshProps extends EdgesEnable, Namable {
     radius: number;
     height: number;
     position: Vector3;
@@ -11,35 +12,42 @@ interface CylinderMeshProps extends EdgesEnable {
     color: string;
 }
 
-export const CylinderMesh = ({
-    radius,
-    height,
-    position,
-    segments = 32,
-    color,
-    forceEdges: forceEdge,
-}: CylinderMeshProps) => {
-    const { map: settings } = useSettings();
+export const CylinderMesh = forwardRef<Mesh, CylinderMeshProps>(
+    (
+        {
+            name,
+            radius,
+            height,
+            position,
+            segments = 32,
+            color,
+            forceEdges: forceEdge,
+        }: CylinderMeshProps,
+        ref,
+    ) => {
+        const { map: settings } = useSettings();
 
-    return (
-        <mesh position={position}>
-            <cylinderGeometry args={[radius, radius, height, segments]} />
-            <meshStandardMaterial color={color} />
-            {(forceEdge === 'with' || (forceEdge !== 'without' && settings.scene.edges.enable)) && (
-                <>
-                    <Edges
-                        color={settings.scene.edges.color}
-                        threshold={settings.scene.edges.threshold}
-                        scale={settings.scene.edges.scale}
-                        lineWidth={settings.scene.edges.thickness}
-                    />
-                    <Outlines
-                        color={settings.scene.edges.color}
-                        thickness={settings.scene.edges.thickness}
-                        scale={settings.scene.edges.scale}
-                    />
-                </>
-            )}
-        </mesh>
-    );
-};
+        return (
+            <mesh name={name} position={position} ref={ref}>
+                <cylinderGeometry args={[radius, radius, height, segments]} />
+                <meshStandardMaterial color={color} />
+                {(forceEdge === 'with' ||
+                    (forceEdge !== 'without' && settings.scene.edges.enable)) && (
+                    <>
+                        <Edges
+                            color={settings.scene.edges.color}
+                            threshold={settings.scene.edges.threshold}
+                            scale={settings.scene.edges.scale}
+                            lineWidth={settings.scene.edges.thickness}
+                        />
+                        <Outlines
+                            color={settings.scene.edges.color}
+                            thickness={settings.scene.edges.thickness}
+                            scale={settings.scene.edges.scale}
+                        />
+                    </>
+                )}
+            </mesh>
+        );
+    },
+);

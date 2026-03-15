@@ -44,14 +44,15 @@ h2.title {
 }
 
 .children-wrapper {
-    width: 100%;
-    flex: 1; 
     min-height: 0;
-    overflow-y: auto; 
-
+    flex: 1;
+    box-sizing: border-box;
+    padding: 1px;
+    
     display: flex;
     flex-direction: column;
     row-gap: 12px;
+    overflow-y: auto; 
 }
 
 .buttons-box {

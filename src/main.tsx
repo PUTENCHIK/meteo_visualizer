@@ -11,8 +11,15 @@ import { WebSocketProvider } from '@context/websocket-context';
 import { ComplexDataProvider } from '@context/complex-data-context';
 import { DialogProvider } from '@context/dialog-context';
 import { ProviderComposer } from '@context/provider-composer';
+import { SceneProvider } from '@context/scene-context';
 
-const providers = [ThemeProvider, DialogProvider, ComplexDataProvider, WebSocketProvider];
+const providers = [
+    ThemeProvider,
+    DialogProvider,
+    ComplexDataProvider,
+    WebSocketProvider,
+    SceneProvider,
+];
 
 createRoot(document.getElementById('root')!).render(
     <ProviderComposer providers={providers}>

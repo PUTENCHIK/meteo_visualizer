@@ -1,25 +1,28 @@
 import clsx from 'clsx';
 import s from './compass-model.module.scss';
-import { Canvas, useFrame, type Camera } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Suspense, useMemo, useRef } from 'react';
 import { BoxMesh } from '@models_/box-mesh';
 import { Euler, Group, Vector3 } from 'three';
 import { MeshGroup } from '@models_/mesh-group';
 import { Loader } from '@components/loader';
 import { TextMesh } from '@models_/text-mesh';
+import { useSettings } from '@context/use-settings';
+import { useScene } from '@context/scene-context';
 
 export type CompassType = '2D' | '3D';
 
-interface CompassProps {
-    mainCamera?: Camera;
-    compassType: CompassType;
-}
+const Compass = () => {
+    const { map: settings } = useSettings();
+    const { cameraRef } = useScene();
 
-const Compass = ({ mainCamera, compassType }: CompassProps) => {
     const directionSize = 0.06;
     const directionLength = 0.25;
 
     const compassRef = useRef<Group>(null);
+
+    const compassType = settings.compass.type;
+    const mainCamera = cameraRef.current;
 
     const euler: Euler = useMemo(() => {
         return new Euler();
@@ -91,13 +94,11 @@ const Compass = ({ mainCamera, compassType }: CompassProps) => {
     );
 };
 
-interface CompassModelProps {
-    mainCamera?: Camera;
-    compassType: CompassType;
-}
+export const CompassModel = () => {
+    const { map: settings } = useSettings();
+    const compassSize = settings.compass.size;
 
-export const CompassModel = ({ mainCamera, compassType }: CompassModelProps) => {
-    const compassSize = 100;
+    if (!settings.compass.enable) return null;
 
     return (
         <div className={clsx(s['compass-wrapper'])}>
@@ -106,7 +107,7 @@ export const CompassModel = ({ mainCamera, compassType }: CompassModelProps) => 
                 style={{ width: `${compassSize}px`, height: `${compassSize}px` }}>
                 <Suspense fallback={<Loader type='circle' />}>
                     <ambientLight intensity={1.5} />
-                    <Compass mainCamera={mainCamera} compassType={compassType} />
+                    <Compass />
                 </Suspense>
             </Canvas>
         </div>

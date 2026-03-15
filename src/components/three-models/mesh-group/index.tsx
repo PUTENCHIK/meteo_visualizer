@@ -1,8 +1,9 @@
+import type { Namable } from '@utils/three-models';
 import { forwardRef } from 'react';
 import { Group, Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 
-interface MeshGroupProps {
+interface MeshGroupProps extends Namable {
     children: React.ReactNode;
     position?: Vector3;
     rotation?: Vector3;
@@ -16,11 +17,13 @@ export const MeshGroup = forwardRef<Group, MeshGroupProps>(
             position = new Vector3(0, 0, 0),
             rotation = new Vector3(0, 0, 0),
             scale = 1,
+            name,
         }: MeshGroupProps,
         ref,
     ) => {
         return (
             <group
+                name={name}
                 position={position}
                 rotation={[degToRad(rotation.x), degToRad(rotation.y), degToRad(rotation.z)]}
                 scale={scale}

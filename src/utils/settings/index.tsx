@@ -348,7 +348,7 @@ const rawSettings = {
         basePlate: createChapter('Базовая плита', {
             enable: createBoolean('Отображение', true),
             height: createRange('Высота', 5, 1, 30, 1),
-            padding: createRange('Отступ от мачт', 100, 0, 200, 1),
+            padding: createRange('Отступ от мачт', 100, 20, 200, 1),
             color: createColor('Цвет', 'rgba(116, 116, 116, 1)'),
         }),
         telescope: createChapter('КСТ-3', {
@@ -416,12 +416,15 @@ const rawSettings = {
     compass: createSection('Настройки компаса', 'compass', {
         enable: createBoolean('Отображение', true),
         type: createSelect<CompassType>('Режим', '2D', ['2D', '3D']),
+        size: createRange('Размер', 100, 70, 130, 5),
     }),
     camera: createSection('Настройки камеры', 'camera', {
         noLimits: createBoolean('Свободная камера', false),
         minDistance: createRange('Дистанция приближения', 50, 30, 800, 10),
         maxDistance: createRange('Дистанция отдаления', 500, 30, 800, 10),
         maxPolarAngle: createRange('Максимальный полярный угол', 89, 0, 180, 1),
+        focusOffset: createNumber('Отступ при фокусировке на меше', 40, { visible: false }),
+        focusPadding: createNumber('Другой отступ при фокусировке на меше', 4, { visible: false }),
     }),
     ui: createSection(
         'UI',

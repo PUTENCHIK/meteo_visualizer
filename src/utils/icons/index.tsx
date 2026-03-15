@@ -7,6 +7,7 @@ import scene from '@assets/scene.svg?react';
 import arrow from '@assets/arrow.svg?react';
 import cross from '@assets/cross.svg?react';
 import bin from '@assets/bin.svg?react';
+import eye from '@assets/eye.svg?react';
 
 export type IconName =
     | 'building'
@@ -17,7 +18,8 @@ export type IconName =
     | 'scene'
     | 'arrow'
     | 'cross'
-    | 'bin';
+    | 'bin'
+    | 'eye';
 
 export type IconSize = 48 | 36 | 24 | 20 | 16 | 12;
 
@@ -31,6 +33,7 @@ export const iconFiles: Record<IconName, React.ComponentType<React.SVGProps<SVGS
     arrow: arrow,
     cross: cross,
     bin: bin,
+    eye: eye,
 };
 
 export const sizesToStrokes: Record<IconSize, number> = {

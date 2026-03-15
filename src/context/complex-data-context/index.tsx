@@ -19,6 +19,7 @@ interface ComplexDataContextType {
     position: GeographicSystemPosition;
     updatePosition: (lat: Vector3, lon: Vector3) => void;
     masts: Mast[];
+    getMast: (id: string) => Mast | undefined;
     addMast: () => void;
     updateMast: <K extends keyof Mast>(id: string, key: K, value: Mast[K]) => void;
     deleteMast: (id: string) => void;
@@ -72,6 +73,13 @@ export const ComplexDataProvider = ({ children }: { children: ReactNode }) => {
         storageManager.setItem('position', newPos);
     }, []);
 
+    const getMast = useCallback(
+        (id: string) => {
+            return masts.find((m) => m.id === id);
+        },
+        [masts],
+    );
+
     const addMast = useCallback(() => {
         setMasts((prev) => [
             ...prev,
@@ -100,6 +108,7 @@ export const ComplexDataProvider = ({ children }: { children: ReactNode }) => {
         position: position,
         updatePosition: updatePosition,
         masts: masts,
+        getMast: getMast,
         addMast: addMast,
         updateMast: updateMast,
         deleteMast: deleteMast,

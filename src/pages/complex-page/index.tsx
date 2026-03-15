@@ -2,10 +2,7 @@ import clsx from 'clsx';
 import s from './complex-page.module.scss';
 import { CompassModel } from '@models_/compass-model';
 import { Scene } from '@models_/scene';
-import type { Camera } from '@react-three/fiber';
-import { useState } from 'react';
 import { SettingsMenu } from '@components/settings-menu';
-import { useSettings } from '@context/use-settings';
 import { IconButton } from '@components/icon-button';
 import { useNavigate } from 'react-router-dom';
 import { useDialogs } from '@context/dialog-context';
@@ -16,10 +13,7 @@ import { MastsDialog } from '@dialogs/masts-dialog';
 
 export const ComplexPage = () => {
     const navigate = useNavigate();
-    const { map: settings } = useSettings();
     const { toggleDialog } = useDialogs();
-
-    const [mainCamera, setMainCamera] = useState<Camera>();
 
     const handleBackToHomePageClick = () => {
         navigate('/');
@@ -46,10 +40,8 @@ export const ComplexPage = () => {
                 </div>
             </div>
 
-            <Scene onCameraReady={setMainCamera} />
-            {settings.compass.enable && (
-                <CompassModel mainCamera={mainCamera} compassType={settings.compass.type} />
-            )}
+            <Scene />
+            <CompassModel />
 
             <SettingsMenu />
 

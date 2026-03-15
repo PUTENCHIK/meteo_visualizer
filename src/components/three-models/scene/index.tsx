@@ -1,13 +1,13 @@
-import { Vector3 } from 'three';
-import { Canvas, type Camera } from '@react-three/fiber';
-import { OrbitControls, type OrbitControlsChangeEvent } from '@react-three/drei';
+import { Box3, Vector3 } from 'three';
+import { Canvas } from '@react-three/fiber';
+import { CameraControls } from '@react-three/drei';
 import { BasePlateModel } from '@models_/base-plate-model';
 import { TelescopeModel } from '@models_/telescope-model';
 import { MastModel } from '@models_/mast-model';
-import { Suspense, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { Loader } from '@components/loader';
 import { AtmosphereModel } from '@models_/atmosphere-model';
-import { CameraReporter } from '@helpers/camera-reporter';
+import { SceneReporter } from '@helpers/scene-reporter';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { useSettings } from '@context/use-settings';
 import { Heatmap } from '@models_/heatmap';
@@ -15,14 +15,14 @@ import { Pillarmap } from '@models_/pillarmap';
 import { SunModel } from '@models_/sun-model';
 import { polarToLocal } from '@utils/coordinate-systems';
 import { useComplexData } from '@context/complex-data-context';
+import { useScene } from '@context/scene-context';
 
-interface SceneProps {
-    onCameraReady: (camera: Camera) => void;
-}
-
-export const Scene = ({ onCameraReady }: SceneProps) => {
+export const Scene = () => {
     const { map: settings } = useSettings();
     const { masts } = useComplexData();
+    const { controlsRef } = useScene();
+
+    const [controls, setControls] = useState<CameraControls | null>(null);
 
     const sceneStyle = useMemo(() => {
         return settings.scene.background.enable
@@ -56,16 +56,31 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
         fov: 60,
     };
 
-    const handleCameraChange = (e?: OrbitControlsChangeEvent) => {
-        if (!e || settings.camera.noLimits) return;
+    useEffect(() => {
+        if (!controls) return;
 
-        const controls = e.target;
-        const target = controls.target;
+        if (settings.camera.noLimits) {
+            controls.setBoundary(undefined);
+            return;
+        }
 
-        target.x = Math.max(-basePlateSize.x / 2, Math.min(basePlateSize.x / 2, target.x));
-        target.y = Math.max(0, Math.min(settings.atmosphere.model.particles.height * 2, target.y));
-        target.z = Math.max(-basePlateSize.z / 2, Math.min(basePlateSize.z / 2, target.z));
-    };
+        const box = new Box3(
+            new Vector3(-basePlateSize.x / 2, 0, -basePlateSize.z / 2),
+            new Vector3(
+                basePlateSize.x / 2,
+                settings.atmosphere.model.particles.height * 2,
+                basePlateSize.z / 2,
+            ),
+        );
+
+        controls.setBoundary(box);
+        controls.update(0);
+    }, [
+        controls,
+        basePlateSize,
+        settings.camera.noLimits,
+        settings.atmosphere.model.particles.height,
+    ]);
 
     return (
         <Canvas camera={cameraProps} style={sceneStyle}>
@@ -78,7 +93,7 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                 )}
                 <SunModel />
 
-                <CameraReporter onCameraReady={onCameraReady} />
+                <SceneReporter />
 
                 {settings.model.basePlate.enable && <BasePlateModel size={basePlateSize} />}
                 {settings.model.telescope.enable && (
@@ -90,12 +105,7 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
                 )}
 
                 {masts.map((item, index) => (
-                    <MastModel
-                        key={index}
-                        position={item.position}
-                        rotation={item.rotation}
-                        configName={item.configName}
-                    />
+                    <MastModel key={index} data={item} />
                 ))}
                 {settings.atmosphere.enable && (
                     <>
@@ -123,13 +133,19 @@ export const Scene = ({ onCameraReady }: SceneProps) => {
 
             {settings.scene.grid.enable && <gridHelper args={[basePlateSize.x, basePlateSize.z]} />}
 
-            <OrbitControls
-                onChange={handleCameraChange}
+            <CameraControls
                 minDistance={!settings.camera.noLimits ? settings.camera.minDistance : 0}
                 maxDistance={!settings.camera.noLimits ? settings.camera.maxDistance : 10_000}
                 maxPolarAngle={degToRad(
                     !settings.camera.noLimits ? settings.camera.maxPolarAngle : 360,
                 )}
+                ref={(node) => {
+                    if (node) {
+                        setControls(node);
+                        controlsRef.current = node;
+                    }
+                }}
+                makeDefault
             />
         </Canvas>
     );

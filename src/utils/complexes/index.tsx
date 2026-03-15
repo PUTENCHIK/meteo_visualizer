@@ -1,6 +1,5 @@
 import type { PolarSystemPosition } from '@utils/coordinate-systems';
 import type { Vector3 } from 'three';
-import { Guid } from 'typescript-guid';
 
 export type MastHeight = 35 | 50;
 
