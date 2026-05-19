@@ -1,10 +1,14 @@
-.geographic-input-wrapper {
-    display: flex;
-    column-gap: 2px;
-    align-items: center;
-}
+@use '../../../styles/mixins.scss' as m;
 
-span.sign {
-    font-size: 1.25rem;
-    font-weight: 600;
+.geographic-input-wrapper {
+    @include m.input;
+
+    display: flex;
+    column-gap: 0.5rem;
+
+    cursor: default;
+
+    &:focus-within {
+        outline: 0.0625rem solid var(--outline-color);
+    }
 }

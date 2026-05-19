@@ -16,7 +16,12 @@ interface SettingsItemProps {
     parentDisabled?: boolean;
 }
 
-export const SettingsItem = ({ item, path, manager, parentDisabled = false }: SettingsItemProps) => {
+export const SettingsItem = ({
+    item,
+    path,
+    manager,
+    parentDisabled = false,
+}: SettingsItemProps) => {
     let component;
 
     const handleChange = (value: any, finalValue?: boolean) => {

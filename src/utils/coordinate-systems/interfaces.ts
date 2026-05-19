@@ -1,4 +1,5 @@
-export interface PolarPositionDto {
-    radius: number;
-    angle: number;
+export interface GeographicPosition {
+    d: number;
+    m: number;
+    s: number;
 }

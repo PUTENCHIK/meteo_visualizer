@@ -1,14 +1,16 @@
 import { Vector3 } from 'three';
 import { degToRad, radToDeg } from 'three/src/math/MathUtils.js';
 import { PolarPosition } from './classes';
+import type { GeographicPosition } from './interfaces';
 
-export const geographicToNumber = (coords: Vector3, sign: -1 | 1): number => {
-    return sign * (Math.abs(coords.x) + Math.abs(coords.y) / 60 + Math.abs(coords.z) / 3600);
+export const geographicToNumber = (coords: GeographicPosition): number => {
+    const sign = coords.d < 0 || Object.is(coords.d, -0) ? -1 : 1;
+
+    return sign * (Math.abs(coords.d) + Math.abs(coords.m) / 60 + Math.abs(coords.s) / 3600);
 };
 
-export const numberToGeographic = (decimal: number): Vector3 => {
+export const numberToGeographic = (decimal: number): GeographicPosition => {
     const absDecimal = Math.abs(decimal);
-
     let degrees = Math.floor(absDecimal);
 
     const minutesFloat = (absDecimal - degrees) * 60;
@@ -25,7 +27,7 @@ export const numberToGeographic = (decimal: number): Vector3 => {
         degrees += 1;
     }
 
-    return new Vector3(degrees, minutes, seconds);
+    return { d: Math.sign(decimal) * degrees, m: minutes, s: seconds };
 };
 
 export const geographicToPolar = (

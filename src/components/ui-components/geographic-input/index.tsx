@@ -1,19 +1,17 @@
 import clsx from 'clsx';
 import s from './geographic-input.module.scss';
-import { Select } from '@components/select';
-import { VectorInput } from '@components/vector-input';
-import { geographicToNumber, numberToGeographic } from '@utils/coordinate-systems';
-import { useEffect, useState } from 'react';
-import { Vector3 } from 'three';
-
-type GeographicParameter = 'lat' | 'lon';
-
-type SignType = '-' | '+';
+import {
+    geographicToNumber,
+    numberToGeographic,
+    type GeographicParameter,
+    type GeographicPosition,
+} from '@utils/coordinate-systems';
+import { useCallback } from 'react';
+import { NumberSegmentInput } from '@components/number-segment-input';
 
 interface GeographicInputProps {
     value: number;
     param: GeographicParameter;
-    readOnly?: boolean;
     disabled?: boolean;
     onChange?: (value: number) => void;
     onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
@@ -22,58 +20,86 @@ interface GeographicInputProps {
 export const GeographicInput = ({
     value,
     param,
-    readOnly = false,
     disabled = false,
     onChange,
     onBlur,
 }: GeographicInputProps) => {
-    const baseLimit = param === 'lat' ? 90 : 180;
-    const maxLength = param === 'lat' ? 2 : 3;
+    const maxDeg = param === 'lat' ? 89 : 179;
+    const maxDegLength = param === 'lat' ? 2 : 3;
 
-    const [sign, setSign] = useState<SignType>(value >= 0 ? '+' : '-');
-    const [vector, setVector] = useState<Vector3>(numberToGeographic(value));
+    const separatedValue = numberToGeographic(value);
 
-    useEffect(() => {
-        setSign(value > 0 ? '+' : '-');
-        setVector(numberToGeographic(value));
-    }, [value]);
+    const degrees = separatedValue.d;
+    const minutes = separatedValue.m;
+    const seconds = separatedValue.s;
 
-    useEffect(() => {
-        onChange?.(geographicToNumber(vector, sign === '+' ? 1 : -1));
-    }, [sign, vector]);
+    const handleChange = useCallback(
+        (axis: keyof GeographicPosition, axisValue: number) => {
+            const currentDms: GeographicPosition = { d: degrees, m: minutes, s: seconds };
 
-    const handleSelectChange = (value: SignType) => {
-        setSign(value);
-    };
+            switch (axis) {
+                case 'd':
+                    currentDms.d = axisValue;
+                    break;
+                case 'm':
+                    currentDms.m = axisValue;
+                    break;
+                case 's':
+                    currentDms.s = axisValue;
+                    break;
+            }
 
-    const handleVectorChange = (vector: Vector3) => {
-        setVector(vector);
+            console.log('changed:', currentDms);
+
+            const newValue = Number(geographicToNumber(currentDms).toFixed(6));
+
+            if (newValue !== value) {
+                onChange?.(newValue);
+            }
+        },
+        [degrees, minutes, seconds, value, onChange],
+    );
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+        onBlur?.(event);
     };
 
     return (
-        <div className={clsx(s['geographic-input-wrapper'])}>
-            {!readOnly ? (
-                <Select
-                    value={sign}
-                    options={{ '-': '-', '+': '+' }}
-                    onChange={handleSelectChange}
-                />
-            ) : (
-                <span className={clsx(s['sign'])}>{sign}</span>
-            )}
-            <VectorInput
-                value={vector}
-                postfixes={{ x: '°', y: "'", z: "''" }}
-                min={{ x: 0, y: 0, z: 0 }}
-                max={{ x: baseLimit, y: 59, z: 59 }}
-                maxLength={{ x: maxLength, y: 2, z: 3 }}
-                decimal={{ x: 0, y: 0, z: 1 }}
-                placeholder={{ x: '0', y: '0', z: '0' }}
-                readOnly={readOnly}
+        <label className={clsx(s['geographic-input-wrapper'])}>
+            <NumberSegmentInput
+                value={degrees}
+                length={maxDegLength}
+                min={-maxDeg}
+                max={maxDeg}
+                postfix='°'
+                normalizeZeros
                 disabled={disabled}
-                onChange={handleVectorChange}
-                onBlur={onBlur}
+                onChange={(v) => handleChange('d', v)}
+                onBlur={handleBlur}
             />
-        </div>
+            <NumberSegmentInput
+                value={minutes}
+                length={2}
+                min={0}
+                max={59}
+                postfix={`'`}
+                normalizeZeros
+                disabled={disabled}
+                onChange={(v) => handleChange('m', v)}
+                onBlur={handleBlur}
+            />
+            <NumberSegmentInput
+                value={seconds}
+                length={2}
+                min={0}
+                max={59}
+                decimal={1}
+                postfix={`''`}
+                normalizeZeros
+                disabled={disabled}
+                onChange={(v) => handleChange('s', v)}
+                onBlur={handleBlur}
+            />
+        </label>
     );
 };

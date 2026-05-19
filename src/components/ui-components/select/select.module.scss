@@ -2,6 +2,7 @@
 
 select.select {
     @include m.input;
+    cursor: default;
 
     &:disabled {
         color: var(--disabled-color);

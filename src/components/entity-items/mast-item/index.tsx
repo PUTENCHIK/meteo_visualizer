@@ -6,12 +6,12 @@ import { TimestampLabel } from '@components/timestamp-label';
 import { useDialogs } from '@context/dialog-context';
 import { useDeleteMast } from '@hooks/masts/use-delete-mast';
 import { BaseEntityItem } from '@entity-items/base-entity-item';
-import { GeographicInput } from '@components/geographic-input';
 import { HasPermission } from '@pages/has-permission';
 import { useFocus } from '@hooks/use-focus';
 import type { MastData } from '@stores/devices-store';
 import { useState } from 'react';
 import { WeatherStationItem } from '@entity-items/weather-station-item';
+import { GeographicCoords } from '@components/geographic-coords';
 
 interface MastItemProps {
     mast: MastSchema;
@@ -85,12 +85,15 @@ export const MastItem = ({ mast, complex, data, focusable = false }: MastItemPro
                 size='tiny'
             />
             <ComponentRowBox
-                left={[<span>Расположение:</span>]}
-                right={[
-                    <GeographicInput value={mast.latitude} param='lat' readOnly />,
-                    <GeographicInput value={mast.longitude} param='lon' readOnly />,
+                left={[
+                    [<span>Относительное расположение:</span>],
+                    [
+                        <GeographicCoords value={mast.latitude} param='lat' />,
+                        <GeographicCoords value={mast.longitude} param='lon' />,
+                    ],
                 ]}
                 size='tiny'
+                wrap={false}
             />
             <ComponentRowBox
                 left={[<span>Угол поворота: {mast.rotation}°</span>]}

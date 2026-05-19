@@ -22,7 +22,7 @@ export const AuthPage = () => {
                 <p className={clsx(s['description'])}>
                     Сервис визуализации измерений системы комплесов МАМКА
                 </p>
-                <img className={clsx(s['logo'])} src='./public/icon.png' alt='logo' />
+                <img className={clsx(s['logo'])} src='./icon.png' alt='logo' />
                 <IconButton
                     iconName='settings'
                     title='Настройки'

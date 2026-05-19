@@ -47,10 +47,16 @@ export const EntityLabel = <T extends DisplayableEntity>({
     const idLabel = entity ? entity.id.toString().slice(0, 8) : 'N/A';
     const color = entity ? entity.id.toString().slice(0, 6) : '808080';
 
-    const styles = useMemo(() => (settings.common.colorEntityLabels ? {
-        backgroundColor: `#${color}`,
-        color: `contrast-color(#${color})`,
-    } : undefined), [settings.common.colorEntityLabels, color]);
+    const styles = useMemo(
+        () =>
+            settings.common.colorEntityLabels
+                ? {
+                      backgroundColor: `#${color}`,
+                      color: `contrast-color(#${color})`,
+                  }
+                : undefined,
+        [settings.common.colorEntityLabels, color],
+    );
 
     const getLabel = (): string => {
         if (!entity) {

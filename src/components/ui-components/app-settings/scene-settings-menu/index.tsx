@@ -35,14 +35,9 @@ export const SceneSettingsMenu = () => {
                                     key === currentSection && s['current'],
                                 )}
                                 title={section.title}
-                                onClick={
-                                    () => handleSectionClick(key)
-                                }>
+                                onClick={() => handleSectionClick(key)}>
                                 {section.iconName && (
-                                    <SvgIcon
-                                        iconName={section.iconName}
-                                        size={'medium'}
-                                    />
+                                    <SvgIcon iconName={section.iconName} size={'medium'} />
                                 )}
                             </button>
                         ),

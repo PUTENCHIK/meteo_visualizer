@@ -1,10 +1,6 @@
 import { storageManager, type AppSettingsGroup } from '@managers/local-storage-manager';
 import { copyObject } from '@utils/common';
-import {
-    createSettingsProxy,
-    type SettingsMap,
-    type SettingsType,
-} from '@utils/settings';
+import { createSettingsProxy, type SettingsMap, type SettingsType } from '@utils/settings';
 
 interface ListenerParams {
     saveSettings: boolean;
@@ -22,7 +18,7 @@ export class SettingsManager<T extends SettingsType> {
         const defaultObject = copyObject(settingsObject);
         this.defaultSettings = defaultObject;
         this.storageKey = key;
-    
+
         const savedSettings = storageManager.getItem(this.storageKey);
 
         this.deepUpdate(this.defaultSettings, savedSettings);

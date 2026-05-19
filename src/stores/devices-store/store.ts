@@ -82,16 +82,16 @@ export class DevicesStore {
         for (const item of message.items) {
             let delta = 0;
             switch (prefix.toLowerCase()) {
-                case "west":
+                case 'west':
                     delta = -10;
                     break;
-                case "north":
+                case 'north':
                     delta = -15;
                     break;
-                case "east":
+                case 'east':
                     delta = 5;
                     break;
-                case "south":
+                case 'south':
                     delta = 10;
                     break;
             }

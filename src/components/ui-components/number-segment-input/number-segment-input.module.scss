@@ -1,0 +1,31 @@
+@use '../../../styles/mixins.scss' as m;
+
+.number-segment-input {
+    width: fit-content;
+    display: inline-flex;
+    column-gap: 0.125rem;
+    user-select: none;
+}
+
+input.value {
+    @include m.empty-input;
+
+    font-family: monospace;
+    text-align: left;
+    user-select: none;
+    caret-color: transparent;
+    cursor: default;
+
+    &:focus {
+        background-color: #0078d7;
+    }
+
+    &::selection {
+        background-color: transparent;
+        color: inherit;
+    }
+}
+
+span.postfix {
+
+}

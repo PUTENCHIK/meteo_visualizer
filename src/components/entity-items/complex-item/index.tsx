@@ -12,9 +12,9 @@ import { SecretedLabel } from '@components/secreted-label';
 import { useAddComplexToFavorites } from '@hooks/complexes/use-add-complex-to-favorites';
 import { useDeleteComplexFromFavorites } from '@hooks/complexes/use-delete-complex-from-favorites';
 import { BaseEntityItem } from '@entity-items/base-entity-item';
-import { GeographicInput } from '@components/geographic-input';
 import { HasPermission } from '@pages/has-permission';
 import { useMemo } from 'react';
+import { GeographicCoords } from '@components/geographic-coords';
 
 interface ComplexItemProps {
     data: ComplexWithFavoriteInfoSchema;
@@ -124,10 +124,12 @@ export const ComplexItem = ({ data, focusable = false }: ComplexItemProps) => {
             />
             <span>Адрес TCP: {data.address ?? '-'}</span>
             <ComponentRowBox
-                left={[<span>Расположение:</span>]}
-                right={[
-                    <GeographicInput value={data.latitude} param='lat' readOnly />,
-                    <GeographicInput value={data.longitude} param='lon' readOnly />,
+                left={[
+                    [<span>Расположение:</span>],
+                    [
+                        <GeographicCoords value={data.latitude} param='lat' />,
+                        <GeographicCoords value={data.longitude} param='lon' />,
+                    ],
                 ]}
                 size='tiny'
                 wrap={false}
