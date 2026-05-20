@@ -8,7 +8,7 @@ import { ComponentRowBox } from '@components/component-row-box';
 
 export const Header = () => {
     const { openDialog } = useDialogs();
-    const location = useLocation();
+    const { pathname } = useLocation();
 
     return (
         <>
@@ -28,7 +28,7 @@ export const Header = () => {
                                         className={clsx(
                                             'link-reset',
                                             s['header-item'],
-                                            location.pathname === `${item.path}` && s['current'],
+                                            pathname.includes(item.path) && s['current'],
                                         )}
                                         to={item.path}>
                                         {item.title}

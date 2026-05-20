@@ -8,6 +8,11 @@ body {
     margin: 0;
 }
 
+::selection {
+    background-color: var(--selection-color);
+    color: var(--selection-text-color);
+}
+
 body,
 dialog {
     color: var(--text-primary);

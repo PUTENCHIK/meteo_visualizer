@@ -8,10 +8,9 @@ import { RoleItem } from '@entity-items/role-item';
 import { useRoles } from '@hooks/roles/use-roles';
 import { usePermission } from '@hooks/use-permission';
 import { HasPermission } from '@pages/has-permission';
-import { HolyGrailLayout } from '@pages/holy-grail-layout';
 import { useState } from 'react';
 
-export const RolesPage = () => {
+export const RolesSubPage = () => {
     const { hasPermission } = usePermission();
     const { openDialog } = useDialogs();
     const [includeDeleted, setIncludeDeleted] = useState(false);
@@ -22,7 +21,7 @@ export const RolesPage = () => {
     } = useRoles(includeDeleted && hasPermission('role:restore'));
 
     return (
-        <HolyGrailLayout>
+        <>
             <ComponentRowBox
                 left={[<h1>Роли пользователей</h1>]}
                 right={[
@@ -51,6 +50,6 @@ export const RolesPage = () => {
                     {roles && roles.map((role, index) => <RoleItem key={index} data={role} />)}
                 </>
             )}
-        </HolyGrailLayout>
+        </>
     );
 };

@@ -134,7 +134,7 @@ export const NumberSegmentInput = ({
                 onChange={() => {}}
                 onBlur={onBlur}
             />
-            <span className={clsx(s['postfix'])}>{postfix}</span>
+            <span>{postfix}</span>
         </label>
     );
 };

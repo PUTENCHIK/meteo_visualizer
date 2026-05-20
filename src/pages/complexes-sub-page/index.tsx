@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import s from './complexes-page.module.scss';
+import s from './complexes-sub-page.module.scss';
 import { Button } from '@components/button';
 import { ComplexItem } from '@entity-items/complex-item';
 import { ComponentRowBox } from '@components/component-row-box';
@@ -8,12 +8,11 @@ import { Loader } from '@components/loader';
 import { Toggle } from '@components/toggle';
 import { useDialogs } from '@context/dialog-context';
 import { useComplexes } from '@hooks/complexes/use-complexes';
-import { HolyGrailLayout } from '@pages/holy-grail-layout';
 import { useState } from 'react';
 import { HasPermission } from '@pages/has-permission';
 import { usePermission } from '@hooks/use-permission';
 
-export const ComplexesPage = () => {
+export const ComplexesSubPage = () => {
     const { hasPermission } = usePermission();
     const { openDialog } = useDialogs();
     const [includeDeleted, setIncludeDeleted] = useState(false);
@@ -24,7 +23,7 @@ export const ComplexesPage = () => {
     } = useComplexes(includeDeleted && hasPermission('complex:restore'));
 
     return (
-        <HolyGrailLayout>
+        <>
             <ComponentRowBox
                 left={[<h1>Комплексы МАМКА</h1>]}
                 right={[
@@ -69,6 +68,6 @@ export const ComplexesPage = () => {
                         ))}
                 </div>
             )}
-        </HolyGrailLayout>
+        </>
     );
 };

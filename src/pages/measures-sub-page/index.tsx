@@ -8,10 +8,9 @@ import { MeasureItem } from '@entity-items/measure-item';
 import { useMeasures } from '@hooks/measures/use-measures';
 import { usePermission } from '@hooks/use-permission';
 import { HasPermission } from '@pages/has-permission';
-import { HolyGrailLayout } from '@pages/holy-grail-layout';
 import { useState } from 'react';
 
-export const MeasuresPage = () => {
+export const MeasuresSubPage = () => {
     const { hasPermission } = usePermission();
     const { openDialog } = useDialogs();
     const [includeDeleted, setIncludeDeleted] = useState(false);
@@ -22,7 +21,7 @@ export const MeasuresPage = () => {
     } = useMeasures(includeDeleted && hasPermission('measure:restore'));
 
     return (
-        <HolyGrailLayout>
+        <>
             <ComponentRowBox
                 left={[<h1>Пользовательские параметры</h1>]}
                 right={[
@@ -54,6 +53,6 @@ export const MeasuresPage = () => {
                     )}
                 </>
             )}
-        </HolyGrailLayout>
+        </>
     );
 };

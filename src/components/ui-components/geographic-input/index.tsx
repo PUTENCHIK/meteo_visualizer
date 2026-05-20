@@ -48,9 +48,6 @@ export const GeographicInput = ({
                     currentDms.s = axisValue;
                     break;
             }
-
-            console.log('changed:', currentDms);
-
             const newValue = Number(geographicToNumber(currentDms).toFixed(6));
 
             if (newValue !== value) {

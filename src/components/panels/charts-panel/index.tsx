@@ -30,7 +30,7 @@ export const ChartsPanel: React.FC<PanelProps<'charts'>> = () => {
         if (stationId && mastId) {
             focusStation(stationId, mastId);
         }
-    }, [stationId, mastId]);
+    }, [stationId, mastId, focusStation]);
 
     return (
         <BasePanel

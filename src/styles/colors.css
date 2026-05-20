@@ -23,6 +23,9 @@
     --backdrop-color: #000000c2;
     --scrollbar-color: #808080;
     --scrollbar-color-hover: #6b6b6b;
+
+    --selection-color: Highlight;
+    --selection-text-color: HighlightText;
 }
 
 [data-theme='dark'] {

@@ -17,15 +17,12 @@ input.value {
     cursor: default;
 
     &:focus {
-        background-color: #0078d7;
+        background-color: var(--selection-color);
+        color: var(--selection-text-color);
     }
 
     &::selection {
         background-color: transparent;
         color: inherit;
     }
-}
-
-span.postfix {
-
 }

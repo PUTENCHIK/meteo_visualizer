@@ -6,10 +6,9 @@ import { UserItem } from '@entity-items/user-item';
 import { usePermission } from '@hooks/use-permission';
 import { useUsers } from '@hooks/users/use-users';
 import { HasPermission } from '@pages/has-permission';
-import { HolyGrailLayout } from '@pages/holy-grail-layout';
 import { useState } from 'react';
 
-export const UsersPage = () => {
+export const UsersSubPage = () => {
     const { hasPermission } = usePermission();
     const [includeDeleted, setIncludeDeleted] = useState(false);
     const {
@@ -19,7 +18,7 @@ export const UsersPage = () => {
     } = useUsers(includeDeleted && hasPermission('user:restore'));
 
     return (
-        <HolyGrailLayout>
+        <>
             <ComponentRowBox
                 left={[<h1>Пользователи</h1>]}
                 right={[
@@ -42,6 +41,6 @@ export const UsersPage = () => {
                     )}
                 </>
             )}
-        </HolyGrailLayout>
+        </>
     );
 };

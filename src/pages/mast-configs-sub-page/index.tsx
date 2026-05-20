@@ -6,12 +6,11 @@ import { MastConfigItem } from '@entity-items/mast-config-item';
 import { Toggle } from '@components/toggle';
 import { useDialogs } from '@context/dialog-context';
 import { useMastConfigs } from '@hooks/mast-configs/use-mast-configs';
-import { HolyGrailLayout } from '@pages/holy-grail-layout';
 import { useState } from 'react';
 import { HasPermission } from '@pages/has-permission';
 import { usePermission } from '@hooks/use-permission';
 
-export const MastConfigsPage = () => {
+export const MastConfigsSubPage = () => {
     const { hasPermission } = usePermission();
     const { openDialog } = useDialogs();
     const [includeDeleted, setIncludeDeleted] = useState(false);
@@ -22,7 +21,7 @@ export const MastConfigsPage = () => {
     } = useMastConfigs(includeDeleted && hasPermission('mast_config:restore'));
 
     return (
-        <HolyGrailLayout>
+        <>
             <ComponentRowBox
                 left={[<h1>Конфиги мачт</h1>]}
                 right={[
@@ -54,6 +53,6 @@ export const MastConfigsPage = () => {
                         ))}
                 </>
             )}
-        </HolyGrailLayout>
+        </>
     );
 };
