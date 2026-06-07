@@ -1,5 +1,5 @@
 :root {
-    --tabs-menu-height: 40px;
+    --tabs-menu-height: 2.5rem;
 }
 
 .tabs-menu {
@@ -27,6 +27,7 @@ button.tab-item {
     cursor: pointer;
 
     &:focus-visible {
+        outline-offset: 0px;
         outline: 1px solid var(--outline-window-color);
     }
 
@@ -47,10 +48,10 @@ button.tab-item {
     }
 
     &:first-child {
-        border-top-left-radius: calc(var(--tabs-menu-height) * 0.2);
+        border-top-left-radius: 0.5rem;
     }
 
     &:last-child {
-        border-top-right-radius: calc(var(--tabs-menu-height) * 0.2);
+        border-top-right-radius: 0.5rem;
     }
 }

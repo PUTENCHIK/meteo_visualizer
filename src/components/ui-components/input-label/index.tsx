@@ -10,6 +10,7 @@ interface InputLabelProps {
     nowrap?: boolean;
     error?: string;
     required?: boolean;
+    disabled?: boolean;
     notLabel?: boolean;
     children: React.ReactNode;
 }
@@ -20,6 +21,7 @@ export const InputLabel = ({
     reverse = false,
     error,
     required = false,
+    disabled = false,
     notLabel = false,
     children,
 }: InputLabelProps) => {
@@ -27,7 +29,13 @@ export const InputLabel = ({
 
     return (
         <Component className={clsx(s['label'])}>
-            <div className={clsx(s['content'], s[orientation], reverse && s['reverse'])}>
+            <div
+                className={clsx(
+                    s['content'],
+                    s[orientation],
+                    reverse && s['reverse'],
+                    disabled && s['disabled'],
+                )}>
                 <div className={clsx(s['label-box'])}>
                     <span>
                         {label}

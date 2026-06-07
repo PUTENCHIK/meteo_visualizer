@@ -49,7 +49,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 reconnectRef.current = false;
             } catch (error) {
                 await logout();
-                showError({ error: error as Error });
+                showError(error);
                 window.location.href = '/auth';
                 throw error;
             }
@@ -74,7 +74,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
                 devicesStore.addData(message);
                 messagesCountRef.current += 1;
             } catch (error) {
-                showError({ error: error as Error });
+                showError(error);
             }
         },
         onClose: (event) => {

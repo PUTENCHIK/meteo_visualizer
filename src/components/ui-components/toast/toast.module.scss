@@ -1,24 +1,18 @@
 @use '../../../styles/mixins.scss' as m;
 
-.toast-wrapper {
-    width: fit-content;
-    background: transparent !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    margin-bottom: 0 !important;
-    margin-top: 10px !important;
-    min-height: auto !important;
-}
-
 .toast {
     @include m.item-box;
 
+    flex: 1;
     display: flex;
     flex-direction: column;
+    color: white;
+
+    &.message {
+        background-color: var(--toast-background-color);
+    }
 
     &.error {
-        color: white;
         background-color: var(--danger-color);
     }
 }

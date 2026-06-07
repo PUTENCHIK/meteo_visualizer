@@ -42,7 +42,7 @@ api.interceptors.response.use(
                     return Promise.reject(refreshError);
                 }
             }
-            showError({ error: errorData, statusCode: error.response?.status });
+            showError(error);
         }
 
         return Promise.reject(error);

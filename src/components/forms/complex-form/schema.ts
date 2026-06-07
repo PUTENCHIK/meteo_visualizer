@@ -16,14 +16,7 @@ export const complexSchema = z.object({
             z
                 .string()
                 .min(SECRETKEY.min, `Минимальная длина - ${SECRETKEY.min}`)
-                .max(SECRETKEY.max, `Максимальная длина - ${SECRETKEY.max}`)
-                .regex(
-                    /^[a-zA-Z0-9_!@#$%^&*()[\]{}.,:;\-?*'"]+$/,
-                    'Допустимы только латинские буквы, цифры и спец. символы',
-                )
-                .regex(/[A-Z]/, 'Нужна хотя бы одна заглавная буква')
-                .regex(/[0-9]/, 'Нужна хотя бы одна цифра')
-                .regex(/[_!@#$%^&*()[\]{}.,:;\-?*'"]/, 'Нужен хотя бы один спец. символ'),
+                .max(SECRETKEY.max, `Максимальная длина - ${SECRETKEY.max}`),
         ])
         .transform((val) => (val === '' ? null : val)),
     is_private: z.boolean(),

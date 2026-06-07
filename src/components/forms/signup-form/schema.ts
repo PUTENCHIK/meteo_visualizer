@@ -29,14 +29,7 @@ export const signupSchema = z
         password: z
             .string()
             .min(PASSWORD.min, `Минимальная длина - ${PASSWORD.min}`)
-            .max(PASSWORD.max, `Максимальная длина - ${PASSWORD.max}`)
-            .regex(
-                /^[a-zA-Z0-9_!@#$%^&*()[\]{}.,:;\-?*'"]+$/,
-                'Допустимы только латинские буквы, цифры и спец. символы',
-            )
-            .regex(/[A-Z]/, 'Нужна хотя бы одна заглавная буква')
-            .regex(/[0-9]/, 'Нужна хотя бы одна цифра')
-            .regex(/[_!@#$%^&*()[\]{}.,:;\-?*'"]/, 'Нужен хотя бы один спец. символ'),
+            .max(PASSWORD.max, `Максимальная длина - ${PASSWORD.max}`),
         passwordAgain: z.string().min(1, 'Повторите пароль'),
     })
     .refine((data) => data.password === data.passwordAgain, {

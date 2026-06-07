@@ -22,14 +22,6 @@ export const ComplexScene = () => {
 
     const [controls, setControls] = useState<CameraControls | null>(null);
 
-    const sceneStyle = useMemo(() => {
-        return settings.scene.background.enable
-            ? {
-                  backgroundColor: '#24136a',
-              }
-            : undefined;
-    }, [settings.scene.background.enable]);
-
     const basePlateSize = useMemo(() => {
         const size = new Vector3(20, settings.model.basePlate.height, 20);
 
@@ -92,7 +84,7 @@ export const ComplexScene = () => {
     ]);
 
     return (
-        <Canvas camera={cameraProps} style={sceneStyle} shadows>
+        <Canvas camera={cameraProps} shadows>
             <Suspense
                 fallback={
                     <Html center>

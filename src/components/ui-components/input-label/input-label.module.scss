@@ -28,6 +28,10 @@
             flex-direction: column-reverse;
         }
     }
+
+    &.disabled {
+        color: var(--disabled-color);
+    }
 }
 
 .label-box {

@@ -26,7 +26,18 @@ export const Layout = () => {
                 <Outlet />
                 <PanelsBox />
                 <DialogsBox />
-                <ToastContainer />
+                <ToastContainer
+                    closeButton={false}
+                    icon={false}
+                    style={{
+                        paddingRight: '20px',
+                    }}
+                    toastStyle={{
+                        background: 'none',
+                        boxShadow: 'none',
+                        padding: 0,
+                    }}
+                />
             </main>
         </>
     );

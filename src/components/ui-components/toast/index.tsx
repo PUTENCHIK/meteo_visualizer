@@ -3,35 +3,26 @@ import s from './toast.module.scss';
 import type { ToastContentProps } from 'react-toastify';
 import { ComponentRowBox } from '@components/component-row-box';
 import { IconButton } from '@components/icon-button';
-import type { ApiErrorResponse } from '@utils/http';
 
-export interface ToastMessagePayload {
+export type ToastType = 'message' | 'error';
+
+
+interface CustomProps {
+    title: string;
     text: string;
+    type?: ToastType;
 }
 
-export interface ToastErrorPayload {
-    error: Error | ApiErrorResponse;
-    statusCode?: number;
-}
+type ToastProps = CustomProps & Partial<ToastContentProps>;
 
-export type ToastProps =
-    | { type: 'message'; payload: ToastMessagePayload }
-    | { type: 'error'; payload: ToastErrorPayload };
+export const Toast = ({ closeToast, title, text, type = 'message' }: ToastProps) => {
 
-const typeToTitle: Record<ToastType, string> = {
-    message: 'Сообщение',
-    error: 'Ошибка',
-};
-
-export type ToastType = ToastProps['type'];
-
-export const Toast = ({ closeToast, data: { type, payload } }: ToastContentProps<ToastProps>) => {
     return (
         <div className={clsx(s['toast'], s[type])}>
             <ComponentRowBox
                 left={[
                     <h3>
-                        {typeToTitle[type]} {type === 'error' && payload.statusCode}
+                        {title}
                     </h3>,
                 ]}
                 right={[
@@ -40,21 +31,12 @@ export const Toast = ({ closeToast, data: { type, payload } }: ToastContentProps
                         title='Закрыть'
                         iconSize={'small'}
                         iconColor='white'
-                        onClick={() => closeToast()}
+                        onClick={closeToast}
                     />,
                 ]}
                 size='tiny'
             />
-            {type === 'message' && <span>{payload.text}</span>}
-            {type === 'error' && (
-                <>
-                    {'detail' in payload.error ? (
-                        <span>{payload.error.detail.message}</span>
-                    ) : (
-                        <span>{payload.error.message}</span>
-                    )}
-                </>
-            )}
+            <span>{text}</span>
         </div>
     );
 };

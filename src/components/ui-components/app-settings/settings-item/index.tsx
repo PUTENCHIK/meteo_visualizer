@@ -8,6 +8,7 @@ import { TextInput } from '@components/text-input';
 import { NumberInput } from '@components/number-input';
 import { Select } from '@components/select';
 import { SettingsManager } from '@managers/settings-manager';
+import { InputLabel } from '@components/input-label';
 
 interface SettingsItemProps {
     item: SettingsItemType;
@@ -157,10 +158,21 @@ export const SettingsItem = ({
             );
         } else {
             return (
-                <div className={clsx(s['settings-item'], disabled && s['disabled'])}>
-                    {item.kind !== 'tab' && <span>{item.title}:</span>}
-                    {component}
-                </div>
+                <>
+                    {item.kind !== 'tab' ? (
+                        <InputLabel label={item.title} orientation='horizontal' disabled={disabled}>
+                            {component}
+                        </InputLabel>
+                    ) : (
+                        <>
+
+                            { component }
+                        </>
+                    )}
+                </>
+                // <div className={clsx(s['settings-item'], disabled && s['disabled'])}>
+                //     {item.kind !== 'tab' && <span>{item.title}:</span>}
+                // </div>
             );
         }
     } else return null;

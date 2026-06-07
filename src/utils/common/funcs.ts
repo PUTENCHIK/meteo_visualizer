@@ -1,5 +1,7 @@
 import type { MeasureColorSchema } from '@utils/schemas';
 import { dateFormatter } from './consts';
+import axios from 'axios';
+import type { ApiErrorResponse } from '@utils/http';
 
 export const copyObject = <T extends object>(obj: T): T => {
     if (!obj || typeof obj !== 'object') throw new Error(`obj mush be 'object', not ${typeof obj}`);
@@ -67,4 +69,44 @@ export const interpolateColor = (color1: string, color2: string, factor: number)
     const b = Math.round(c1.b + factor * (c2.b - c1.b));
 
     return `#${[r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')}`;
+};
+
+export const parseUnknownError = (error: unknown): { message: string; code?: number } => {
+    if (axios.isAxiosError<ApiErrorResponse>(error)) {
+        if (error.response) {
+            const serverStatus = error.response.status;
+            const serverMessage = error.response.data?.detail.message;
+            if (serverMessage)
+                return {
+                    message: serverMessage,
+                    code: serverStatus,
+                };
+
+            return {
+                message: `Ошибка сервера ${error.response.status}`,
+                code: serverStatus,
+            };
+        }
+
+        if (error.request) {
+            return {
+                message: 'Не удалось связаться с сервером. Проверьте интернет-соединение',
+                code: 400,
+            };
+        }
+
+        return {
+            message: error.message,
+        };
+    }
+
+    if (error instanceof Error) {
+        return {
+            message: error.message,
+        };
+    }
+
+    return {
+        message: String(error),
+    };
 };

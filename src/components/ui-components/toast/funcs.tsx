@@ -1,33 +1,20 @@
-import clsx from 'clsx';
-import s from './toast.module.scss';
-import {
-    Toast,
-    type ToastErrorPayload,
-    type ToastMessagePayload,
-    type ToastProps,
-} from '@components/toast';
+import { Toast, type ToastType } from '@components/toast';
+import { parseUnknownError } from '@utils/common';
 import { toast } from 'react-toastify';
 
-const showNotification = (toastProps: ToastProps) => {
-    toast((props) => <Toast {...props} data={toastProps} />, {
-        closeButton: false,
-        icon: false,
-        className: clsx(s['toast-wrapper']),
+const showNotification = (text: string, title: string, type: ToastType) => {
+    toast(<Toast text={text} title={title} type={type} />, {
+        autoClose: 5000,
         hideProgressBar: true,
         position: 'bottom-right',
     });
 };
 
-export const showMessage = (payload: ToastMessagePayload) => {
-    showNotification({
-        type: 'message',
-        payload: payload,
-    });
+export const showMessage = (text: string) => {
+    showNotification(text, 'Сообщение', 'message');
 };
 
-export const showError = (payload: ToastErrorPayload) => {
-    showNotification({
-        type: 'error',
-        payload: payload,
-    });
+export const showError = (error: unknown) => {
+    const parsedError = parseUnknownError(error);
+    showNotification(parsedError.message, `Ошибка ${parsedError.code ?? ''}`, 'error');
 };

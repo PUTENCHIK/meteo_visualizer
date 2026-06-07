@@ -14,9 +14,6 @@ import type { SettingsType } from './structure';
 
 const rawSceneSettings = {
     scene: createSection('Настройки сцены', 'scene', {
-        background: createChapter('Фон', {
-            enable: createBoolean('Имитация неба', false),
-        }),
         edges: createChapter('Границы', {
             enable: createBoolean('Отображение', true),
             thickness: createRange('Толщина', 1, 0.5, 5, 0.5),
